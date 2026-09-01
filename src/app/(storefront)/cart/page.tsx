@@ -59,22 +59,22 @@ export default function CartPage() {
           {items.map((item) => (
             <div
               key={`${item.productId}-${item.size ?? ""}`}
-              className="flex gap-4 rounded-2xl border border-black/5 bg-white p-4 shadow-card"
+              className="flex gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-card sm:gap-4 sm:p-4"
             >
               <Link
                 href={`/products/${item.slug}`}
-                className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-100"
+                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-24 sm:w-24"
               >
                 <Image
                   src={item.image}
                   alt={item.name}
                   fill
-                  sizes="96px"
+                  sizes="(max-width: 640px) 80px, 96px"
                   className="object-cover"
                 />
               </Link>
 
-              <div className="flex flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start justify-between gap-2">
                   <Link
                     href={`/products/${item.slug}`}
@@ -97,7 +97,7 @@ export default function CartPage() {
                 <span className="text-xs text-gray-400">
                   {formatPrice(item.price)} / piece
                 </span>
-                <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
                   <QuantityStepper
                     value={item.quantity}
                     onChange={(quantity) =>
@@ -131,7 +131,7 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6 lg:sticky lg:top-24">
             <h2 className="font-display text-xl font-bold text-brand-dark">
               Order Summary
             </h2>

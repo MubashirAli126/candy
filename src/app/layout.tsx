@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins, Baloo_2 } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
@@ -66,6 +66,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Capped, not locked — pinch-zoom stays available for accessibility.
+  maximumScale: 5,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -73,7 +80,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${poppins.variable} ${baloo.variable}`}>
-      <body className="font-sans">
+      <body className="overflow-x-hidden font-sans">
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
       </body>

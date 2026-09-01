@@ -64,7 +64,7 @@ export default async function HomePage() {
                 Explore categories
               </Link>
             </div>
-            <div className="mt-8 flex gap-6 text-sm text-white/60 sm:mt-10 sm:gap-8">
+            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4 text-sm text-white/60 sm:mt-10 sm:gap-x-8">
               <div>
                 <div className="font-display text-2xl font-bold text-white">
                   500+

@@ -170,7 +170,7 @@ export default function CheckoutPage() {
       <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-3 lg:gap-8">
         {/* Customer details */}
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
             <h2 className="mb-4 font-display text-xl font-bold text-brand-dark">
               Delivery details
             </h2>
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
 
         {/* Order summary */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6 lg:sticky lg:top-24">
             <h2 className="font-display text-xl font-bold text-brand-dark">
               Your order
             </h2>
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
                   key={`${i.productId}-${i.size ?? ""}`}
                   className="flex justify-between gap-2"
                 >
-                  <span className="text-gray-600">
+                  <span className="min-w-0 break-words text-gray-600">
                     {i.name}
                     {i.size ? ` (${i.size})` : ""} × {i.quantity}
                   </span>

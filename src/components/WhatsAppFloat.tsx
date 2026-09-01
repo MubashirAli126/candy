@@ -57,12 +57,12 @@ export default function WhatsAppFloat() {
   ];
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-5 sm:right-5">
       {open && (
         <div
           role="menu"
           aria-label="Contact us on WhatsApp"
-          className="w-72 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
+          className="w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
         >
           <div className="flex items-center gap-2 bg-[#25D366] px-4 py-3 text-white">
             <WhatsAppIcon className="h-6 w-6 fill-white" />
