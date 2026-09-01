@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/ProductForm";
-import { toStickerType } from "@/lib/types";
+import { toProductType } from "@/lib/types";
 import { productGallery } from "@/lib/utils";
 import { parseSizeOptions } from "@/lib/sizes";
 
@@ -50,7 +50,7 @@ export default async function EditProductPage({
           featured: product.featured,
           active: product.active,
           tags: product.tags ?? "",
-          stickerType: toStickerType(product.stickerType),
+          productType: toProductType(product.productType),
           customType: product.customType ?? "",
         }}
       />

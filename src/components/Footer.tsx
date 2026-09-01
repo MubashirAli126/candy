@@ -1,7 +1,6 @@
 import Logo from "./Logo";
-import { SITE_NAME, STORE } from "@/lib/seo";
-
-const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923001234567";
+import SocialLinks from "./SocialLinks";
+import { CONTACTS, SITE_NAME, STORE } from "@/lib/seo";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -11,10 +10,10 @@ export default function Footer() {
         <div className="col-span-2 lg:col-span-1">
           {/* No wrapper plate here — Logo carries its own logo-matched
               surface, so a white box would only add a second seam. */}
-          <Logo />
+          <Logo tone="dark" />
           <p className="mt-3 max-w-xs text-xs text-white/60 sm:mt-4 sm:text-sm">
-            Premium car, bike &amp; wall stickers. Custom designs, fast
-            delivery all across Pakistan. Chamka do apni dunya! ✨
+            Ladies 3 piece &amp; 2 piece suits and kurtis. Fresh seasonal
+            designs, premium fabric, fast delivery all across Pakistan. ✨
           </p>
         </div>
 
@@ -23,16 +22,18 @@ export default function Footer() {
             Get in touch
           </h3>
           <ul className="space-y-1.5 text-xs sm:space-y-3 sm:text-sm">
-            <li>
-              <a
-                href={`https://wa.me/${WHATSAPP}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-brand-orange"
-              >
-                <span aria-hidden>📱</span> WhatsApp us
-              </a>
-            </li>
+            {CONTACTS.map((c) => (
+              <li key={c.intl}>
+                <a
+                  href={`https://wa.me/${c.intl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 hover:text-brand-orange"
+                >
+                  <span aria-hidden>📱</span> {c.name} — {c.display}
+                </a>
+              </li>
+            ))}
             <li>
               <a
                 href={`mailto:${STORE.email}`}
@@ -41,8 +42,9 @@ export default function Footer() {
                 {STORE.email}
               </a>
             </li>
-            <li className="text-white/60">Karachi, Pakistan</li>
+            <li className="text-white/60">{STORE.address}</li>
           </ul>
+          <SocialLinks className="mt-4" tone="dark" />
         </div>
       </div>
 

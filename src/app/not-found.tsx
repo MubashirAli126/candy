@@ -8,7 +8,7 @@ export default function NotFound() {
         Page not found
       </h1>
       <p className="mt-2 text-gray-500">
-        Oops! This sticker seems to have peeled off. Let's get you back.
+        Oops! This page is out of stock. Let's get you back.
       </p>
       <Link
         href="/"

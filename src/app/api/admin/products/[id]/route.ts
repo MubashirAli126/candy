@@ -3,7 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { STICKER_TYPES } from "@/lib/types";
+import { PRODUCT_TYPES } from "@/lib/types";
 import { serializeGallery } from "@/lib/utils";
 import { MAX_IMAGES } from "@/lib/media";
 
@@ -24,7 +24,7 @@ const updateSchema = z.object({
   featured: z.boolean().optional(),
   active: z.boolean().optional(),
   tags: z.string().nullable().optional(),
-  stickerType: z.enum(STICKER_TYPES).optional(),
+  productType: z.enum(PRODUCT_TYPES).optional(),
   customType: z.string().max(40).nullable().optional(),
 });
 
@@ -69,18 +69,18 @@ export async function PATCH(
     data.images = serialized.images;
   }
 
-  // Keep stickerType and customType consistent: the free-text type only exists
+  // Keep productType and customType consistent: the free-text type only exists
   // for OTHER. Fall back to the stored type for partial updates that change one
   // field but not the other.
-  if (rest.stickerType !== undefined || rest.customType !== undefined) {
+  if (rest.productType !== undefined || rest.customType !== undefined) {
     const existing = await prisma.product.findUnique({
       where: { id: params.id },
-      select: { stickerType: true },
+      select: { productType: true },
     });
     if (!existing) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
-    const effectiveType = rest.stickerType ?? existing.stickerType;
+    const effectiveType = rest.productType ?? existing.productType;
     data.customType =
       effectiveType === "OTHER" ? rest.customType?.trim() || null : null;
   }

@@ -1,6 +1,6 @@
-# 🏷️ Asad Sticker & Auto Zone — Sticker E‑Commerce Store
+# 🍬 Candy — Ladies Clothing E‑Commerce Store
 
-Car, bike & wall stickers online store built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, **Prisma** and **PostgreSQL**. Includes a full **admin panel** to manage products and orders, and is fully **SEO‑optimized** and **responsive** (mobile, tablet, desktop).
+Ladies 3 piece suits, 2 piece suits and kurtis online store built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, **Prisma** and **PostgreSQL**. Includes a full **admin panel** to manage products and orders, and is fully **SEO‑optimized** and **responsive** (mobile, tablet, desktop).
 
 > _Chamka do apni dunya!_ ✨
 
@@ -82,7 +82,7 @@ A ready‑to‑use `.env` file is included for local development. **Change these
 
 ## 🖼️ Adding your real logo
 
-A placeholder logo is used for now (`public/logo.svg` and the `Logo` component).
+An inline SVG wordmark is used for now (see the `Logo` component) — the files in `public/` still belong to the previous brand.
 
 To use your own logo:
 1. Drop your logo file into the `public/` folder (e.g. `public/logo.png`).
@@ -90,7 +90,7 @@ To use your own logo:
    ```tsx
    import Image from "next/image";
    // ...inside the Link:
-   <Image src="/logo.png" alt="Asad Sticker & Auto Zone" width={160} height={40} priority />
+   <Image src="/logo.png" alt="Candy" width={160} height={40} priority />
    ```
 
 Product images can be **any image URL**, or a file placed in `public/` (referenced as `/yourfile.jpg`) — set via the admin product form.
@@ -163,4 +163,4 @@ The easiest host is **Vercel** (made by the Next.js team):
 
 ---
 
-Made with ❤️ in Pakistan for **Asad Sticker & Auto Zone**.
+Made with ❤️ in Pakistan for **Candy**.

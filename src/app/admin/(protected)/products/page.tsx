@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
-import StickerTypeBadge from "@/components/StickerTypeBadge";
+import ProductTypeBadge from "@/components/ProductTypeBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -72,8 +72,8 @@ export default async function AdminProductsPage() {
                       <span className="text-xs text-gray-500">
                         {p.category.name}
                       </span>
-                      <StickerTypeBadge
-                        stickerType={p.stickerType}
+                      <ProductTypeBadge
+                        productType={p.productType}
                         customType={p.customType}
                       />
                     </div>
@@ -137,8 +137,8 @@ export default async function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <StickerTypeBadge
-                        stickerType={p.stickerType}
+                      <ProductTypeBadge
+                        productType={p.productType}
                         customType={p.customType}
                       />
                     </td>

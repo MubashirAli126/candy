@@ -1,6 +1,6 @@
 import { prisma } from "./prisma";
 import type { ProductCardData } from "@/components/ProductCard";
-import type { StickerType } from "./types";
+import type { ProductType } from "./types";
 
 /** Map a Prisma product (with category) to the card shape used in listings. */
 export function toCardData(p: {
@@ -12,7 +12,7 @@ export function toCardData(p: {
   image: string;
   stock: number;
   size?: string | null;
-  stickerType?: string | null;
+  productType?: string | null;
   customType?: string | null;
   category?: { name: string; slug?: string } | null;
 }): ProductCardData {
@@ -25,7 +25,7 @@ export function toCardData(p: {
     image: p.image,
     stock: p.stock,
     size: p.size,
-    stickerType: p.stickerType,
+    productType: p.productType,
     customType: p.customType,
     categoryName: p.category?.name,
     categorySlug: p.category?.slug,
@@ -44,13 +44,13 @@ export async function getFeaturedProducts(limit = 8) {
 
 export async function getAllProducts(
   categorySlug?: string,
-  stickerType?: StickerType
+  productType?: ProductType
 ) {
   const products = await prisma.product.findMany({
     where: {
       active: true,
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
-      ...(stickerType ? { stickerType } : {}),
+      ...(productType ? { productType } : {}),
     },
     include: { category: true },
     orderBy: { createdAt: "desc" },
@@ -58,15 +58,15 @@ export async function getAllProducts(
   return products.map(toCardData);
 }
 
-/** How many active products exist per sticker type — powers the filter chips. */
-export async function getStickerTypeCounts(): Promise<Record<string, number>> {
+/** How many active products exist per product type — powers the filter chips. */
+export async function getProductTypeCounts(): Promise<Record<string, number>> {
   const grouped = await prisma.product.groupBy({
-    by: ["stickerType"],
+    by: ["productType"],
     where: { active: true },
     _count: { _all: true },
   });
   return Object.fromEntries(
-    grouped.map((g) => [g.stickerType, g._count._all])
+    grouped.map((g) => [g.productType, g._count._all])
   );
 }
 

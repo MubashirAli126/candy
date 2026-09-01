@@ -7,18 +7,43 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-export const SITE_NAME = "Asad Sticker & Auto Zone";
+export const SITE_NAME = "Candy";
 
 /** Short form for tight spots (badges, mobile titles, WhatsApp messages). */
-export const SITE_NAME_SHORT = "Asad Sticker Zone";
+export const SITE_NAME_SHORT = "Candy";
+
+/**
+ * Contact people from the business card. The first entry is the default
+ * WhatsApp / phone destination used across the site.
+ */
+export const CONTACTS = [
+  { name: "M Jameel", display: "0300-9297355", intl: "923009297355" },
+  { name: "M Zohaib", display: "0312-2970685", intl: "923122970685" },
+] as const;
+
+/** Facebook / Instagram / TikTok handle, exactly as printed on the card. */
+export const SOCIAL_HANDLE = "candypk.offcial";
+
+export const SOCIALS = {
+  facebook: `https://www.facebook.com/${SOCIAL_HANDLE}`,
+  instagram: `https://www.instagram.com/${SOCIAL_HANDLE}`,
+  tiktok: `https://www.tiktok.com/@${SOCIAL_HANDLE}`,
+} as const;
 
 export const STORE = {
   name: SITE_NAME,
-  legalName: "Asad Sticker & Auto Zone",
-  email: "hello@asadstickerautozone.com",
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923001234567",
+  legalName: "Candy Clothing",
+  /** Printed under the wordmark on the card. */
+  tagline: "Wholesale Ladies Garments Manufacturer",
+  email: "hello@candy.pk",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? CONTACTS[0].intl,
+  contacts: CONTACTS,
+  socials: SOCIALS,
+  street: "B-69, Ground Floor, Karim Center, Saddar",
   city: "Karachi",
   country: "PK",
+  /** Full one-line address for footers and contact cards. */
+  address: "B-69, Ground Floor, Karim Center, Saddar, Karachi",
   logo: `${SITE_URL}/logo.png`,
 } as const;
 
@@ -37,7 +62,7 @@ export function organizationSchema(): Record<string, unknown> {
     name: STORE.name,
     legalName: STORE.legalName,
     description:
-      "Premium car, bike and wall stickers online store in Pakistan. Custom vinyl designs with fast cash-on-delivery.",
+      "Ladies clothing store in Pakistan — 3 piece suits, 2 piece suits and kurtis. Fresh designs with fast cash-on-delivery.",
     url: SITE_URL,
     logo: STORE.logo,
     image: STORE.logo,
@@ -46,6 +71,7 @@ export function organizationSchema(): Record<string, unknown> {
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
+      streetAddress: STORE.street,
       addressCountry: STORE.country,
       addressLocality: STORE.city,
     },
@@ -53,11 +79,11 @@ export function organizationSchema(): Record<string, unknown> {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      telephone: `+${STORE.whatsapp}`,
+      telephone: CONTACTS.map((c) => `+${c.intl}`),
       email: STORE.email,
       availableLanguage: ["en", "ur"],
     },
-    sameAs: [] as string[],
+    sameAs: Object.values(SOCIALS) as string[],
   };
 }
 

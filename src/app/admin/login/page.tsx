@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
-                placeholder="admin@asadstickerautozone.com"
+                placeholder="admin@candy.pk"
               />
             </div>
             <div>

@@ -4,13 +4,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0e1b33;
-  /* Asad Sticker & Auto Zone brand tokens (logo-derived) */
-  --brand-navy: #12294d;
-  --brand-blue: #1e4a85;
-  --brand-orange: #e08a4a;
-  --brand-copper: #c4703a;
-  --brand-silver: #c3ccd6;
+  --foreground: #2b1020;
+  /* Candy brand tokens */
+  --brand-plum: #7a2350;
+  --brand-purple: #a03a73;
+  --brand-pink: #ee4c89;
+  --brand-rose: #ff7fa8;
+  --brand-blush: #ffd8e6;
 }
 
 * {
@@ -31,9 +31,9 @@ body {
 /* ──────────────────────────────────────────────────────────────
    Buttons — colours live here only, so restyling the whole site
    is a one-place change. Variants map to the logo:
-     .btn-primary → orange "AUTO ZONE" accent  (commerce actions)
-     .btn-navy    → navy shield                (brand / navigation)
-     .btn-outline → navy outline               (secondary on light)
+     .btn-primary → candy pink accent          (commerce actions)
+     .btn-navy    → deep plum                  (brand / navigation)
+     .btn-outline → plum outline               (secondary on light)
      .btn-ghost   → translucent white          (on dark surfaces)
    ────────────────────────────────────────────────────────────── */
 @layer components {
@@ -72,15 +72,15 @@ body {
   }
 }
 
-/* Utility: shiny animated gradient text — copper→orange sweep from the logo */
+/* Utility: shiny animated gradient text — candy pink → blush sweep */
 .text-shine {
   background: linear-gradient(
     90deg,
-    #c4703a 0%,
-    #e08a4a 25%,
-    #f5c79a 50%,
-    #e08a4a 75%,
-    #c4703a 100%
+    #c7326e 0%,
+    #ee4c89 25%,
+    #ffd8e6 50%,
+    #ee4c89 75%,
+    #c7326e 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -95,14 +95,14 @@ body {
   }
 }
 
-/* Utility: brushed-chrome text — matches the silver "ASAD" lettering.
-   Intended for dark navy surfaces only (invisible on white). */
+/* Utility: pearl text — a soft blush sheen for the "CANDY" wordmark.
+   Intended for dark plum surfaces only (invisible on white). */
 .text-chrome {
   background: linear-gradient(
     180deg,
     #ffffff 0%,
-    #e3e9ef 35%,
-    #9daab8 55%,
+    #ffe9f1 35%,
+    #e7c7d6 55%,
     #ffffff 100%
   );
   -webkit-background-clip: text;
@@ -161,6 +161,6 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #1e4a85;
+  outline: 2px solid #ee4c89;
   outline-offset: 2px;
 }

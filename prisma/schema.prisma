@@ -1,4 +1,4 @@
-// Asad Sticker & Auto Zone — Prisma schema (PostgreSQL / Neon)
+// Candy — Prisma schema (PostgreSQL / Neon)
 // Docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Sticker categories: car, bike, wall (extensible)
+// Product categories: 3 piece, 2 piece, kurti (extensible)
 model Category {
   id          String    @id @default(cuid())
   name        String
@@ -34,18 +34,18 @@ model Product {
   video       String? // optional product video URL / path
   // Sizes offered for this product, each with its own optional price, packed
   // into one free-text field so a new size never needs a migration. Format:
-  // "10x10 cm=250 | 12x20 cm=400" — parsed by src/lib/sizes.ts.
+  // "Small=2500 | Medium=2700 | Large=2900" — parsed by src/lib/sizes.ts.
   size        String?
   stock       Int      @default(0)
   featured    Boolean  @default(false)
   active      Boolean  @default(true)
   tags        String? // comma separated tags for search/SEO
 
-  // What kind of sticker this is. Kept as a String (not a native enum) so new
+  // What kind of outfit this is. Kept as a String (not a native enum) so new
   // types never need a DB migration — allowed values live in the app, see
-  // STICKER_TYPES in src/lib/types.ts: CAR | BIKE | WALL | OTHER
-  stickerType String  @default("OTHER")
-  // Free text used only when stickerType is OTHER, e.g. "Laptop", "Truck Art".
+  // PRODUCT_TYPES in src/lib/types.ts: THREE_PIECE | TWO_PIECE | KURTI | OTHER
+  productType String  @default("OTHER")
+  // Free text used only when productType is OTHER, e.g. "Dupatta", "Trouser".
   customType  String?
 
   categoryId String
@@ -58,7 +58,7 @@ model Product {
 
   @@index([categoryId])
   @@index([slug])
-  @@index([stickerType])
+  @@index([productType])
 }
 
 // NOTE: `status` is kept as a String (not a native enum) so allowed values stay
@@ -95,7 +95,7 @@ model OrderItem {
   productName String // snapshot of name at order time
   price       Float // snapshot of price at order time
   quantity    Int
-  size        String? // size chosen at order time, e.g. "10x10 cm"
+  size        String? // size chosen at order time, e.g. "Medium"
 
   @@index([orderId])
 }

@@ -10,20 +10,20 @@ const CATEGORY_META: Record<
   string,
   { blurb: string; gradient: string; emoji: string }
 > = {
-  car: {
-    blurb: "Racing stripes, body graphics & bumper stickers",
-    gradient: "from-brand-navy to-brand-copper",
-    emoji: "🚗",
+  "3-piece": {
+    blurb: "Shirt, trouser & dupatta — complete stitched suits",
+    gradient: "from-brand-plum to-brand-pink",
+    emoji: "👗",
   },
-  bike: {
-    blurb: "Tank wraps, helmet & reflective stickers",
-    gradient: "from-brand-night to-brand-blue",
-    emoji: "🏍️",
+  "2-piece": {
+    blurb: "Shirt & trouser sets for everyday elegance",
+    gradient: "from-brand-night to-brand-purple",
+    emoji: "🧵",
   },
-  wall: {
-    blurb: "Quotes, kids rooms & calligraphy decals",
-    gradient: "from-brand-navy via-brand-blue to-brand-steel",
-    emoji: "🖼️",
+  kurti: {
+    blurb: "Casual, formal & embroidered kurtis",
+    gradient: "from-brand-purple via-brand-pink to-brand-rose",
+    emoji: "👚",
   },
 };
 
@@ -43,22 +43,22 @@ export default async function HomePage() {
         <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:py-24 lg:px-8">
           <div>
             <h1 className="font-display text-[2rem] font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-              Chamka do apni <span className="text-shine">dunya</span> with
-              premium stickers
+              Sweeten your wardrobe with{" "}
+              <span className="text-shine">Candy</span> stitched suits
             </h1>
             <p className="mt-4 max-w-lg text-base text-white/70 sm:mt-5 sm:text-lg">
-              Car, bike &amp; wall stickers with weather-proof vinyl quality.
-              Custom designs, fast cash-on-delivery all across Pakistan.
+              Ladies 3 piece &amp; 2 piece suits and kurtis in premium fabric.
+              Fresh seasonal designs, fast cash-on-delivery all across Pakistan.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
               <Link
                 href="/products"
                 className="rounded-full bg-brand-gradient px-7 py-3.5 font-bold text-brand-dark shadow-brand transition-transform hover:scale-105"
               >
-                Shop all stickers
+                Shop all dresses
               </Link>
               <Link
-                href="/category/car"
+                href="/category/3-piece"
                 className="rounded-full border border-white/20 bg-white/5 px-7 py-3.5 font-bold text-white backdrop-blur transition-colors hover:bg-white/10"
               >
                 Explore categories
@@ -75,7 +75,7 @@ export default async function HomePage() {
                 <div className="font-display text-2xl font-bold text-white">
                   100%
                 </div>
-                Waterproof vinyl
+                Premium fabric
               </div>
               <div>
                 <div className="font-display text-2xl font-bold text-white">
@@ -89,8 +89,8 @@ export default async function HomePage() {
             <div className="relative mx-auto aspect-square max-w-md animate-float">
               <div className="absolute inset-0 rounded-[2.5rem] bg-brand-gradient blur-2xl opacity-40" />
               <Image
-                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
-                alt="Custom car with stickers"
+                src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"
+                alt="Ladies stitched suit collection"
                 fill
                 priority
                 sizes="(max-width: 1024px) 0px, 400px"
@@ -108,7 +108,7 @@ export default async function HomePage() {
             Shop by category
           </h2>
           <p className="mt-3 text-gray-500">
-            Whatever you want to decorate — we've got the sticker for it.
+            Whatever the occasion — we've got the outfit for it.
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -146,7 +146,7 @@ export default async function HomePage() {
             <h2 className="font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
               Bestsellers
             </h2>
-            <p className="mt-2 text-gray-500">Our most-loved sticker picks.</p>
+            <p className="mt-2 text-gray-500">Our most-loved seasonal picks.</p>
           </div>
           <Link
             href="/products"
@@ -181,23 +181,22 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* Our story — 15 years */}
+      {/* Our story */}
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-14 lg:px-8 lg:pb-16">
         <div className="overflow-hidden rounded-3xl bg-brand-dark px-6 py-10 text-white sm:px-10 sm:py-14">
           <div className="max-w-2xl">
             <span className="inline-block rounded-full bg-brand-gradient px-4 py-1 text-sm font-bold text-brand-dark">
-              15+ Years Strong
+              Stitched with care
             </span>
             <h2 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl">
-              From <span className="text-shine">Gul Plaza, Karachi</span> to all
+              From our <span className="text-shine">Karachi</span> studio to all
               of Pakistan
             </h2>
             <p className="mt-4 text-white/70">
-              We started at <strong className="text-white">Gul Plaza, Karachi</strong>,
-              where <strong className="text-white">{SITE_NAME_SHORT}</strong>{" "}
-              has been a household name for nearly 15 years. That same trusted
-              workshop is now online — same hands, same quality, just a tap
-              away.
+              <strong className="text-white">{SITE_NAME_SHORT}</strong> picks the
+              fabric, prints the design and stitches every suit in our own
+              Karachi studio — so the colour, the fit and the finish are ours to
+              answer for. Order online and it reaches you anywhere in Pakistan.
             </p>
             <Link
               href="/about"
@@ -206,7 +205,7 @@ export default async function HomePage() {
               Read our story
             </Link>
             <p className="mt-5 text-sm text-white/60">
-              Plus custom bikes &amp; cars for special events. 🎉
+              Plus custom stitching to your own measurements. 🎉
             </p>
           </div>
         </div>
@@ -217,8 +216,8 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 sm:gap-8 sm:px-6 lg:grid-cols-4 lg:px-8">
           {[
             { icon: "🚚", title: "Fast delivery", text: "Dispatched within 24 hours nationwide." },
-            { icon: "💧", title: "Waterproof vinyl", text: "Premium UV & weather-resistant material." },
-            { icon: "🎨", title: "Custom designs", text: "Send your idea, we'll make it a sticker." },
+            { icon: "🧵", title: "Premium fabric", text: "Lawn, linen & khaddar that keeps its colour." },
+            { icon: "📏", title: "Custom stitching", text: "Send your measurements, we'll stitch to fit." },
             { icon: "💵", title: "Cash on delivery", text: "Pay when it reaches your doorstep." },
           ].map((f) => (
             <div key={f.title} className="text-center">

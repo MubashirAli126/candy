@@ -1,8 +1,8 @@
 {
-  "name": "asad-sticker-auto-zone",
+  "name": "candy",
   "version": "1.0.0",
   "private": true,
-  "description": "Asad Sticker & Auto Zone - Car, Bike & Wall Stickers Online Store",
+  "description": "Candy - Ladies 3 Piece, 2 Piece Suits & Kurtis Online Store",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -11,7 +11,7 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:backfill-types": "tsx prisma/backfill-sticker-types.ts",
+    "db:backfill-types": "tsx prisma/backfill-product-types.ts",
     "db:studio": "prisma studio",
     "setup": "prisma db push && tsx prisma/seed.ts"
   },

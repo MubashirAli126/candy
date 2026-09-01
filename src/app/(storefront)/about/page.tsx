@@ -5,27 +5,22 @@ import { SITE_NAME, SITE_NAME_SHORT } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Asad Sticker & Auto Zone (Gul Plaza, Karachi) has been crafting premium stickers for 15+ years — bikes, cars, walls, and trusted fleet partners like Chhipa Ambulance, Police & Rangers. Nationwide delivery across Pakistan.",
+    "Candy is a Karachi-based ladies clothing label — stitched 3 piece suits, 2 piece suits and kurtis in premium lawn, linen, khaddar and organza. Nationwide cash-on-delivery across Pakistan.",
   alternates: { canonical: "/about" },
 };
 
-const CATEGORIES = [
-  { icon: "🏍️", label: "Bikes & Heavy Bikes" },
-  { icon: "🚲", label: "Cycles" },
-  { icon: "🚗", label: "Cars & Sports Cars" },
-  { icon: "🛏️", label: "Bedroom Walls" },
-  { icon: "🛋️", label: "Drawing Room Walls" },
-  { icon: "🍳", label: "Kitchen Walls" },
-  { icon: "🎉", label: "Special Event Builds" },
-  { icon: "✨", label: "Fully Custom Ideas" },
+const WHAT_WE_MAKE = [
+  { icon: "👗", label: "3 Piece Suits" },
+  { icon: "🧵", label: "2 Piece Suits" },
+  { icon: "👚", label: "Kurtis" },
+  { icon: "🪡", label: "Embroidered Formals" },
+  { icon: "🌸", label: "Printed Lawn" },
+  { icon: "🧥", label: "Winter Khaddar" },
+  { icon: "🧣", label: "Dupattas & Shawls" },
+  { icon: "📏", label: "Custom Stitching" },
 ];
 
-const CLIENTS = [
-  "Chhipa Ambulance",
-  "Ambulance Fleets",
-  "Police",
-  "Rangers",
-];
+const FABRICS = ["Lawn", "Cotton", "Linen", "Khaddar", "Chiffon", "Organza"];
 
 export default function AboutPage() {
   return (
@@ -35,29 +30,28 @@ export default function AboutPage() {
           About <span className="text-shine">{SITE_NAME}</span>
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-base text-gray-600 sm:mt-4 sm:text-lg">
-          We're on a mission to help Pakistan express itself — one shiny sticker
-          at a time. Chamka do apni dunya! ✨
+          Ladies clothing that feels as good as it looks — stitched, packed and
+          delivered from Karachi to your door. ✨
         </p>
       </header>
 
       <div className="mt-8 space-y-6 text-gray-700 sm:mt-12 sm:space-y-8">
         <p>
-          {SITE_NAME} started with a simple idea: high-quality, affordable
-          stickers that actually last. Whether you want to give your car a
-          sporty makeover, personalize your bike, or transform a plain wall into
-          something beautiful — we've got you covered.
+          {SITE_NAME} started with a simple idea: well-stitched everyday suits
+          that don&apos;t cost a fortune. Whether you need a light printed lawn
+          for a working day, a warm khaddar for winter, or an organza formal for
+          a family function — you&apos;ll find it here, ready to wear.
         </p>
         <p>
-          Every sticker we make uses <strong>premium weather-proof vinyl</strong>{" "}
-          that survives sun, rain and washing. Our designs are precision-cut,
-          bubble-free, and easy to apply. And if you have a custom idea, just
-          send it over — we love a good challenge.
+          Every piece uses <strong>premium, colour-fast fabric</strong> that
+          survives real washing, cut and stitched with a neat finish inside and
+          out. Prefer your own measurements? Send them over — we stitch to size.
         </p>
 
         <div className="grid gap-6 sm:grid-cols-3">
           {[
-            { icon: "🎨", title: "Custom designs", text: "Your idea, our vinyl." },
-            { icon: "💧", title: "Weatherproof", text: "Built to last for years." },
+            { icon: "📏", title: "Custom stitching", text: "Your measurements, our needle." },
+            { icon: "🧵", title: "Premium fabric", text: "Colour-fast, wash after wash." },
             { icon: "🚚", title: "Nationwide", text: "Fast COD delivery across PK." },
           ].map((f) => (
             <div
@@ -74,29 +68,25 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Our Story — the real one */}
+      {/* Our Story */}
       <section className="mt-12 overflow-hidden rounded-3xl bg-brand-dark p-6 text-white sm:mt-16 sm:p-10">
         <span className="inline-block rounded-full bg-brand-gradient px-4 py-1 text-sm font-bold text-brand-dark">
-          15+ Years Strong
+          Stitched with care
         </span>
         <h2 className="mt-4 font-display text-2xl font-extrabold sm:text-3xl">
-          From <span className="text-shine">Gul Plaza, Karachi</span> to all of
+          From our <span className="text-shine">Karachi</span> studio to all of
           Pakistan
         </h2>
         <div className="mt-4 space-y-4 text-gray-300">
           <p>
-            Our story doesn't start online — it starts at{" "}
-            <strong className="text-white">Gul Plaza, Karachi</strong>, where our
-            shop <strong className="text-white">{SITE_NAME_SHORT}</strong> has
-            been a household name for nearly{" "}
-            <strong className="text-white">15 years</strong>. Ask anyone around
-            for "Asad Sticker" and they'll point you straight to us.
+            <strong className="text-white">{SITE_NAME_SHORT}</strong> chooses the
+            fabric, picks the print and stitches every suit in our own Karachi
+            studio. Nothing is drop-shipped, so the colour, the fit and the
+            finish are ours to answer for.
           </p>
           <p>
-            <strong className="text-white">{SITE_NAME}</strong> is that same
-            trusted workshop, now online — the same hands, the same quality and
-            the same 15-year reputation, just a tap away wherever you are in
-            Pakistan.
+            Order online and it reaches you anywhere in Pakistan — pay when it
+            arrives at your doorstep.
           </p>
         </div>
       </section>
@@ -107,11 +97,10 @@ export default function AboutPage() {
           What We Make
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          If it has a surface, we can make it shine. Every type of sticker,
-          designed and cut in-house.
+          Everyday wear to occasion wear — designed, cut and stitched in-house.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {CATEGORIES.map((c) => (
+          {WHAT_WE_MAKE.map((c) => (
             <div
               key={c.label}
               className="flex flex-col items-center rounded-2xl border border-black/5 bg-white p-5 text-center shadow-card"
@@ -125,42 +114,43 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Trusted by */}
+      {/* Fabrics */}
       <section className="mt-12 rounded-3xl border border-black/5 bg-brand-mist p-6 sm:mt-16 sm:p-10">
         <h2 className="text-center font-display text-2xl font-extrabold text-brand-dark sm:text-3xl">
-          Trusted by Pakistan's Frontline
+          Fabrics We Work With
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-gray-600">
-          Our work isn't just for show. We're proud to be the sticker partner of
-          choice for the fleets and forces that keep the country moving.
+          Seasonal from the ground up — light and breathable for summer, warm and
+          soft for winter.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          {CLIENTS.map((client) => (
+          {FABRICS.map((fabric) => (
             <span
-              key={client}
+              key={fabric}
               className="rounded-full border border-brand-dark/10 bg-white px-5 py-2 font-semibold text-brand-dark shadow-card"
             >
-              {client}
+              {fabric}
             </span>
           ))}
         </div>
         <p className="mt-6 text-center text-sm text-gray-500">
-          Planning something big? We also build special custom bikes and cars for
-          events — ready when you are. 🎉
+          Planning a family function? We take bulk and matching-family orders
+          too. 🎉
         </p>
       </section>
 
-      {/* Installation & delivery */}
+      {/* Sizes & delivery */}
       <section className="mt-12 grid gap-6 sm:mt-16 sm:grid-cols-2">
         <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
-          <div className="text-4xl">🛠️</div>
+          <div className="text-4xl">📏</div>
           <h3 className="mt-3 font-display text-lg font-bold text-brand-dark">
-            Installation in Karachi
+            Sizes & Custom Fit
           </h3>
           <p className="mt-2 text-sm text-gray-600">
-            Want it fitted for you? We come to you anywhere in Karachi and apply
-            your stickers professionally. A small on-site fee applies depending
-            on your location — just ask us before you order.
+            Every product lists the sizes it is stitched in — Small through XL
+            on most designs. Need something outside that, or your exact
+            measurements? Message us before you order and we&apos;ll stitch to
+            size.
           </p>
         </div>
         <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
@@ -169,9 +159,8 @@ export default function AboutPage() {
             Delivery Across Pakistan
           </h3>
           <p className="mt-2 text-sm text-gray-600">
-            Outside Karachi? No problem. We deliver your stickers anywhere in
-            Pakistan. Application is quick and easy — you'll apply them yourself
-            with our simple, bubble-free vinyl.
+            Dispatched within 24 hours and delivered anywhere in Pakistan. Cash
+            on delivery — pay only when the parcel reaches you.
           </p>
         </div>
       </section>
@@ -181,7 +170,7 @@ export default function AboutPage() {
           href="/products"
           className="inline-block rounded-full bg-brand-gradient px-8 py-4 font-bold text-brand-dark shadow-brand"
         >
-          Explore our stickers
+          Explore our collection
         </Link>
       </div>
     </div>

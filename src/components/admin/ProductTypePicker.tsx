@@ -1,11 +1,11 @@
 "use client";
 
-import { STICKER_TYPE_OPTIONS, type StickerType } from "@/lib/types";
+import { PRODUCT_TYPE_OPTIONS, type ProductType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export interface StickerTypePickerProps {
-  value: StickerType;
-  onChange: (value: StickerType) => void;
+export interface ProductTypePickerProps {
+  value: ProductType;
+  onChange: (value: ProductType) => void;
   /** Free text shown only when "Other" is selected. */
   customType: string;
   onCustomTypeChange: (value: string) => void;
@@ -14,24 +14,24 @@ export interface StickerTypePickerProps {
 
 /**
  * Product type chooser shared by the quick-add and full product forms.
- * "Other" reveals a free-text field so the store can sell anything that isn't a
- * car / bike / wall sticker — other stickers (laptop, glass, truck art) as well
- * as non-sticker products (engine spray, tyres, polish...).
+ * "Other" reveals a free-text field so the shop can sell anything that isn't a
+ * 3 piece / 2 piece suit or a kurti — dupattas, trousers, shawls and other
+ * separates.
  */
-export default function StickerTypePicker({
+export default function ProductTypePicker({
   value,
   onChange,
   customType,
   onCustomTypeChange,
   label = "Product type",
-}: StickerTypePickerProps) {
+}: ProductTypePickerProps) {
   return (
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
         {label}
       </label>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {STICKER_TYPE_OPTIONS.map((option) => (
+        {PRODUCT_TYPE_OPTIONS.map((option) => (
           <button
             key={option.value}
             type="button"
@@ -45,7 +45,7 @@ export default function StickerTypePicker({
             )}
           >
             <span aria-hidden="true">{option.icon}</span>{" "}
-            {option.value === "OTHER" ? "Other" : option.label.split(" ")[0]}
+            {option.shortLabel}
           </button>
         ))}
       </div>
@@ -55,13 +55,13 @@ export default function StickerTypePicker({
             value={customType}
             onChange={(e) => onCustomTypeChange(e.target.value)}
             maxLength={40}
-            placeholder="What is it? e.g. Engine Spray, Tyre, Polish, Laptop Sticker"
+            placeholder="What is it? e.g. Dupatta, Trouser, Shawl, Unstitched Fabric"
             className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
           />
           <p className="mt-1 text-xs text-gray-400">
-            Anything that isn&apos;t a car, bike or wall sticker — other
-            stickers or non-sticker products like engine spray, tyres and
-            polish. Shown to customers exactly as typed.
+            Anything that isn&apos;t a 3 piece, 2 piece or kurti — dupattas,
+            trousers, shawls or unstitched fabric. Shown to customers exactly
+            as typed.
           </p>
         </div>
       )}

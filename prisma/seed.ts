@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import type { StickerType } from "../src/lib/types";
+import type { ProductType } from "../src/lib/types";
 
 const prisma = new PrismaClient();
 
@@ -11,25 +11,30 @@ interface SeedProduct {
   price: number;
   salePrice?: number;
   image: string;
+  /** Sizes with their own prices — see src/lib/sizes.ts for the format. */
+  size?: string;
   stock: number;
   featured: boolean;
   categoryId: string;
   tags: string;
-  stickerType?: StickerType;
+  productType?: ProductType;
   customType?: string;
 }
 
 // Placeholder images (Unsplash). Replace with your own product photos later.
 const IMG = {
-  car: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80",
-  bike: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-  wall: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&q=80",
-  racing: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
-  helmet: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?w=800&q=80",
+  suit: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80",
+  formal: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
+  kurti: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80",
+  casual: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&q=80",
+  fabric: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80",
 };
 
+/** Stitched sizes every suit is offered in, all at the product's base price. */
+const SUIT_SIZES = "Small, Medium, Large, XL";
+
 async function main() {
-  console.log("🌱 Seeding Asad Sticker & Auto Zone database...");
+  console.log("🌱 Seeding Candy database...");
 
   // ── Clean existing data ──
   await prisma.orderItem.deleteMany();
@@ -38,296 +43,255 @@ async function main() {
   await prisma.category.deleteMany();
 
   // ── Categories ──
-  const car = await prisma.category.create({
+  const threePiece = await prisma.category.create({
     data: {
-      name: "Car Stickers",
-      slug: "car",
+      name: "3 Piece Suits",
+      slug: "3-piece",
       description:
-        "Premium vinyl stickers and decals for your car — racing stripes, side graphics, bumper stickers and more.",
-      icon: "🚗",
+        "Complete stitched 3 piece suits — shirt, trouser and dupatta — in lawn, linen and khaddar for every season.",
+      icon: "👗",
     },
   });
 
-  const bike = await prisma.category.create({
+  const twoPiece = await prisma.category.create({
     data: {
-      name: "Bike Stickers",
-      slug: "bike",
+      name: "2 Piece Suits",
+      slug: "2-piece",
       description:
-        "Custom stickers and decals for motorcycles and bikes — tank graphics, helmet stickers, and body wraps.",
-      icon: "🏍️",
+        "Stitched 2 piece suits — shirt and trouser — light, easy and perfect for everyday wear.",
+      icon: "🧵",
     },
   });
 
-  const wall = await prisma.category.create({
+  const kurti = await prisma.category.create({
     data: {
-      name: "Wall Stickers",
-      slug: "wall",
+      name: "Kurtis",
+      slug: "kurti",
       description:
-        "Beautiful wall decals for home, kids rooms and offices — quotes, nature, cartoons and Islamic calligraphy.",
-      icon: "🖼️",
+        "Casual, formal and embroidered kurtis — pair them with your own trouser or jeans.",
+      icon: "👚",
     },
   });
 
-  // Catch-all category for anything that isn't a car, bike or wall sticker —
-  // other stickers as well as non-sticker products (engine spray, tyres,
-  // polish). Products created with type "Other" land here automatically.
+  // Catch-all category for anything that isn't a 3 piece, 2 piece or kurti —
+  // dupattas, trousers, shawls, unstitched fabric. Products created with type
+  // "Other" land here automatically.
   const others = await prisma.category.create({
     data: {
       name: "Other Items",
       slug: "others",
       description:
-        "Everything else — laptop, mobile, glass and custom stickers, plus bike and car accessories like engine spray, tyres and polish.",
+        "Everything else — dupattas, trousers, shawls and unstitched fabric to mix and match.",
       icon: "✨",
     },
   });
 
   // ── Products ──
-  // `stickerType` is derived from the category below, so only the "Other"
+  // `productType` is derived from the category below, so only the "Other"
   // products need to spell it out (along with their custom label).
   const products: SeedProduct[] = [
-    // Car
+    // 3 Piece
     {
-      name: "Racing Stripe Decal Set",
-      slug: "racing-stripe-decal-set",
+      name: "Embroidered Lawn 3 Piece — Rose Blush",
+      slug: "embroidered-lawn-3-piece-rose-blush",
       description:
-        "Bold dual racing stripes to give your car a sporty look. Made from premium weather-resistant vinyl that lasts for years. Easy to apply, bubble-free finish. Available in multiple colors.",
-      price: 1500,
-      salePrice: 1199,
-      image: IMG.racing,
-      stock: 50,
-      featured: true,
-      categoryId: car.id,
-      tags: "racing,stripe,car,vinyl,sports",
-    },
-    {
-      name: "Flame Accent Sticker Pack",
-      slug: "flame-accent-sticker-pack",
-      description:
-        "A bold set of flame-themed vinyl stickers for cars that want extra attitude. Weatherproof, easy to apply, and available in multiple colors.",
-      price: 1100,
-      salePrice: 899,
-      image: IMG.car,
-      stock: 35,
-      featured: true,
-      categoryId: car.id,
-      tags: "car,flame,accent,vinyl,custom",
-    },
-    {
-      name: "Side Body Graphics Kit",
-      slug: "side-body-graphics-kit",
-      description:
-        "Full side body vinyl graphics kit for a custom, aggressive look. UV-protected, fade-resistant, and removable without damaging paint.",
-      price: 3500,
-      image: IMG.car,
-      stock: 25,
-      featured: true,
-      categoryId: car.id,
-      tags: "car,body,graphics,custom,vinyl",
-    },
-    {
-      name: "Windshield Banner Sticker",
-      slug: "windshield-banner-sticker",
-      description:
-        "Stylish windshield sun strip banner. Customizable text available. Cut from durable outdoor vinyl.",
-      price: 800,
-      salePrice: 599,
-      image: IMG.car,
-      stock: 100,
-      featured: false,
-      categoryId: car.id,
-      tags: "car,windshield,banner,sunstrip",
-    },
-    {
-      name: "Funny Bumper Sticker Pack",
-      slug: "funny-bumper-sticker-pack",
-      description:
-        "Pack of 5 hilarious bumper stickers to add personality to your ride. Waterproof and scratch-resistant.",
-      price: 600,
-      image: IMG.car,
-      stock: 80,
-      featured: false,
-      categoryId: car.id,
-      tags: "car,bumper,funny,pack",
-    },
-    // Bike
-    {
-      name: "Fuel Tank Graphics Wrap",
-      slug: "fuel-tank-graphics-wrap",
-      description:
-        "Eye-catching fuel tank vinyl wrap for motorcycles. Precision-cut, heat-resistant, and made to fit smoothly on curved surfaces.",
-      price: 2200,
-      salePrice: 1799,
-      image: IMG.bike,
+        "Soft summer lawn 3 piece with an embroidered front, plain trouser and printed chiffon dupatta. Colour-fast, breathable and stitched for an easy fit.",
+      price: 5500,
+      salePrice: 4699,
+      image: IMG.suit,
+      size: SUIT_SIZES,
       stock: 40,
       featured: true,
-      categoryId: bike.id,
-      tags: "bike,motorcycle,tank,wrap,graphics",
+      categoryId: threePiece.id,
+      tags: "3 piece,lawn,embroidered,summer,dupatta",
     },
     {
-      name: "Helmet Sticker Bundle",
-      slug: "helmet-sticker-bundle",
+      name: "Chikankari 3 Piece — Ivory",
+      slug: "chikankari-3-piece-ivory",
       description:
-        "Cool helmet stickers bundle (10 pcs). Reflective options available for night visibility. Weatherproof and long-lasting.",
-      price: 500,
-      image: IMG.helmet,
-      stock: 120,
+        "Classic chikankari work on ivory cotton net, finished with a matching slip and organza dupatta. Light enough for day wear, dressy enough for an evening.",
+      price: 7900,
+      image: IMG.formal,
+      size: "Small=7900 | Medium=7900 | Large=8300 | XL=8600",
+      stock: 20,
       featured: true,
-      categoryId: bike.id,
-      tags: "bike,helmet,reflective,bundle",
+      categoryId: threePiece.id,
+      tags: "3 piece,chikankari,formal,cotton net,ivory",
     },
     {
-      name: "Rim & Wheel Stripe Stickers",
-      slug: "rim-wheel-stripe-stickers",
+      name: "Printed Khaddar 3 Piece — Winter Plum",
+      slug: "printed-khaddar-3-piece-winter-plum",
       description:
-        "Reflective rim stripe stickers for both wheels. Boost safety and style at night. Fits most bike wheel sizes.",
-      price: 700,
-      salePrice: 549,
-      image: IMG.bike,
-      stock: 90,
+        "Warm khaddar 3 piece in a deep plum print with a wool-blend shawl. Made for cooler evenings and winter days up north.",
+      price: 6200,
+      salePrice: 5299,
+      image: IMG.suit,
+      size: SUIT_SIZES,
+      stock: 30,
+      featured: true,
+      categoryId: threePiece.id,
+      tags: "3 piece,khaddar,winter,printed,shawl",
+    },
+    {
+      name: "Organza Formal 3 Piece — Candy Pink",
+      slug: "organza-formal-3-piece-candy-pink",
+      description:
+        "Party-ready organza 3 piece with sequin detailing on the neckline and sleeves, raw-silk trouser and a scalloped dupatta.",
+      price: 12500,
+      image: IMG.formal,
+      size: "Small=12500 | Medium=12500 | Large=13000 | XL=13500",
+      stock: 12,
       featured: false,
-      categoryId: bike.id,
-      tags: "bike,rim,wheel,reflective,stripe",
+      categoryId: threePiece.id,
+      tags: "3 piece,organza,formal,party,sequin",
     },
+    // 2 Piece
     {
-      name: "Custom Name Number Plate Sticker",
-      slug: "custom-name-number-plate-sticker",
+      name: "Cotton 2 Piece — Everyday Sage",
+      slug: "cotton-2-piece-everyday-sage",
       description:
-        "Personalized name/number stickers for your bike. Send us your text and we'll cut it in premium vinyl.",
-      price: 400,
-      image: IMG.bike,
-      stock: 200,
-      featured: false,
-      categoryId: bike.id,
-      tags: "bike,custom,name,number,personalized",
-    },
-    // Wall
-    {
-      name: "Motivational Quote Wall Decal",
-      slug: "motivational-quote-wall-decal",
-      description:
-        "Inspire your space with a beautiful motivational quote decal. Matte finish, removable, and leaves no residue. Perfect for offices and study rooms.",
-      price: 1200,
-      salePrice: 899,
-      image: IMG.wall,
+        "Simple stitched cotton 2 piece in a soft sage tone. Shirt and trouser only — pair it with any dupatta you already own.",
+      price: 3200,
+      salePrice: 2699,
+      image: IMG.casual,
+      size: SUIT_SIZES,
       stock: 60,
       featured: true,
-      categoryId: wall.id,
-      tags: "wall,quote,motivational,decal,office",
+      categoryId: twoPiece.id,
+      tags: "2 piece,cotton,casual,everyday,sage",
     },
     {
-      name: "Kids Room Cartoon Stickers",
-      slug: "kids-room-cartoon-stickers",
+      name: "Printed Lawn 2 Piece — Summer Daisy",
+      slug: "printed-lawn-2-piece-summer-daisy",
       description:
-        "Colorful cartoon wall stickers to brighten up your child's room. Safe, non-toxic, and easy to reposition.",
-      price: 1000,
-      image: IMG.wall,
-      stock: 70,
+        "All-over daisy print on fine lawn with a straight trouser. Light, airy and easy to wear right through summer.",
+      price: 3800,
+      image: IMG.casual,
+      size: SUIT_SIZES,
+      stock: 55,
       featured: true,
-      categoryId: wall.id,
-      tags: "wall,kids,cartoon,room,colorful",
+      categoryId: twoPiece.id,
+      tags: "2 piece,lawn,printed,summer,floral",
     },
     {
-      name: "Islamic Calligraphy Wall Art",
-      slug: "islamic-calligraphy-wall-art",
+      name: "Linen 2 Piece — Office Charcoal",
+      slug: "linen-2-piece-office-charcoal",
       description:
-        "Elegant Islamic calligraphy wall decal. Adds a spiritual, classy touch to any room. Premium matte black vinyl.",
-      price: 1800,
-      salePrice: 1499,
-      image: IMG.wall,
-      stock: 45,
-      featured: false,
-      categoryId: wall.id,
-      tags: "wall,islamic,calligraphy,art,decal",
-    },
-    {
-      name: "Nature Tree & Birds Decal",
-      slug: "nature-tree-birds-decal",
-      description:
-        "Large nature-themed tree and birds wall decal. Transforms living rooms and bedrooms. Easy DIY application.",
-      price: 1600,
-      image: IMG.wall,
+        "Crisp linen 2 piece in charcoal with a clean, minimal neckline. Holds its shape all day — made for work.",
+      price: 4500,
+      salePrice: 3999,
+      image: IMG.suit,
+      size: "Small=3999 | Medium=3999 | Large=4299 | XL=4499",
       stock: 35,
       featured: false,
-      categoryId: wall.id,
-      tags: "wall,nature,tree,birds,decal",
+      categoryId: twoPiece.id,
+      tags: "2 piece,linen,office,formal,charcoal",
     },
-    // Other — anything that isn't a car, bike or wall sticker.
+    // Kurti
     {
-      name: "Laptop Sticker Pack",
-      slug: "laptop-sticker-pack",
+      name: "Embroidered Kurti — Blush Bloom",
+      slug: "embroidered-kurti-blush-bloom",
       description:
-        "Pack of 15 die-cut laptop stickers — tech, gaming and minimal designs. Residue-free vinyl that peels off cleanly.",
-      price: 650,
-      salePrice: 499,
-      image: IMG.wall,
-      stock: 150,
+        "A-line embroidered kurti in blush with thread work across the front panel. Wear it with a trouser, tights or jeans.",
+      price: 2600,
+      salePrice: 2199,
+      image: IMG.kurti,
+      size: SUIT_SIZES,
+      stock: 80,
+      featured: true,
+      categoryId: kurti.id,
+      tags: "kurti,embroidered,casual,blush,a-line",
+    },
+    {
+      name: "Straight Cut Kurti — Plain White",
+      slug: "straight-cut-kurti-plain-white",
+      description:
+        "The everyday white kurti — straight cut, side slits and a plain round neck. Cotton that survives daily washing.",
+      price: 1900,
+      image: IMG.kurti,
+      size: SUIT_SIZES,
+      stock: 100,
+      featured: true,
+      categoryId: kurti.id,
+      tags: "kurti,white,cotton,basic,straight cut",
+    },
+    {
+      name: "Frock Style Kurti — Festive Maroon",
+      slug: "frock-style-kurti-festive-maroon",
+      description:
+        "Flared frock-style kurti in festive maroon with gota detailing on the sleeves. Perfect for mehndi and family functions.",
+      price: 4200,
+      salePrice: 3599,
+      image: IMG.kurti,
+      size: "Small=3599 | Medium=3599 | Large=3899 | XL=4099",
+      stock: 25,
+      featured: false,
+      categoryId: kurti.id,
+      tags: "kurti,frock,festive,maroon,gota",
+    },
+    // Other — anything that isn't a 3 piece, 2 piece or kurti.
+    {
+      name: "Chiffon Dupatta — Printed Pastel",
+      slug: "chiffon-dupatta-printed-pastel",
+      description:
+        "Lightweight chiffon dupatta in a pastel print with finished edges. Pairs with any 2 piece suit or kurti.",
+      price: 1400,
+      salePrice: 1099,
+      image: IMG.fabric,
+      stock: 90,
       featured: true,
       categoryId: others.id,
-      stickerType: "OTHER",
-      customType: "Laptop",
-      tags: "laptop,pack,diecut,tech,gaming",
+      productType: "OTHER",
+      customType: "Dupatta",
+      tags: "dupatta,chiffon,printed,pastel,accessory",
     },
     {
-      name: "Truck Art Panel Sticker",
-      slug: "truck-art-panel-sticker",
+      name: "Cotton Trouser — Straight Fit",
+      slug: "cotton-trouser-straight-fit",
       description:
-        "Traditional Pakistani truck art panel in premium vinyl. Vivid colors, fully weatherproof, made to survive the road.",
-      price: 2500,
-      image: IMG.car,
-      stock: 30,
-      featured: false,
-      categoryId: others.id,
-      stickerType: "OTHER",
-      customType: "Truck Art",
-      tags: "truck,art,panel,traditional,pakistani",
-    },
-    // Other also covers non-sticker products — accessories and care items.
-    {
-      name: "Bike Engine Spray Paint",
-      slug: "bike-engine-spray-paint",
-      description:
-        "High-temperature engine spray paint for bikes. Heat-resistant finish that resists rust, oil and fading.",
+        "Plain stitched cotton trouser with a straight fit and elasticated back. A basic worth keeping two of.",
       price: 1200,
-      salePrice: 950,
-      image: IMG.bike,
-      stock: 60,
+      image: IMG.fabric,
+      size: SUIT_SIZES,
+      stock: 120,
       featured: false,
       categoryId: others.id,
-      stickerType: "OTHER",
-      customType: "Engine Spray",
-      tags: "bike,engine,spray,paint,accessory",
+      productType: "OTHER",
+      customType: "Trouser",
+      tags: "trouser,cotton,basic,straight,stitched",
     },
     {
-      name: "Tyre Shine & Polish",
-      slug: "tyre-shine-polish",
+      name: "Wool Blend Shawl — Deep Plum",
+      slug: "wool-blend-shawl-deep-plum",
       description:
-        "Deep-black tyre shine for bikes and cars. Non-greasy formula that restores colour and repels dust.",
-      price: 850,
-      image: IMG.car,
-      stock: 80,
+        "Soft wool-blend shawl in deep plum with a self-textured border. Warm without the weight.",
+      price: 2800,
+      salePrice: 2399,
+      image: IMG.fabric,
+      stock: 40,
       featured: false,
       categoryId: others.id,
-      stickerType: "OTHER",
-      customType: "Tyre Care",
-      tags: "tyre,polish,shine,care,accessory",
+      productType: "OTHER",
+      customType: "Shawl",
+      tags: "shawl,wool,winter,plum,accessory",
     },
   ];
 
-  // Sticker type mirrors the category unless the product states its own.
-  const typeByCategoryId: Record<string, StickerType> = {
-    [car.id]: "CAR",
-    [bike.id]: "BIKE",
-    [wall.id]: "WALL",
+  // Product type mirrors the category unless the product states its own.
+  const typeByCategoryId: Record<string, ProductType> = {
+    [threePiece.id]: "THREE_PIECE",
+    [twoPiece.id]: "TWO_PIECE",
+    [kurti.id]: "KURTI",
     [others.id]: "OTHER",
   };
 
   for (const p of products) {
-    const stickerType = p.stickerType ?? typeByCategoryId[p.categoryId];
+    const productType = p.productType ?? typeByCategoryId[p.categoryId];
     await prisma.product.create({
       data: {
         ...p,
-        stickerType,
-        customType: stickerType === "OTHER" ? p.customType ?? null : null,
+        productType,
+        customType: productType === "OTHER" ? p.customType ?? null : null,
       },
     });
   }
@@ -337,10 +301,10 @@ async function main() {
   if (sampleProduct) {
     await prisma.order.create({
       data: {
-        orderNumber: "CP-2026-0001",
-        customerName: "Ali Khan",
+        orderNumber: "CN-2026-0001",
+        customerName: "Ayesha Khan",
         phone: "03001234567",
-        email: "ali@example.com",
+        email: "ayesha@example.com",
         address: "House 12, Street 5, Gulshan-e-Iqbal",
         city: "Karachi",
         notes: "Please deliver in the evening.",

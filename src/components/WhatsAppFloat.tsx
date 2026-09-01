@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
-import { SITE_NAME_SHORT } from "@/lib/seo";
+import { SITE_NAME_SHORT, STORE } from "@/lib/seo";
 
-const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923001234567";
+const WHATSAPP = STORE.whatsapp;
 
 function waLink(text: string) {
   return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
@@ -30,7 +30,7 @@ export default function WhatsAppFloat() {
               `• ${i.name}${i.size ? ` (${i.size})` : ""} x${i.quantity}`
           )
           .join("\n")}`
-      : `Hi ${SITE_NAME_SHORT}! I would like to order some stickers.`;
+      : `Hi ${SITE_NAME_SHORT}! I would like to order some dresses.`;
 
   const options = [
     {
@@ -44,15 +44,15 @@ export default function WhatsAppFloat() {
     },
     {
       key: "custom",
-      label: "Custom design",
-      subtitle: "Get your own sticker designed",
-      text: `Hi ${SITE_NAME_SHORT}! I would like a custom sticker design. Here is what I have in mind:`,
+      label: "Custom stitching",
+      subtitle: "Get an outfit made to your measurements",
+      text: `Hi ${SITE_NAME_SHORT}! I would like a custom stitched outfit. Here is what I have in mind:`,
     },
     {
       key: "query",
       label: "Ask a question",
-      subtitle: "Sizes, pricing, delivery, anything",
-      text: `Hi ${SITE_NAME_SHORT}! I have a question about your stickers.`,
+      subtitle: "Sizes, fabric, pricing, delivery — anything",
+      text: `Hi ${SITE_NAME_SHORT}! I have a question about your dresses.`,
     },
   ];
 

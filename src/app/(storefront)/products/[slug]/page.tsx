@@ -5,7 +5,7 @@ import AddToCartForm from "@/components/AddToCartForm";
 import ProductCard from "@/components/ProductCard";
 import ProductGallery from "@/components/ProductGallery";
 import JsonLd from "@/components/JsonLd";
-import StickerTypeBadge from "@/components/StickerTypeBadge";
+import ProductTypeBadge from "@/components/ProductTypeBadge";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
 import {
   formatPrice,
@@ -16,7 +16,7 @@ import {
 import { hasSizePrices, parseSizeOptions, sizePriceRange } from "@/lib/sizes";
 import { BULK_DISCOUNT_PERCENT, BULK_MIN_QUANTITY } from "@/lib/pricing";
 import { breadcrumbSchema, productSchema } from "@/lib/seo";
-import { mirrorsStickerType } from "@/lib/types";
+import { mirrorsProductType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -117,7 +117,7 @@ export default async function ProductPage({
           {/* The breadcrumb above and the type badge below already name the
               category when it mirrors the product type — don't say it a third
               time. */}
-          {!mirrorsStickerType(product.category.slug, product.stickerType) && (
+          {!mirrorsProductType(product.category.slug, product.productType) && (
             <Link
               href={`/category/${product.category.slug}`}
               className="text-sm font-semibold uppercase tracking-wide text-brand-purple"
@@ -130,9 +130,9 @@ export default async function ProductPage({
           </h1>
 
           <div className="mt-3">
-            <Link href={`/products?type=${product.stickerType}`}>
-              <StickerTypeBadge
-                stickerType={product.stickerType}
+            <Link href={`/products?type=${product.productType}`}>
+              <ProductTypeBadge
+                productType={product.productType}
                 customType={product.customType}
                 size="md"
                 className="transition-colors hover:bg-brand-purple/20"
@@ -181,8 +181,8 @@ export default async function ProductPage({
           </div>
 
           <ul className="mt-8 grid grid-cols-2 gap-3 text-sm text-gray-600">
-            <li className="flex items-center gap-2">💧 Waterproof vinyl</li>
-            <li className="flex items-center gap-2">☀️ UV-resistant</li>
+            <li className="flex items-center gap-2">🧵 Premium fabric</li>
+            <li className="flex items-center gap-2">📏 Custom stitching</li>
             <li className="flex items-center gap-2">🚚 24h dispatch</li>
             <li className="flex items-center gap-2">💵 Cash on delivery</li>
           </ul>

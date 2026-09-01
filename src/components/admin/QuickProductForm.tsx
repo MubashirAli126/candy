@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
-import StickerTypePicker from "./StickerTypePicker";
+import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
-import type { StickerType } from "@/lib/types";
+import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
 
 /**
  * Minimal "Add product" form — only the things an admin must decide:
- * name, sticker type, price, sizes (each with its own price) and a picture.
+ * name, product type, price, sizes (each with its own price) and a picture.
  * Everything else (description, category, stock, tags, flags) is auto-filled
  * server-side.
  */
@@ -22,7 +22,7 @@ export default function QuickProductForm() {
   const [sizes, setSizes] = useState<SizeOption[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [video, setVideo] = useState<string | null>(null);
-  const [stickerType, setStickerType] = useState<StickerType>("CAR");
+  const [productType, setProductType] = useState<ProductType>("THREE_PIECE");
   const [customType, setCustomType] = useState("");
 
   const [uploading, setUploading] = useState(false);
@@ -34,8 +34,8 @@ export default function QuickProductForm() {
     setError(null);
 
     if (!name.trim()) return setError("Please enter a product name.");
-    if (stickerType === "OTHER" && !customType.trim()) {
-      return setError("Please type what kind of sticker this is.");
+    if (productType === "OTHER" && !customType.trim()) {
+      return setError("Please type what kind of item this is.");
     }
     const serializedSizes = serializeSizeOptions(sizes);
     if (!serializedSizes) return setError("Please enter at least one size.");
@@ -53,8 +53,8 @@ export default function QuickProductForm() {
           size: serializedSizes,
           images,
           video,
-          stickerType,
-          customType: stickerType === "OTHER" ? customType.trim() : null,
+          productType,
+          customType: productType === "OTHER" ? customType.trim() : null,
         }),
       });
       const data = await res.json();
@@ -87,10 +87,10 @@ export default function QuickProductForm() {
         />
       </div>
 
-      {/* Sticker type */}
-      <StickerTypePicker
-        value={stickerType}
-        onChange={setStickerType}
+      {/* Product type */}
+      <ProductTypePicker
+        value={productType}
+        onChange={setProductType}
         customType={customType}
         onCustomTypeChange={setCustomType}
       />

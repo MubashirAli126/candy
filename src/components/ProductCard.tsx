@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice, discountPercent } from "@/lib/utils";
-import { mirrorsStickerType } from "@/lib/types";
+import { mirrorsProductType } from "@/lib/types";
 import { hasSizePrices, parseSizeOptions, sizePriceRange } from "@/lib/sizes";
 import QuickAddButton from "./QuickAddButton";
-import StickerTypeBadge from "./StickerTypeBadge";
+import ProductTypeBadge from "./ProductTypeBadge";
 
 export interface ProductCardData {
   id: string;
@@ -16,7 +16,7 @@ export interface ProductCardData {
   stock: number;
   /** Raw sizes column — carries the per-size prices (see @/lib/sizes). */
   size?: string | null;
-  stickerType?: string | null;
+  productType?: string | null;
   customType?: string | null;
   categoryName?: string;
   categorySlug?: string;
@@ -32,11 +32,11 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   const sizeOptions = parseSizeOptions(product.size);
   const sizePriced = hasSizePrices(sizeOptions);
   const { min: minPrice } = sizePriceRange(effectivePrice, sizeOptions);
-  // "Car Stickers" next to a "Car Sticker" badge is the same word twice — show
-  // the category only when it adds something the type badge doesn't.
+  // "Kurtis" next to a "Kurti" badge is the same word twice — show the
+  // category only when it adds something the type badge doesn't.
   const showCategory =
     Boolean(product.categoryName) &&
-    !mirrorsStickerType(product.categorySlug, product.stickerType);
+    !mirrorsProductType(product.categorySlug, product.productType);
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-brand">
@@ -70,9 +70,9 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
               {product.categoryName}
             </span>
           )}
-          {product.stickerType && (
-            <StickerTypeBadge
-              stickerType={product.stickerType}
+          {product.productType && (
+            <ProductTypeBadge
+              productType={product.productType}
               customType={product.customType}
             />
           )}

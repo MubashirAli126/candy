@@ -5,21 +5,21 @@ import JsonLd from "@/components/JsonLd";
 import {
   getAllProducts,
   getCategories,
-  getStickerTypeCounts,
+  getProductTypeCounts,
 } from "@/lib/data";
 import { itemListSchema, SITE_NAME } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import {
-  STICKER_TYPE_OPTIONS,
-  isStickerType,
-  mirrorsStickerType,
+  PRODUCT_TYPE_OPTIONS,
+  isProductType,
+  mirrorsProductType,
 } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "All Items",
-  description: `Browse all car, bike and wall stickers at ${SITE_NAME}. Premium vinyl, custom designs, cash on delivery across Pakistan.`,
+  description: `Browse every ladies 3 piece, 2 piece suit and kurti at ${SITE_NAME}. Premium fabric, fresh designs, cash on delivery across Pakistan.`,
   alternates: { canonical: "/products" },
 };
 
@@ -42,21 +42,21 @@ export default async function ProductsPage({
 }) {
   const activeCat = searchParams.category;
   // Ignore an unknown ?type= rather than 404ing — the filter is a convenience.
-  const activeType = isStickerType(searchParams.type)
+  const activeType = isProductType(searchParams.type)
     ? searchParams.type
     : undefined;
 
   const [products, allCategories, typeCounts] = await Promise.all([
     getAllProducts(activeCat, activeType),
     getCategories(),
-    getStickerTypeCounts(),
+    getProductTypeCounts(),
   ]);
 
-  // Car / Bike / Wall / Other already have a type chip — showing their
+  // 3 Piece / 2 Piece / Kurti / Other already have a type chip — showing their
   // categories too would repeat the same names. Keep only the extra ones (and
   // whichever category is currently active, so the filter stays visible).
   const categories = allCategories.filter(
-    (c) => !mirrorsStickerType(c.slug) || c.slug === activeCat
+    (c) => !mirrorsProductType(c.slug) || c.slug === activeCat
   );
 
   return (
@@ -71,7 +71,7 @@ export default async function ProductsPage({
         </p>
       </header>
 
-      {/* Single combined filter row — sticker types and categories together */}
+      {/* Single combined filter row — product types and categories together */}
       <div className="mb-6 sm:mb-8">
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
           <Link
@@ -82,7 +82,7 @@ export default async function ProductsPage({
           >
             All Items
           </Link>
-          {STICKER_TYPE_OPTIONS.map((option) => {
+          {PRODUCT_TYPE_OPTIONS.map((option) => {
             const count = typeCounts[option.value] ?? 0;
             return (
               <Link
@@ -92,7 +92,7 @@ export default async function ProductsPage({
                   ? "bg-brand-purple text-white"
                   : "bg-gray-100 text-brand-dark hover:bg-gray-200")}
               >
-                <span aria-hidden="true">{option.icon}</span> {option.label}
+                <span aria-hidden="true">{option.icon}</span> {option.shortLabel}
                 {count > 0 && (
                   <span className="ml-1 text-xs opacity-70">({count})</span>
                 )}

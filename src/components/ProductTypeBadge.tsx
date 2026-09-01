@@ -1,8 +1,8 @@
-import { stickerTypeIcon, stickerTypeLabel } from "@/lib/types";
+import { productTypeIcon, productTypeLabel } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export interface StickerTypeBadgeProps {
-  stickerType: string | null | undefined;
+export interface ProductTypeBadgeProps {
+  productType: string | null | undefined;
   customType?: string | null;
   className?: string;
   /** "sm" for product cards and tables, "md" for the product detail page. */
@@ -10,15 +10,15 @@ export interface StickerTypeBadgeProps {
 }
 
 /**
- * Small pill showing what kind of sticker a product is (car / bike / wall, or
- * the admin's own label when the type is "Other").
+ * Small pill showing what kind of outfit a product is (3 piece / 2 piece /
+ * kurti, or the admin's own label when the type is "Other").
  */
-export default function StickerTypeBadge({
-  stickerType,
+export default function ProductTypeBadge({
+  productType,
   customType,
   className,
   size = "sm",
-}: StickerTypeBadgeProps) {
+}: ProductTypeBadgeProps) {
   return (
     <span
       className={cn(
@@ -27,8 +27,8 @@ export default function StickerTypeBadge({
         className
       )}
     >
-      <span aria-hidden="true">{stickerTypeIcon(stickerType)}</span>
-      {stickerTypeLabel(stickerType, customType)}
+      <span aria-hidden="true">{productTypeIcon(productType)}</span>
+      {productTypeLabel(productType, customType)}
     </span>
   );
 }

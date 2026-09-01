@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
-import StickerTypePicker from "./StickerTypePicker";
+import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
-import type { StickerType } from "@/lib/types";
+import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
 
 interface Category {
@@ -29,8 +29,8 @@ export interface ProductFormValues {
   featured: boolean;
   active: boolean;
   tags: string;
-  stickerType: StickerType;
-  /** Free text describing the type — only used when stickerType is OTHER. */
+  productType: ProductType;
+  /** Free text describing the type — only used when productType is OTHER. */
   customType: string;
 }
 
@@ -58,7 +58,7 @@ export default function ProductForm({
       featured: false,
       active: true,
       tags: "",
-      stickerType: "CAR",
+      productType: "THREE_PIECE",
       customType: "",
     }
   );
@@ -89,8 +89,8 @@ export default function ProductForm({
       setError("Price must be greater than 0.");
       return;
     }
-    if (values.stickerType === "OTHER" && !values.customType.trim()) {
-      setError("Please type what kind of sticker this is.");
+    if (values.productType === "OTHER" && !values.customType.trim()) {
+      setError("Please type what kind of item this is.");
       return;
     }
 
@@ -109,9 +109,9 @@ export default function ProductForm({
         featured: values.featured,
         active: values.active,
         tags: values.tags || undefined,
-        stickerType: values.stickerType,
+        productType: values.productType,
         customType:
-          values.stickerType === "OTHER" ? values.customType.trim() : null,
+          values.productType === "OTHER" ? values.customType.trim() : null,
       };
 
       const url = isEdit
@@ -162,7 +162,7 @@ export default function ProductForm({
               label="Tags (comma separated, for search/SEO)"
               value={values.tags}
               onChange={(v) => set("tags", v)}
-              placeholder="car, racing, vinyl"
+              placeholder="lawn, embroidered, summer"
             />
           </div>
         </div>
@@ -214,9 +214,9 @@ export default function ProductForm({
           </select>
 
           <div className="mt-4">
-            <StickerTypePicker
-              value={values.stickerType}
-              onChange={(v) => set("stickerType", v)}
+            <ProductTypePicker
+              value={values.productType}
+              onChange={(v) => set("productType", v)}
               customType={values.customType}
               onCustomTypeChange={(v) => set("customType", v)}
             />

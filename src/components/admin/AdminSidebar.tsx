@@ -59,10 +59,10 @@ export default function AdminSidebar({ email }: { email: string }) {
           <div className="mb-6 flex items-start justify-between px-2 pt-2">
             <div>
               <span className="font-display text-lg font-extrabold text-brand-dark">
-                ASAD
+                CANDY
                 <span className="bg-brand-gradient bg-clip-text text-transparent">
                   {" "}
-                  Sticker Zone
+                  Ladies Clothing
                 </span>
               </span>
               <p className="text-xs text-gray-400">Admin Panel</p>

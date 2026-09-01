@@ -13,7 +13,7 @@ import Link from "next/link";
 import type { CartItem } from "@/lib/types";
 import { cartTotals } from "@/lib/pricing";
 
-const STORAGE_KEY = "asad_sticker_zone_cart";
+const STORAGE_KEY = "candy_cart";
 /** Pre-rebrand key — read once so existing shoppers don't lose their cart. */
 const LEGACY_STORAGE_KEY = "chammak_patti_cart";
 

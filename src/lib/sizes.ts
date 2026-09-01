@@ -1,11 +1,11 @@
 // Sizes and their prices — one size can cost more than another, e.g. a
-// "10x10 cm" sticker at Rs 250 and the same design at "12x20 cm" for Rs 400.
+// "Medium" kurti at Rs 2500 and the same design in "XL" for Rs 2900.
 //
 // Both live in the single free-text column `Product.size`, so selling a new size
 // never needs a DB migration. Each entry is `label=price`, entries separated by
 // "|", "," or a newline:
 //
-//   "10x10 cm=250 | 12x20 cm=400"
+//   "Small=2500 | Medium=2700 | Large=2900"
 //
 // The price part is optional: older products that only list sizes
 // ("Small, Medium, Large") keep working and those sizes simply cost the
@@ -15,7 +15,7 @@
 
 /** One size an admin offers for a product, with its own price. */
 export interface SizeOption {
-  /** Shown to buyers exactly as typed, e.g. "10x10 cm". */
+  /** Shown to buyers exactly as typed, e.g. "Medium" or "38". */
   label: string;
   /** Price for this size in PKR; null means "use the product's base price". */
   price: number | null;

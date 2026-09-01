@@ -11,8 +11,9 @@ import {
   lineTotal,
 } from "@/lib/pricing";
 import type { CheckoutForm } from "@/lib/types";
+import { STORE } from "@/lib/seo";
 
-const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923001234567";
+const WHATSAPP = STORE.whatsapp;
 
 export default function CheckoutPage() {
   const { items, itemsTotal, discount, subtotal, shipping, total, clear } =
@@ -154,7 +155,7 @@ export default function CheckoutPage() {
           href="/products"
           className="mt-6 inline-block rounded-full bg-brand-gradient px-7 py-3.5 font-bold text-brand-dark shadow-brand"
         >
-          Shop stickers
+          Shop dresses
         </Link>
       </div>
     );
