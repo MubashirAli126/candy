@@ -53,7 +53,7 @@ export default async function AdminProductsPage() {
                       <span className="font-semibold text-brand-dark">
                         {p.name}
                         {p.featured && (
-                          <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-[10px] font-bold text-brand-dark">
+                          <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-xs font-bold text-brand-dark">
                             ★ Featured
                           </span>
                         )}
@@ -129,7 +129,7 @@ export default async function AdminProductsPage() {
                         <span className="font-semibold text-brand-dark">
                           {p.name}
                           {p.featured && (
-                            <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-[10px] font-bold text-brand-dark">
+                            <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-xs font-bold text-brand-dark">
                               ★ Featured
                             </span>
                           )}

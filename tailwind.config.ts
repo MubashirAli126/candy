@@ -45,6 +45,14 @@ const config: Config = {
           magenta: "#C7326E",
         },
       },
+      // The stock Tailwind ramp bottoms out at 12px/14px, which reads as fine
+      // print on a phone. Lift the small end — every text-xs / text-sm on the
+      // site moves with it, so nothing has to be bumped one class at a time.
+      fontSize: {
+        xs: ["0.8125rem", { lineHeight: "1.125rem" }], // 13px
+        sm: ["0.9375rem", { lineHeight: "1.375rem" }], // 15px
+        base: ["1.0625rem", { lineHeight: "1.625rem" }], // 17px
+      },
       fontFamily: {
         sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
         display: ["var(--font-baloo)", "system-ui", "sans-serif"],

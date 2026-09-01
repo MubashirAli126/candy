@@ -31,11 +31,11 @@ export default function Logo({
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center gap-2.5 ${className}`}
+      className={`group inline-flex min-w-0 items-center gap-2 sm:gap-2.5 ${className}`}
       aria-label={`${SITE_NAME} — Home`}
     >
-      <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-full bg-white shadow-card ring-1 ring-black/5 transition-transform group-hover:scale-105">
-        <svg viewBox="0 0 40 40" className="h-12 w-12" aria-hidden="true">
+      <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white shadow-card ring-1 ring-black/5 transition-transform group-hover:scale-105 sm:h-12 sm:w-12">
+        <svg viewBox="0 0 40 40" className="h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true">
           <circle cx="20" cy="20" r="20" fill="#FFFFFF" />
           {DOTS.map((d, i) => (
             <circle key={i} {...d} />
@@ -48,12 +48,12 @@ export default function Logo({
           />
         </svg>
       </span>
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-3xl font-extrabold lowercase tracking-tight text-brand-logoRed">
+      <span className="flex min-w-0 flex-col leading-none">
+        <span className="font-display text-2xl font-extrabold lowercase tracking-tight text-brand-logoRed sm:text-3xl">
           candy
         </span>
         <span
-          className={`mt-1 text-[9px] font-bold uppercase tracking-[0.14em] ${
+          className={`mt-1 hidden whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.14em] min-[380px]:block ${
             tone === "dark" ? "text-white/70" : "text-brand-dark/60"
           }`}
         >

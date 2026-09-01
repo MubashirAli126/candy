@@ -94,7 +94,7 @@ export default function CartPage() {
                 {item.size && (
                   <span className="text-sm text-gray-500">Size: {item.size}</span>
                 )}
-                <span className="text-xs text-gray-400">
+                <span className="text-sm text-gray-400">
                   {formatPrice(item.price)} / piece
                 </span>
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">

@@ -23,7 +23,7 @@ export default function ProductTypeBadge({
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full bg-brand-purple/10 font-semibold text-brand-purple",
-        size === "sm" ? "px-2 py-0.5 text-[11px]" : "px-3 py-1 text-sm",
+        size === "sm" ? "px-2 py-0.5 text-xs" : "px-3 py-1 text-sm",
         className
       )}
     >

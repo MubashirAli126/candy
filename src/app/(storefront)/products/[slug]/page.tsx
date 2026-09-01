@@ -195,7 +195,7 @@ export default async function ProductPage({
           <h2 className="mb-6 font-display text-2xl font-extrabold text-brand-dark">
             You may also like
           </h2>
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

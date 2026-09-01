@@ -31,7 +31,7 @@ export default function QuickAddButton({ product, disabled }: Props) {
       type="button"
       onClick={handleAdd}
       disabled={disabled}
-      className="w-full rounded-full bg-brand-dark px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-brand-purple disabled:cursor-not-allowed disabled:bg-gray-300"
+      className="w-full rounded-full bg-brand-dark px-3 py-2.5 text-sm font-bold text-white transition-all hover:bg-brand-purple disabled:cursor-not-allowed disabled:bg-gray-300 sm:px-4"
     >
       {disabled ? "Out of stock" : added ? "✓ Added!" : "Add to cart"}
     </button>

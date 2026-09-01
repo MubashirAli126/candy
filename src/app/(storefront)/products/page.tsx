@@ -73,7 +73,7 @@ export default async function ProductsPage({
 
       {/* Single combined filter row — product types and categories together */}
       <div className="mb-6 sm:mb-8">
-        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
           <Link
             href={filterHref()}
             className={cn(chipClass, !activeCat && !activeType
@@ -118,7 +118,7 @@ export default async function ProductsPage({
           No products match these filters.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

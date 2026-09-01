@@ -52,7 +52,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
         {discount > 0 && (
-          <span className="absolute left-3 top-3 rounded-full bg-brand-pink px-2.5 py-1 text-xs font-bold text-brand-dark shadow">
+          <span className="absolute left-2 top-2 rounded-full bg-brand-pink px-2.5 py-1 text-xs font-bold text-brand-dark shadow sm:left-3 sm:top-3">
             -{discount}%
           </span>
         )}
@@ -63,7 +63,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
           {showCategory && (
             <span className="text-xs font-semibold uppercase tracking-wide text-brand-purple">
@@ -83,7 +83,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           </h3>
         </Link>
 
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 sm:mt-3">
           {sizePriced && (
             <span className="text-xs font-semibold text-gray-500">From</span>
           )}
@@ -97,11 +97,11 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           )}
         </div>
 
-        <div className="mt-3">
+        <div className="mt-auto pt-3">
           {sizePriced && !outOfStock ? (
             <Link
               href={`/products/${product.slug}`}
-              className="block w-full rounded-full bg-brand-dark px-4 py-2.5 text-center text-sm font-bold text-white transition-all hover:bg-brand-purple"
+              className="block w-full rounded-full bg-brand-dark px-3 py-2.5 text-center text-sm font-bold text-white transition-all hover:bg-brand-purple sm:px-4"
             >
               Choose size
             </Link>

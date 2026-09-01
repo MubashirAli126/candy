@@ -19,10 +19,15 @@
 
 html {
   scroll-behavior: smooth;
+  /* Sticky header is 72px on phones, 80px from sm up — keep anchor targets
+     from landing underneath it. */
+  scroll-padding-top: 80px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   color: var(--foreground);
+  overflow-x: hidden;
   background: var(--background);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

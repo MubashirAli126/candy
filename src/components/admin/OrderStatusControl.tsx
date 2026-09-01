@@ -41,7 +41,7 @@ export default function OrderStatusControl({
         value={status}
         onChange={(e) => onChange(e.target.value)}
         disabled={saving}
-        className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-brand-dark outline-none focus:border-brand-purple disabled:opacity-60"
+        className="w-full rounded-full border border-gray-200 bg-white px-4 py-2 text-base font-bold text-brand-dark outline-none focus:border-brand-purple disabled:opacity-60 sm:w-auto sm:text-sm"
       >
         {ORDER_STATUSES.map((s) => (
           <option key={s} value={s}>

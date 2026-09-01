@@ -69,7 +69,7 @@ export default function Header() {
               />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-dark px-1 text-[11px] font-bold text-brand-yellow">
+              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-dark px-1 text-xs font-bold text-brand-yellow">
                 {totalItems}
               </span>
             )}

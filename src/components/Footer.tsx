@@ -11,17 +11,17 @@ export default function Footer() {
           {/* No wrapper plate here — Logo carries its own logo-matched
               surface, so a white box would only add a second seam. */}
           <Logo tone="dark" />
-          <p className="mt-3 max-w-xs text-xs text-white/60 sm:mt-4 sm:text-sm">
+          <p className="mt-3 max-w-xs text-sm text-white/60 sm:mt-4">
             Ladies 3 piece &amp; 2 piece suits and kurtis. Fresh seasonal
             designs, premium fabric, fast delivery all across Pakistan. ✨
           </p>
         </div>
 
         <div>
-          <h3 className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-white sm:mb-4 sm:text-sm">
+          <h3 className="mb-2 font-display text-sm font-bold uppercase tracking-wider text-white sm:mb-4">
             Get in touch
           </h3>
-          <ul className="space-y-1.5 text-xs sm:space-y-3 sm:text-sm">
+          <ul className="space-y-2 text-sm sm:space-y-3">
             {CONTACTS.map((c) => (
               <li key={c.intl}>
                 <a
@@ -41,7 +41,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-1.5 px-4 py-4 text-[11px] text-white/50 sm:flex-row sm:gap-2 sm:py-6 sm:text-xs sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-1.5 px-4 py-4 text-xs text-white/50 sm:flex-row sm:gap-2 sm:py-6 sm:px-6 lg:px-8">
           <p>
             © {year} {SITE_NAME}. All rights reserved.
           </p>

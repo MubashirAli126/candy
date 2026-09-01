@@ -43,8 +43,11 @@ export default function QuantityStepper({
     if (next !== value) onChange(next);
   }
 
-  const button = size === "sm" ? "h-8 w-8 text-base" : "h-10 w-10 text-lg";
-  const field = size === "sm" ? "h-8 w-12 text-sm" : "h-10 w-16 text-base";
+  const button =
+    size === "sm" ? "h-9 w-9 text-base sm:h-8 sm:w-8" : "h-10 w-10 text-lg";
+  // 16px on mobile — anything smaller makes iOS Safari zoom the page on focus.
+  const field =
+    size === "sm" ? "h-9 w-12 text-base sm:h-8 sm:text-sm" : "h-10 w-16 text-base";
 
   return (
     <div className="inline-flex items-center rounded-full border border-gray-200">

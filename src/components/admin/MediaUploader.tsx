@@ -159,7 +159,7 @@ export default function MediaUploader({
                   className="h-full w-full object-cover"
                 />
                 {index === 0 && (
-                  <span className="absolute left-1.5 top-1.5 rounded-full bg-brand-gradient px-2 py-0.5 text-[10px] font-bold text-brand-dark shadow">
+                  <span className="absolute left-1.5 top-1.5 rounded-full bg-brand-gradient px-2 py-0.5 text-xs font-bold text-brand-dark shadow">
                     MAIN
                   </span>
                 )}
@@ -213,7 +213,7 @@ export default function MediaUploader({
               }
             }}
             placeholder="…or paste an image URL"
-            className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-purple"
+            className="w-full rounded-xl border border-gray-200 px-4 py-2 text-base outline-none focus:border-brand-purple sm:text-sm"
           />
           <button
             type="button"
