@@ -35,7 +35,6 @@ export const STORE = {
   legalName: "Candy Clothing",
   /** Printed under the wordmark on the card. */
   tagline: "Wholesale Ladies Garments Manufacturer",
-  email: "hello@candy.pk",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? CONTACTS[0].intl,
   contacts: CONTACTS,
   socials: SOCIALS,
@@ -66,7 +65,6 @@ export function organizationSchema(): Record<string, unknown> {
     url: SITE_URL,
     logo: STORE.logo,
     image: STORE.logo,
-    email: STORE.email,
     telephone: `+${STORE.whatsapp}`,
     priceRange: "$$",
     address: {
@@ -80,7 +78,6 @@ export function organizationSchema(): Record<string, unknown> {
       "@type": "ContactPoint",
       contactType: "customer service",
       telephone: CONTACTS.map((c) => `+${c.intl}`),
-      email: STORE.email,
       availableLanguage: ["en", "ur"],
     },
     sameAs: Object.values(SOCIALS) as string[],

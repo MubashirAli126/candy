@@ -4,7 +4,7 @@ import { CONTACTS, SITE_NAME, STORE } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: `Get in touch with ${SITE_NAME} for custom stitching, bulk orders and support. WhatsApp, email or visit us in Karachi.`,
+  description: `Get in touch with ${SITE_NAME} for custom stitching, bulk orders and support. WhatsApp us or visit us in Karachi.`,
   alternates: { canonical: "/contact" },
 };
 
@@ -43,15 +43,7 @@ export default function ContactPage() {
         ))}
       </div>
 
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-6">
-        <a
-          href={`mailto:${STORE.email}`}
-          className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-card transition-transform hover:-translate-y-1"
-        >
-          <div className="text-4xl">✉️</div>
-          <h3 className="mt-3 font-display font-bold text-brand-dark">Email</h3>
-          <p className="mt-1 text-sm text-brand-purple">{STORE.email}</p>
-        </a>
+      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6">
         <div className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-card">
           <div className="text-4xl">📍</div>
           <h3 className="mt-3 font-display font-bold text-brand-dark">

@@ -34,14 +34,6 @@ export default function Footer() {
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                href={`mailto:${STORE.email}`}
-                className="hover:text-brand-orange"
-              >
-                {STORE.email}
-              </a>
-            </li>
             <li className="text-white/60">{STORE.address}</li>
           </ul>
           <SocialLinks className="mt-4" tone="dark" />
