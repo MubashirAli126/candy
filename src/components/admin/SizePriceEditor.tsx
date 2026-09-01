@@ -1,12 +1,12 @@
 "use client";
 
 import { formatPrice } from "@/lib/utils";
-import type { SizeOption } from "@/lib/sizes";
+import { SIZE_CHOICES, type SizeOption } from "@/lib/sizes";
 
 /**
- * Sizes an admin sells a product in, each with its own price. Sizes are real
- * measurements typed by the admin ("10x10 cm", "12x20 cm") — never a fixed
- * Small/Medium/Large list — so any new size works without a code change.
+ * Sizes an admin sells a product in, each with its own price. The size itself
+ * is picked from the fixed Small / Medium / Large list, so every product uses
+ * the same wording and buyers see a consistent size picker.
  *
  * The price box for a row only appears once that row has a size, because a price
  * with no size to attach it to means nothing.
@@ -21,8 +21,20 @@ export default function SizePriceEditor({
   /** Product price, used for the "left empty → this is charged" hint. */
   basePrice?: number;
 }) {
-  // Always offer one empty row so the admin can type straight away.
+  // Always offer one empty row so the admin can pick straight away.
   const rows = value.length > 0 ? value : [{ label: "", price: null }];
+
+  /** Sizes already taken by another row — each size can only be listed once. */
+  function takenByOthers(index: number): Set<string> {
+    return new Set(
+      rows
+        .filter((_, i) => i !== index)
+        .map((row) => row.label.trim().toLowerCase())
+        .filter(Boolean)
+    );
+  }
+
+  const allTaken = takenByOthers(-1).size >= SIZE_CHOICES.length;
 
   function update(index: number, patch: Partial<SizeOption>) {
     onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
@@ -33,8 +45,7 @@ export default function SizePriceEditor({
   }
 
   function removeRow(index: number) {
-    const next = rows.filter((_, i) => i !== index);
-    onChange(next);
+    onChange(rows.filter((_, i) => i !== index));
   }
 
   return (
@@ -46,20 +57,37 @@ export default function SizePriceEditor({
       <div className="space-y-2">
         {rows.map((row, index) => {
           const hasLabel = row.label.trim().length > 0;
+          const taken = takenByOthers(index);
           return (
-            <div key={index} className="flex items-start gap-2">
-              <div className="flex-1">
-                <input
+            <div key={index} className="flex flex-wrap items-start gap-2 sm:flex-nowrap">
+              <div className="min-w-[9rem] flex-1">
+                <select
                   value={row.label}
                   onChange={(e) => update(index, { label: e.target.value })}
-                  placeholder="Size e.g. 10x10 cm"
                   aria-label={`Size ${index + 1}`}
-                  className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
-                />
+                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 outline-none focus:border-brand-purple"
+                >
+                  <option value="">Choose size</option>
+                  {SIZE_CHOICES.map((choice) => (
+                    <option
+                      key={choice}
+                      value={choice}
+                      disabled={taken.has(choice.toLowerCase())}
+                    >
+                      {choice}
+                    </option>
+                  ))}
+                  {/* Keep an older, non-standard size selectable so editing a
+                      product never silently drops it. */}
+                  {hasLabel &&
+                    !SIZE_CHOICES.some(
+                      (c) => c.toLowerCase() === row.label.trim().toLowerCase()
+                    ) && <option value={row.label}>{row.label}</option>}
+                </select>
               </div>
 
-              {/* Price appears only after a size has been entered. */}
-              <div className="w-32 shrink-0">
+              {/* Price appears only after a size has been chosen. */}
+              <div className="w-[7.5rem] shrink-0 sm:w-32">
                 {hasLabel ? (
                   <input
                     type="number"
@@ -99,7 +127,8 @@ export default function SizePriceEditor({
       <button
         type="button"
         onClick={addRow}
-        className="mt-2 rounded-full border border-brand-purple/30 px-4 py-1.5 text-sm font-semibold text-brand-purple transition-colors hover:bg-brand-purple/10"
+        disabled={allTaken || rows.length >= SIZE_CHOICES.length}
+        className="mt-2 rounded-full border border-brand-purple/30 px-4 py-1.5 text-sm font-semibold text-brand-purple transition-colors hover:bg-brand-purple/10 disabled:opacity-40"
       >
         + Add another size
       </button>

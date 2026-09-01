@@ -149,3 +149,9 @@ export function sizePriceRange(
   if (prices.length === 0) return { min: basePrice, max: basePrice };
   return { min: Math.min(...prices), max: Math.max(...prices) };
 }
+
+/**
+ * The sizes an admin can offer. Fixed on purpose so every product uses the same
+ * wording; older products storing anything else still parse and display fine.
+ */
+export const SIZE_CHOICES = ["Small", "Medium", "Large"] as const;
