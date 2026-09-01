@@ -3,7 +3,7 @@ import type { ProductCardData } from "@/components/ProductCard";
 import type { ProductType } from "./types";
 
 /** Map a Prisma product (with category) to the card shape used in listings. */
-export function toCardData(p: {
+function toCardData(p: {
   id: string;
   slug: string;
   name: string;

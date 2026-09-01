@@ -13,7 +13,7 @@ interface Category {
   name: string;
 }
 
-export interface ProductFormValues {
+interface ProductFormValues {
   id?: string;
   name: string;
   description: string;

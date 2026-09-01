@@ -1,7 +1,7 @@
 import { productTypeIcon, productTypeLabel } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export interface ProductTypeBadgeProps {
+interface ProductTypeBadgeProps {
   productType: string | null | undefined;
   customType?: string | null;
   className?: string;

@@ -22,11 +22,9 @@ const DOTS = [
  */
 export default function Logo({
   className = "",
-  showText = true,
   tone = "light",
 }: {
   className?: string;
-  showText?: boolean;
   /** "dark" for the plum footer, where the tagline must read on dark. */
   tone?: "light" | "dark";
 }) {
@@ -50,20 +48,18 @@ export default function Logo({
           />
         </svg>
       </span>
-      {showText && (
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-3xl font-extrabold lowercase tracking-tight text-brand-logoRed">
-            candy
-          </span>
-          <span
-            className={`mt-1 text-[9px] font-bold uppercase tracking-[0.14em] ${
-              tone === "dark" ? "text-white/70" : "text-brand-dark/60"
-            }`}
-          >
-            Wholesale Ladies Garments
-          </span>
+      <span className="flex flex-col leading-none">
+        <span className="font-display text-3xl font-extrabold lowercase tracking-tight text-brand-logoRed">
+          candy
         </span>
-      )}
+        <span
+          className={`mt-1 text-[9px] font-bold uppercase tracking-[0.14em] ${
+            tone === "dark" ? "text-white/70" : "text-brand-dark/60"
+          }`}
+        >
+          Wholesale Ladies Garments
+        </span>
+      </span>
     </Link>
   );
 }

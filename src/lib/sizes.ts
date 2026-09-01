@@ -107,11 +107,6 @@ export function serializeSizeOptions(
   return entries.length > 0 ? entries.join(ENTRY_JOINER) : null;
 }
 
-/** Just the size labels — for copy such as "Available sizes: ...". */
-export function parseSizes(size: string | null | undefined): string[] {
-  return parseSizeOptions(size).map((o) => o.label);
-}
-
 /** True when at least one size carries its own price. */
 export function hasSizePrices(options: readonly SizeOption[]): boolean {
   return options.some((o) => o.price !== null);

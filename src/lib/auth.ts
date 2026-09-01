@@ -90,5 +90,3 @@ export async function getSession(): Promise<{ email: string } | null> {
     return null;
   }
 }
-
-export const AUTH_COOKIE_NAME = COOKIE_NAME;

@@ -67,8 +67,8 @@ export function serializeGallery(
   return { image, images: rest.length > 0 ? JSON.stringify(rest) : null };
 }
 
-// Sizes and their per-size prices live in src/lib/sizes.ts — see parseSizes()
-// and priceForSize() there.
+// Sizes and their per-size prices live in src/lib/sizes.ts — see
+// parseSizeOptions() and priceForSize() there.
 
 /** Discount percentage between price and salePrice. */
 export function discountPercent(price: number, salePrice?: number | null): number {

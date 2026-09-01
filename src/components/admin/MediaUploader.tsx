@@ -18,14 +18,13 @@ async function uploadFile(file: File): Promise<string> {
   return data.url;
 }
 
-export interface MediaUploaderProps {
+interface MediaUploaderProps {
   /** Ordered gallery — the first entry is the main product image. */
   images: string[];
   onImagesChange: (images: string[]) => void;
   /** Reported whenever an upload starts/finishes so forms can disable submit. */
   onUploadingChange?: (uploading: boolean) => void;
   onError?: (message: string | null) => void;
-  maxImages?: number;
   /** Show a field for adding an image that is already hosted elsewhere. */
   allowUrl?: boolean;
 }
@@ -39,14 +38,13 @@ export default function MediaUploader({
   onImagesChange,
   onUploadingChange,
   onError,
-  maxImages = MAX_IMAGES,
   allowUrl = false,
 }: MediaUploaderProps) {
   const [imagesBusy, setImagesBusy] = useState(false);
   const [urlDraft, setUrlDraft] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
 
-  const remaining = Math.max(0, maxImages - images.length);
+  const remaining = Math.max(0, MAX_IMAGES - images.length);
 
   // Report the upload state so the parent can disable submit while an upload
   // is still in flight.
@@ -68,7 +66,7 @@ export default function MediaUploader({
     onError?.(null);
     if (picked.length > remaining) {
       onError?.(
-        `You can add ${maxImages} images at most — only the first ${remaining} were uploaded.`
+        `You can add ${MAX_IMAGES} images at most — only the first ${remaining} were uploaded.`
       );
     }
 
@@ -98,7 +96,7 @@ export default function MediaUploader({
     const url = urlDraft.trim();
     if (!url) return;
     if (remaining === 0) {
-      onError?.(`You can add ${maxImages} images at most.`);
+      onError?.(`You can add ${MAX_IMAGES} images at most.`);
       return;
     }
     if (images.includes(url)) {
@@ -121,7 +119,7 @@ export default function MediaUploader({
   return (
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        Pictures {images.length > 0 && `(${images.length}/${maxImages})`}
+        Pictures {images.length > 0 && `(${images.length}/${MAX_IMAGES})`}
       </label>
       <input
         ref={imageInput}
@@ -140,7 +138,7 @@ export default function MediaUploader({
         {imagesBusy
           ? "Uploading..."
           : remaining === 0
-          ? `Maximum ${maxImages} pictures added`
+          ? `Maximum ${MAX_IMAGES} pictures added`
           : images.length > 0
           ? "➕ Add more pictures"
           : "📷 Choose pictures (you can select several)"}

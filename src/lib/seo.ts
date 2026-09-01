@@ -47,7 +47,7 @@ export const STORE = {
 } as const;
 
 /** Absolute URL from a site-relative path (or pass-through for already-absolute URLs). */
-export function absoluteUrl(path: string): string {
+function absoluteUrl(path: string): string {
   if (/^https?:\/\//i.test(path)) return path;
   return `${SITE_URL}${path.startsWith("/") ? "" : "/"}${path}`;
 }

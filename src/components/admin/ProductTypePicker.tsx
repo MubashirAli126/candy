@@ -3,13 +3,12 @@
 import { PRODUCT_TYPE_OPTIONS, type ProductType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export interface ProductTypePickerProps {
+interface ProductTypePickerProps {
   value: ProductType;
   onChange: (value: ProductType) => void;
   /** Free text shown only when "Other" is selected. */
   customType: string;
   onCustomTypeChange: (value: string) => void;
-  label?: string;
 }
 
 /**
@@ -23,12 +22,11 @@ export default function ProductTypePicker({
   onChange,
   customType,
   onCustomTypeChange,
-  label = "Product type",
 }: ProductTypePickerProps) {
   return (
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        {label}
+        Product type
       </label>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {PRODUCT_TYPE_OPTIONS.map((option) => (
