@@ -21,6 +21,7 @@ export interface ProductFormValues {
   salePrice: number | null;
   /** Ordered gallery; the first entry is the main image. */
   images: string[];
+  /** Kept so editing a product preserves any video it already has. */
   video: string | null;
   /** Sizes offered for this product, each with its own optional price. */
   sizes: SizeOption[];
@@ -140,7 +141,7 @@ export default function ProductForm({
       className="grid gap-6 lg:grid-cols-3"
     >
       <div className="space-y-4 lg:col-span-2">
-        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
           <Text
             label="Product name *"
             value={values.name}
@@ -167,7 +168,7 @@ export default function ProductForm({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
           <h3 className="mb-4 font-display font-bold text-brand-dark">Pricing & stock</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             <Num
@@ -197,7 +198,7 @@ export default function ProductForm({
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
           <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
             Category *
           </label>
@@ -236,15 +237,13 @@ export default function ProductForm({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
           <h3 className="mb-4 font-display font-bold text-brand-dark">
-            Pictures & video
+            Pictures
           </h3>
           <MediaUploader
             images={values.images}
             onImagesChange={(v) => set("images", v)}
-            video={values.video}
-            onVideoChange={(v) => set("video", v)}
             onUploadingChange={setUploading}
             onError={setError}
             allowUrl

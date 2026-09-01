@@ -21,7 +21,6 @@ export default function QuickProductForm() {
   const [price, setPrice] = useState("");
   const [sizes, setSizes] = useState<SizeOption[]>([]);
   const [images, setImages] = useState<string[]>([]);
-  const [video, setVideo] = useState<string | null>(null);
   const [productType, setProductType] = useState<ProductType>("THREE_PIECE");
   const [customType, setCustomType] = useState("");
 
@@ -52,7 +51,6 @@ export default function QuickProductForm() {
           price: Number(price),
           size: serializedSizes,
           images,
-          video,
           productType,
           customType: productType === "OTHER" ? customType.trim() : null,
         }),
@@ -117,12 +115,10 @@ export default function QuickProductForm() {
         basePrice={Number(price) || undefined}
       />
 
-      {/* Pictures + video upload */}
+      {/* Pictures */}
       <MediaUploader
         images={images}
         onImagesChange={setImages}
-        video={video}
-        onVideoChange={setVideo}
         onUploadingChange={setUploading}
         onError={setError}
       />
