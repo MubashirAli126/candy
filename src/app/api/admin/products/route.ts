@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { formatPrice, serializeGallery, slugify } from "@/lib/utils";
 import { parseSizeOptions } from "@/lib/sizes";
+import {
+  MAX_COLORS_LENGTH,
+  parseColorVariants,
+  serializeColorVariants,
+} from "@/lib/colors";
 import { MAX_IMAGES } from "@/lib/media";
 import {
   DEFAULT_PRODUCT_TYPE,
@@ -32,8 +37,9 @@ const productSchema = z
     // Sizes and their per-size prices, packed into one string by
     // serializeSizeOptions(), e.g. "Small=2500 | Medium=2700".
     size: z.string().max(1000).nullable().optional(),
-    // Colours packed into one string by serializeColors(), e.g. "Red | Navy Blue".
-    colors: z.string().max(1000).nullable().optional(),
+    // Colour variants packed into one JSON string by serializeColorVariants().
+    // Re-parsed below rather than trusted as-is.
+    colors: z.string().max(MAX_COLORS_LENGTH).nullable().optional(),
     stock: z.number().int().min(0).optional(),
     categoryId: z.string().min(1).optional(),
     featured: z.boolean().optional(),
@@ -58,11 +64,13 @@ function autoDescription(
   name: string,
   size?: string | null,
   typeLabel?: string,
-  isStitchedSuit = true
+  isStitchedSuit = true,
 ): string {
   const sizes = parseSizeOptions(size);
   const sizeList = sizes
-    .map((s) => (s.price === null ? s.label : `${s.label} (${formatPrice(s.price)})`))
+    .map((s) =>
+      s.price === null ? s.label : `${s.label} (${formatPrice(s.price)})`,
+    )
     .join(", ");
   const sizePart =
     sizes.length === 0
@@ -83,8 +91,8 @@ function autoTags(name: string, typeLabel?: string): string {
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, " ")
         .split(/\s+/)
-        .filter((w) => w.length > 2)
-    )
+        .filter((w) => w.length > 2),
+    ),
   ).join(",");
 }
 
@@ -115,7 +123,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.errors[0]?.message ?? "Invalid data" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -123,12 +131,12 @@ export async function POST(request: Request) {
 
   // `images` wins when both shapes are sent; `image` keeps older callers working.
   const gallery = serializeGallery(
-    data.images ?? (data.image ? [data.image] : [])
+    data.images ?? (data.image ? [data.image] : []),
   );
   if (!gallery) {
     return NextResponse.json(
       { error: "At least one picture is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -156,7 +164,7 @@ export async function POST(request: Request) {
     if (!category) {
       return NextResponse.json(
         { error: "No category exists yet. Create a category first." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     categoryId = category.id;
@@ -174,7 +182,7 @@ export async function POST(request: Request) {
           data.name,
           data.size,
           typeLabel,
-          isKnownProductType(productType)
+          isKnownProductType(productType),
         ),
       price: data.price,
       salePrice: data.salePrice ?? null,
@@ -182,7 +190,9 @@ export async function POST(request: Request) {
       images: gallery.images,
       video: data.video ?? null,
       size: data.size ?? null,
-      colors: data.colors ?? null,
+      // Re-serialized from what we could parse, so the stored JSON is always
+      // canonical and within the colour/picture caps.
+      colors: serializeColorVariants(parseColorVariants(data.colors)),
       stock: data.stock ?? DEFAULT_STOCK,
       categoryId,
       featured: data.featured ?? false,

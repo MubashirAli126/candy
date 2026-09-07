@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateOrderNumber } from "@/lib/utils";
 import { effectiveUnitPrice, lineTotal, shippingFor } from "@/lib/pricing";
 import { findSizeOption, hasSizePrices, parseSizeOptions } from "@/lib/sizes";
+import { findColorVariant, parseColorVariants } from "@/lib/colors";
 
 const orderSchema = z.object({
   customer: z.object({
@@ -22,7 +23,8 @@ const orderSchema = z.object({
         // above the old 99 — stock is what really bounds a line.
         quantity: z.number().int().min(1).max(9999),
         size: z.string().optional(),
-      })
+        color: z.string().optional(),
+      }),
     )
     .min(1, "Cart is empty"),
 });
@@ -32,14 +34,17 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 },
+    );
   }
 
   const parsed = orderSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.errors[0]?.message ?? "Invalid data" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -58,6 +63,7 @@ export async function POST(request: Request) {
     price: number;
     quantity: number;
     size?: string;
+    color?: string;
   }[] = [];
 
   let subtotal = 0;
@@ -66,13 +72,13 @@ export async function POST(request: Request) {
     if (!product) {
       return NextResponse.json(
         { error: `A product in your cart is no longer available.` },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (product.stock < item.quantity) {
       return NextResponse.json(
         { error: `Not enough stock for "${product.name}".` },
-        { status: 400 }
+        { status: 400 },
       );
     }
     // Sizes can be priced individually, so the price comes from the size the
@@ -84,7 +90,18 @@ export async function POST(request: Request) {
         {
           error: `Please choose a size for "${product.name}" — its price depends on the size.`,
         },
-        { status: 400 }
+        { status: 400 },
+      );
+    }
+
+    // Same rule for colours: a product with colour variants must be ordered in
+    // one of them, and the stored label is the admin's, not the client's.
+    const colorVariants = parseColorVariants(product.colors);
+    const chosenColor = findColorVariant(colorVariants, item.color);
+    if (colorVariants.length > 0 && !chosenColor) {
+      return NextResponse.json(
+        { error: `Please choose a colour for "${product.name}".` },
+        { status: 400 },
       );
     }
 
@@ -99,6 +116,7 @@ export async function POST(request: Request) {
       quantity: item.quantity,
       // Snapshot the label as the admin wrote it, not the client's casing.
       size: chosenSize?.label ?? item.size,
+      color: chosenColor?.label ?? item.color,
     });
   }
 
@@ -140,13 +158,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { orderNumber: order.orderNumber, id: order.id, total },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (err) {
     console.error("Order creation failed:", err);
     return NextResponse.json(
       { error: "Could not place order. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -6,6 +6,11 @@ import { getSession } from "@/lib/auth";
 import { PRODUCT_TYPES } from "@/lib/types";
 import { serializeGallery } from "@/lib/utils";
 import { MAX_IMAGES } from "@/lib/media";
+import {
+  MAX_COLORS_LENGTH,
+  parseColorVariants,
+  serializeColorVariants,
+} from "@/lib/colors";
 
 const updateSchema = z.object({
   name: z.string().min(2).optional(),
@@ -19,8 +24,9 @@ const updateSchema = z.object({
   // Sizes and their per-size prices, packed into one string by
   // serializeSizeOptions(), e.g. "10x10 cm=250 | 12x20 cm=400".
   size: z.string().max(1000).nullable().optional(),
-  // Colours packed into one string by serializeColors(), e.g. "Red | Navy Blue".
-  colors: z.string().max(1000).nullable().optional(),
+  // Colour variants packed into one JSON string by serializeColorVariants().
+  // Re-parsed below rather than trusted as-is.
+  colors: z.string().max(MAX_COLORS_LENGTH).nullable().optional(),
   stock: z.number().int().min(0).optional(),
   categoryId: z.string().min(1).optional(),
   featured: z.boolean().optional(),
@@ -32,7 +38,7 @@ const updateSchema = z.object({
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const session = await getSession();
   if (!session) {
@@ -50,12 +56,18 @@ export async function PATCH(
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.errors[0]?.message ?? "Invalid data" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const { images: gallery, ...rest } = parsed.data;
   const data: Prisma.ProductUpdateInput = { ...rest };
+
+  // Re-serialize the colours from what we could parse, so the stored JSON is
+  // always canonical and within the colour/picture caps.
+  if (rest.colors !== undefined) {
+    data.colors = serializeColorVariants(parseColorVariants(rest.colors));
+  }
 
   // A gallery replaces both picture fields at once so main image and extras
   // always come from the same submission.
@@ -64,7 +76,7 @@ export async function PATCH(
     if (!serialized) {
       return NextResponse.json(
         { error: "At least one picture is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     data.image = serialized.image;
@@ -100,7 +112,7 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   const session = await getSession();
   if (!session) {

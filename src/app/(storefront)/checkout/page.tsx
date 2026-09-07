@@ -32,7 +32,10 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<{ orderNumber: string } | null>(null);
 
-  function update<K extends keyof CheckoutForm>(key: K, value: CheckoutForm[K]) {
+  function update<K extends keyof CheckoutForm>(
+    key: K,
+    value: CheckoutForm[K],
+  ) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
@@ -60,13 +63,16 @@ export default function CheckoutPage() {
             productId: i.productId,
             quantity: i.quantity,
             size: i.size,
+            color: i.color,
           })),
         }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error ?? "Something went wrong. Please try again.");
+        throw new Error(
+          data.error ?? "Something went wrong. Please try again.",
+        );
       }
 
       // Build WhatsApp confirmation message
@@ -75,13 +81,13 @@ export default function CheckoutPage() {
         "",
         ...items.map(
           (i) =>
-            `• ${i.name}${i.size ? ` (${i.size})` : ""} x${i.quantity} — ${formatPrice(
-              lineTotal(i.price, i.quantity)
-            )}${
+            `• ${i.name}${i.color ? ` ${i.color}` : ""}${
+              i.size ? ` (${i.size})` : ""
+            } x${i.quantity} — ${formatPrice(lineTotal(i.price, i.quantity))}${
               bulkDiscountPercent(i.quantity) > 0
                 ? ` (${bulkDiscountPercent(i.quantity)}% bulk off)`
                 : ""
-            }`
+            }`,
         ),
         "",
         `Items: ${formatPrice(itemsTotal)}`,
@@ -106,7 +112,7 @@ export default function CheckoutPage() {
       // Open WhatsApp with prefilled order
       window.open(
         `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lines)}`,
-        "_blank"
+        "_blank",
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to place order.");
@@ -167,7 +173,10 @@ export default function CheckoutPage() {
         Checkout
       </h1>
 
-      <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-6 lg:grid-cols-3 lg:gap-8"
+      >
         {/* Customer details */}
         <div className="space-y-4 lg:col-span-2">
           <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
@@ -238,11 +247,12 @@ export default function CheckoutPage() {
             <ul className="mt-4 space-y-3 text-sm">
               {items.map((i) => (
                 <li
-                  key={`${i.productId}-${i.size ?? ""}`}
+                  key={`${i.productId}-${i.size ?? ""}-${i.color ?? ""}`}
                   className="flex justify-between gap-2"
                 >
                   <span className="min-w-0 break-words text-gray-600">
                     {i.name}
+                    {i.color ? ` ${i.color}` : ""}
                     {i.size ? ` (${i.size})` : ""} × {i.quantity}
                   </span>
                   <span className="font-semibold">

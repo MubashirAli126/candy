@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
 import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
-import ColorEditor from "./ColorEditor";
+import ColorVariantEditor from "./ColorVariantEditor";
 import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
-import { serializeColors } from "@/lib/colors";
+import { serializeColorVariants, type ColorVariant } from "@/lib/colors";
 
 interface Category {
   id: string;
@@ -27,8 +27,11 @@ interface ProductFormValues {
   video: string | null;
   /** Sizes offered for this product, each with its own optional price. */
   sizes: SizeOption[];
-  /** Colours this product comes in; empty means it has no colour options. */
-  colors: string[];
+  /**
+   * Colours this design comes in, each with its own pictures; empty means the
+   * design is sold in one colour.
+   */
+  colors: ColorVariant[];
   stock: number;
   categoryId: string;
   featured: boolean;
@@ -66,15 +69,18 @@ export default function ProductForm({
       tags: "",
       productType: "THREE_PIECE",
       customType: "",
-    }
+    },
   );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [colorUploading, setColorUploading] = useState(false);
+  // Either uploader still working means the payload would miss a picture.
+  const mediaBusy = uploading || colorUploading;
 
   function set<K extends keyof ProductFormValues>(
     key: K,
-    value: ProductFormValues[K]
+    value: ProductFormValues[K],
   ) {
     setValues((v) => ({ ...v, [key]: value }));
   }
@@ -110,7 +116,7 @@ export default function ProductForm({
         images: values.images,
         video: values.video,
         size: serializeSizeOptions(values.sizes),
-        colors: serializeColors(values.colors),
+        colors: serializeColorVariants(values.colors),
         stock: Number(values.stock),
         categoryId: values.categoryId,
         featured: values.featured,
@@ -142,10 +148,7 @@ export default function ProductForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="grid gap-6 lg:grid-cols-3"
-    >
+    <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-3">
       <div className="space-y-4 lg:col-span-2">
         <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
           <Text
@@ -175,7 +178,9 @@ export default function ProductForm({
         </div>
 
         <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-          <h3 className="mb-4 font-display font-bold text-brand-dark">Pricing & stock</h3>
+          <h3 className="mb-4 font-display font-bold text-brand-dark">
+            Pricing & stock
+          </h3>
           <div className="grid gap-4 sm:grid-cols-3">
             <Num
               label="Price (PKR) *"
@@ -200,12 +205,15 @@ export default function ProductForm({
               basePrice={values.price}
             />
           </div>
-          <div className="mt-4 border-t border-black/5 pt-4">
-            <ColorEditor
-              value={values.colors}
-              onChange={(v) => set("colors", v)}
-            />
-          </div>
+        </div>
+
+        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
+          <ColorVariantEditor
+            value={values.colors}
+            onChange={(v) => set("colors", v)}
+            onUploadingChange={setColorUploading}
+            onError={setError}
+          />
         </div>
       </div>
 
@@ -263,21 +271,23 @@ export default function ProductForm({
         </div>
 
         {error && (
-          <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>
+          <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+            {error}
+          </p>
         )}
 
         <button
           type="submit"
-          disabled={saving || uploading}
+          disabled={saving || mediaBusy}
           className="w-full rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand disabled:opacity-60"
         >
-          {uploading
+          {mediaBusy
             ? "Uploading media..."
             : saving
-            ? "Saving..."
-            : isEdit
-            ? "Update product"
-            : "Create product"}
+              ? "Saving..."
+              : isEdit
+                ? "Update product"
+                : "Create product"}
         </button>
       </div>
     </form>

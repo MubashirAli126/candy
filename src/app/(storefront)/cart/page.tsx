@@ -58,7 +58,7 @@ export default function CartPage() {
         <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
             <div
-              key={`${item.productId}-${item.size ?? ""}`}
+              key={`${item.productId}-${item.size ?? ""}-${item.color ?? ""}`}
               className="flex gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-card sm:gap-4 sm:p-4"
             >
               <Link
@@ -84,15 +84,28 @@ export default function CartPage() {
                   </Link>
                   <button
                     type="button"
-                    onClick={() => removeItem(item.productId, item.size)}
+                    onClick={() =>
+                      removeItem({
+                        productId: item.productId,
+                        size: item.size,
+                        color: item.color,
+                      })
+                    }
                     className="text-gray-400 hover:text-brand-pink"
                     aria-label="Remove item"
                   >
                     ✕
                   </button>
                 </div>
-                {item.size && (
-                  <span className="text-sm text-gray-500">Size: {item.size}</span>
+                {(item.size || item.color) && (
+                  <span className="text-sm text-gray-500">
+                    {[
+                      item.color ? `Colour: ${item.color}` : null,
+                      item.size ? `Size: ${item.size}` : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
                 )}
                 <span className="text-sm text-gray-400">
                   {formatPrice(item.price)} / piece
@@ -101,7 +114,14 @@ export default function CartPage() {
                   <QuantityStepper
                     value={item.quantity}
                     onChange={(quantity) =>
-                      setQuantity(item.productId, quantity, item.size)
+                      setQuantity(
+                        {
+                          productId: item.productId,
+                          size: item.size,
+                          color: item.color,
+                        },
+                        quantity,
+                      )
                     }
                     max={item.stock || 99}
                     size="sm"

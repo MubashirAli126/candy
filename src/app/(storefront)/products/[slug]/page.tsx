@@ -3,10 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCartForm from "@/components/AddToCartForm";
 import ProductCard from "@/components/ProductCard";
-import ProductGallery from "@/components/ProductGallery";
+import ProductColorGallery from "@/components/ProductColorGallery";
 import JsonLd from "@/components/JsonLd";
 import ProductTypeBadge from "@/components/ProductTypeBadge";
-import ProductColors from "@/components/ProductColors";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
 import {
   formatPrice,
@@ -15,7 +14,8 @@ import {
   productGallery,
 } from "@/lib/utils";
 import { hasSizePrices, parseSizeOptions, sizePriceRange } from "@/lib/sizes";
-import { parseColors } from "@/lib/colors";
+import { parseColorVariants } from "@/lib/colors";
+import { ProductColorProvider } from "@/context/ProductColorContext";
 import { BULK_DISCOUNT_PERCENT, BULK_MIN_QUANTITY } from "@/lib/pricing";
 import { breadcrumbSchema, productSchema } from "@/lib/seo";
 import { mirrorsProductType } from "@/lib/types";
@@ -31,7 +31,10 @@ export async function generateMetadata({
   if (!product) return { title: "Product not found" };
   const description = product.description.slice(0, 160);
   const tags = product.tags
-    ? product.tags.split(",").map((t) => t.trim()).filter(Boolean)
+    ? product.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
     : undefined;
   return {
     title: product.name,
@@ -41,7 +44,9 @@ export async function generateMetadata({
     openGraph: {
       title: product.name,
       description,
-      images: [{ url: product.image, width: 800, height: 800, alt: product.name }],
+      images: [
+        { url: product.image, width: 800, height: 800, alt: product.name },
+      ],
       type: "website",
     },
   };
@@ -62,9 +67,14 @@ export default async function ProductPage({
   // and each one can carry its own price.
   const sizes = parseSizeOptions(product.size);
   const sizePriced = hasSizePrices(sizes);
-  // Colours the admin entered for this product; empty hides the colour list.
-  const colors = parseColors(product.colors);
-  const { min: minPrice, max: maxPrice } = sizePriceRange(effectivePrice, sizes);
+  // Colours this design comes in, each with its own pictures. Empty means the
+  // design is sold in one colour and nothing colour-related is rendered.
+  const colorVariants = parseColorVariants(product.colors);
+  const gallery = productGallery(product.image, product.images);
+  const { min: minPrice, max: maxPrice } = sizePriceRange(
+    effectivePrice,
+    sizes,
+  );
 
   const jsonLd = [
     productSchema({
@@ -83,7 +93,10 @@ export default async function ProductPage({
     }),
     breadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: product.category.name, path: `/category/${product.category.slug}` },
+      {
+        name: product.category.name,
+        path: `/category/${product.category.slug}`,
+      },
       { name: product.name, path: `/products/${product.slug}` },
     ]),
   ];
@@ -107,93 +120,98 @@ export default async function ProductPage({
         / <span className="text-brand-dark">{product.name}</span>
       </nav>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
-        {/* Media */}
-        <ProductGallery
-          images={productGallery(product.image, product.images)}
-          video={product.video}
-          name={product.name}
-          discount={discount}
-        />
+      <ProductColorProvider variants={colorVariants} productImages={gallery}>
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
+          {/* Media — follows the colour picked in the form below. */}
+          <ProductColorGallery
+            images={gallery}
+            video={product.video}
+            name={product.name}
+            discount={discount}
+          />
 
-        {/* Details */}
-        <div>
-          {/* The breadcrumb above and the type badge below already name the
+          {/* Details */}
+          <div>
+            {/* The breadcrumb above and the type badge below already name the
               category when it mirrors the product type — don't say it a third
               time. */}
-          {!mirrorsProductType(product.category.slug, product.productType) && (
-            <Link
-              href={`/category/${product.category.slug}`}
-              className="text-sm font-semibold uppercase tracking-wide text-brand-purple"
-            >
-              {product.category.name}
-            </Link>
-          )}
-          <h1 className="mt-2 font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
-            {product.name}
-          </h1>
-
-          <div className="mt-3">
-            <Link href={`/products?type=${product.productType}`}>
-              <ProductTypeBadge
-                productType={product.productType}
-                customType={product.customType}
-                size="md"
-                className="transition-colors hover:bg-brand-purple/20"
-              />
-            </Link>
-          </div>
-
-          {/* With per-size prices there is no single price — show the range and
-              let the size picker below settle on the exact one. */}
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="font-display text-3xl font-extrabold text-brand-dark">
-              {sizePriced && minPrice !== maxPrice
-                ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
-                : formatPrice(sizePriced ? minPrice : effectivePrice)}
-            </span>
-            {!sizePriced && product.salePrice && (
-              <span className="text-xl text-gray-400 line-through">
-                {formatPrice(product.price)}
-              </span>
+            {!mirrorsProductType(
+              product.category.slug,
+              product.productType,
+            ) && (
+              <Link
+                href={`/category/${product.category.slug}`}
+                className="text-sm font-semibold uppercase tracking-wide text-brand-purple"
+              >
+                {product.category.name}
+              </Link>
             )}
-            <span className="text-sm text-gray-500">
-              / piece{sizePriced ? " — price depends on the size you pick" : ""}
-            </span>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
+              {product.name}
+            </h1>
+
+            <div className="mt-3">
+              <Link href={`/products?type=${product.productType}`}>
+                <ProductTypeBadge
+                  productType={product.productType}
+                  customType={product.customType}
+                  size="md"
+                  className="transition-colors hover:bg-brand-purple/20"
+                />
+              </Link>
+            </div>
+
+            {/* With per-size prices there is no single price — show the range and
+              let the size picker below settle on the exact one. */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="font-display text-3xl font-extrabold text-brand-dark">
+                {sizePriced && minPrice !== maxPrice
+                  ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
+                  : formatPrice(sizePriced ? minPrice : effectivePrice)}
+              </span>
+              {!sizePriced && product.salePrice && (
+                <span className="text-xl text-gray-400 line-through">
+                  {formatPrice(product.price)}
+                </span>
+              )}
+              <span className="text-sm text-gray-500">
+                / piece
+                {sizePriced ? " — price depends on the size you pick" : ""}
+              </span>
+            </div>
+
+            <p className="mt-2 text-sm font-semibold text-brand-purple">
+              🎉 Buy {BULK_MIN_QUANTITY} or more and get {BULK_DISCOUNT_PERCENT}
+              % off
+            </p>
+
+            <p className="mt-5 leading-relaxed text-gray-600">
+              {product.description}
+            </p>
+
+            <div className="mt-8 border-t border-black/5 pt-8">
+              <AddToCartForm
+                product={{
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  price: effectivePrice,
+                  image: product.image,
+                  stock: product.stock,
+                }}
+                sizes={sizes}
+              />
+            </div>
+
+            <ul className="mt-8 grid grid-cols-2 gap-3 text-sm text-gray-600">
+              <li className="flex items-center gap-2">🧵 Premium fabric</li>
+              <li className="flex items-center gap-2">📏 Custom stitching</li>
+              <li className="flex items-center gap-2">🚚 24h dispatch</li>
+              <li className="flex items-center gap-2">💵 Cash on delivery</li>
+            </ul>
           </div>
-
-          <p className="mt-2 text-sm font-semibold text-brand-purple">
-            🎉 Buy {BULK_MIN_QUANTITY} or more and get {BULK_DISCOUNT_PERCENT}% off
-          </p>
-
-          <p className="mt-5 leading-relaxed text-gray-600">
-            {product.description}
-          </p>
-
-          <ProductColors colors={colors} />
-
-          <div className="mt-8 border-t border-black/5 pt-8">
-            <AddToCartForm
-              product={{
-                productId: product.id,
-                slug: product.slug,
-                name: product.name,
-                price: effectivePrice,
-                image: product.image,
-                stock: product.stock,
-              }}
-              sizes={sizes}
-            />
-          </div>
-
-          <ul className="mt-8 grid grid-cols-2 gap-3 text-sm text-gray-600">
-            <li className="flex items-center gap-2">🧵 Premium fabric</li>
-            <li className="flex items-center gap-2">📏 Custom stitching</li>
-            <li className="flex items-center gap-2">🚚 24h dispatch</li>
-            <li className="flex items-center gap-2">💵 Cash on delivery</li>
-          </ul>
         </div>
-      </div>
+      </ProductColorProvider>
 
       {/* Related */}
       {related.length > 0 && (

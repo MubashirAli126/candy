@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
 import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
-import ColorEditor from "./ColorEditor";
+import ColorVariantEditor from "./ColorVariantEditor";
 import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
-import { serializeColors } from "@/lib/colors";
+import { serializeColorVariants, type ColorVariant } from "@/lib/colors";
 
 /**
  * Minimal "Add product" form — only the things an admin must decide:
@@ -22,12 +22,15 @@ export default function QuickProductForm() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [sizes, setSizes] = useState<SizeOption[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
+  const [colors, setColors] = useState<ColorVariant[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [productType, setProductType] = useState<ProductType>("THREE_PIECE");
   const [customType, setCustomType] = useState("");
 
   const [uploading, setUploading] = useState(false);
+  const [colorUploading, setColorUploading] = useState(false);
+  // Either uploader still working means the payload would miss a picture.
+  const mediaBusy = uploading || colorUploading;
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +45,8 @@ export default function QuickProductForm() {
     const serializedSizes = serializeSizeOptions(sizes);
     if (!serializedSizes) return setError("Please enter at least one size.");
     if (Number(price) <= 0) return setError("Price must be greater than 0.");
-    if (images.length === 0) return setError("Please upload at least one picture.");
+    if (images.length === 0)
+      return setError("Please upload at least one picture.");
 
     setSaving(true);
     try {
@@ -53,7 +57,7 @@ export default function QuickProductForm() {
           name: name.trim(),
           price: Number(price),
           size: serializedSizes,
-          colors: serializeColors(colors),
+          colors: serializeColorVariants(colors),
           images,
           productType,
           customType: productType === "OTHER" ? customType.trim() : null,
@@ -119,9 +123,6 @@ export default function QuickProductForm() {
         basePrice={Number(price) || undefined}
       />
 
-      {/* Colours this design comes in — optional. */}
-      <ColorEditor value={colors} onChange={setColors} />
-
       {/* Pictures */}
       <MediaUploader
         images={images}
@@ -130,21 +131,34 @@ export default function QuickProductForm() {
         onError={setError}
       />
 
+      <div className="border-t border-black/5 pt-5">
+        <ColorVariantEditor
+          value={colors}
+          onChange={setColors}
+          onUploadingChange={setColorUploading}
+          onError={setError}
+        />
+      </div>
+
       {error && (
         <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>
       )}
 
       <p className="text-xs text-gray-400">
-        Description, category and stock are set automatically — you can fine-tune
-        them later by editing the product.
+        Description, category and stock are set automatically — you can
+        fine-tune them later by editing the product.
       </p>
 
       <button
         type="submit"
-        disabled={saving || uploading}
+        disabled={saving || mediaBusy}
         className="w-full rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand disabled:opacity-60"
       >
-        {saving ? "Saving..." : "Add product"}
+        {mediaBusy
+          ? "Uploading pictures..."
+          : saving
+            ? "Saving..."
+            : "Add product"}
       </button>
     </form>
   );

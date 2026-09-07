@@ -1,71 +1,147 @@
-// Colours a product is available in. Same idea as sizes (src/lib/sizes.ts):
-// every colour the admin entered lives in the single free-text column
-// `Product.colors`, so offering a new colour never needs a DB migration.
+// Colour variants: one product, one design, several colours.
 //
-//   "Red | Navy Blue | Off White"
+// A suit is uploaded once — the design, description, sizes and price are shared
+// — and each colour it comes in carries its own pictures. The buyer picks a
+// colour and the gallery switches to that colour's photos, so five colours of
+// the same design are one product, not five.
 //
-// Unlike sizes, a colour never changes the price — it is only which shade the
-// buyer gets — so a colour is just its label, shown verbatim as typed.
+// All of it lives in the single free-text column `Product.colors` as a JSON
+// array, the same trick `Product.images` already uses, so adding a colour never
+// needs a migration:
+//
+//   [{"label":"Red","images":["/uploads/red-1.jpg"]}, ...]
 
-/** Entries are separated by any of these — admins type whichever they know. */
-const ENTRY_SEPARATOR = /[,\n|]/;
-const ENTRY_SEPARATOR_GLOBAL = /[,\n|]/g;
-const ENTRY_JOINER = " | ";
+/** One colour a product's design is available in. */
+export interface ColorVariant {
+  /** Shown to buyers exactly as typed, e.g. "Navy Blue" or "Firozi". */
+  label: string;
+  /** This colour's own pictures; the first one represents the colour. */
+  images: string[];
+}
 
-/** Strip the characters that carry meaning in the stored format. */
+/** Colours one product may list. */
+export const MAX_COLORS = 12;
+/** Pictures per colour — the shared gallery carries the rest of the design. */
+export const MAX_IMAGES_PER_COLOR = 4;
+/**
+ * Cap for the stored JSON string. Generous enough for MAX_COLORS colours with
+ * MAX_IMAGES_PER_COLOR long picture URLs each, so a legitimate payload is never
+ * rejected, while still bounding what a request can write.
+ */
+export const MAX_COLORS_LENGTH = 8000;
+
+/** Entries in the pre-JSON format, which stored colour names only. */
+const LEGACY_SEPARATOR = /[,\n|]/;
+
 function sanitizeLabel(label: string): string {
-  return label.replace(ENTRY_SEPARATOR_GLOBAL, " ").replace(/\s+/g, " ").trim();
+  return label.replace(/\s+/g, " ").trim();
 }
 
 /**
- * Colours an admin entered for a product, in the order they were added.
- * Duplicate labels (ignoring case) are dropped, first one wins.
+ * Drop blanks, trim, and collapse duplicate labels (ignoring case, first one
+ * wins) — applied on both read and write so a product never shows the same
+ * colour twice however the data got in.
  */
-export function parseColors(colors: string | null | undefined): string[] {
-  if (!colors) return [];
-
-  const labels: string[] = [];
+function normalize(variants: readonly ColorVariant[]): ColorVariant[] {
+  const out: ColorVariant[] = [];
   const seen = new Set<string>();
 
-  for (const entry of colors.split(ENTRY_SEPARATOR)) {
-    const label = entry.trim();
+  for (const variant of variants) {
+    const label = sanitizeLabel(variant.label ?? "");
     if (!label) continue;
 
     const key = label.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
 
-    labels.push(label);
+    const images = (Array.isArray(variant.images) ? variant.images : [])
+      .filter((url): url is string => typeof url === "string" && url.length > 0)
+      .slice(0, MAX_IMAGES_PER_COLOR);
+
+    out.push({ label, images });
+    if (out.length >= MAX_COLORS) break;
   }
 
-  return labels;
+  return out;
 }
 
 /**
- * Inverse of {@link parseColors}: pack the admin's colours back into the one
+ * Colour variants an admin entered for a product. Anything unreadable parses to
+ * "no colours" rather than throwing, so one bad row can never take a product
+ * page down.
+ *
+ * Also reads the older name-only format ("Red | Navy Blue") that predates
+ * per-colour pictures — those colours simply have no pictures of their own and
+ * fall back to the product's shared gallery.
+ */
+export function parseColorVariants(
+  colors: string | null | undefined,
+): ColorVariant[] {
+  if (!colors) return [];
+
+  const trimmed = colors.trim();
+  // Anything that means to be JSON is read only as JSON: falling back to the
+  // name parser would turn a truncated row into a colour called "{oops".
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+    try {
+      const parsed: unknown = JSON.parse(trimmed);
+      if (!Array.isArray(parsed)) return [];
+      return normalize(
+        parsed
+          .filter(
+            (v): v is { label?: unknown; images?: unknown } =>
+              typeof v === "object" && v !== null,
+          )
+          .map((v) => ({
+            label: typeof v.label === "string" ? v.label : "",
+            images: Array.isArray(v.images) ? (v.images as string[]) : [],
+          })),
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  return normalize(
+    trimmed.split(LEGACY_SEPARATOR).map((label) => ({ label, images: [] })),
+  );
+}
+
+/**
+ * Inverse of {@link parseColorVariants}: pack the admin's colours into the one
  * string stored in `Product.colors`. Returns null when no usable colour was
  * given, which is how "this product has no colour options" is stored.
  */
-export function serializeColors(labels: readonly string[]): string | null {
-  const entries: string[] = [];
-  const seen = new Set<string>();
-
-  for (const raw of labels) {
-    const label = sanitizeLabel(raw);
-    if (!label) continue;
-
-    const key = label.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-
-    entries.push(label);
-  }
-
-  return entries.length > 0 ? entries.join(ENTRY_JOINER) : null;
+export function serializeColorVariants(
+  variants: readonly ColorVariant[],
+): string | null {
+  const normalized = normalize(variants);
+  return normalized.length > 0 ? JSON.stringify(normalized) : null;
 }
 
-/** How many colours one product may list — keeps the stored string sane. */
-export const MAX_COLORS = 20;
+/** The variant matching a label, comparing case-insensitively. */
+export function findColorVariant(
+  variants: readonly ColorVariant[],
+  label: string | null | undefined,
+): ColorVariant | undefined {
+  if (!label) return undefined;
+  const key = label.trim().toLowerCase();
+  return variants.find((v) => v.label.toLowerCase() === key);
+}
+
+/**
+ * Pictures to show for the chosen colour: that colour's own photos when the
+ * admin uploaded any, otherwise the product's shared gallery. Never returns an
+ * empty gallery as long as the product itself has one picture.
+ */
+export function galleryForColor(
+  variants: readonly ColorVariant[],
+  label: string | null | undefined,
+  productImages: readonly string[],
+): string[] {
+  const images = findColorVariant(variants, label)?.images ?? [];
+  return images.length > 0 ? [...images] : [...productImages];
+}
 
 /**
  * Suggestions offered in the admin colour box. Only a starting point: the admin
@@ -141,8 +217,8 @@ const SWATCHES: Record<string, string> = {
 
 /**
  * A CSS colour for the given label's swatch, or null when we don't recognise
- * the name — callers then fall back to showing the label alone rather than
- * guessing a shade that misleads the buyer.
+ * the name — callers then fall back to the colour's own photo or the label
+ * alone rather than guessing a shade that misleads the buyer.
  */
 export function colorSwatch(label: string): string | null {
   return SWATCHES[label.trim().toLowerCase()] ?? null;

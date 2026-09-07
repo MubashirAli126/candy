@@ -15,6 +15,8 @@ import {
   unitsToBulkDiscount,
 } from "@/lib/pricing";
 import { hasSizePrices, priceForSize, type SizeOption } from "@/lib/sizes";
+import { colorSwatch } from "@/lib/colors";
+import { useProductColor } from "@/context/ProductColorContext";
 
 interface Props {
   product: {
@@ -32,6 +34,9 @@ interface Props {
 
 export default function AddToCartForm({ product, sizes = [] }: Props) {
   const { addItem } = useCart();
+  // Null when the design comes in one colour — then nothing colour-related is
+  // shown and the cart line carries no colour, exactly as before.
+  const color = useProductColor();
   const [qty, setQty] = useState(1);
   const [size, setSize] = useState<string>(sizes[0]?.label ?? "");
   const [added, setAdded] = useState(false);
@@ -56,9 +61,12 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
     if (outOfStock) return;
     addItem({
       ...product,
+      // The chosen colour's own picture, so the cart shows what was picked.
+      image: color?.images[0] ?? product.image,
       price: unitPrice,
       quantity: qty,
       size: size || undefined,
+      color: color?.selected || undefined,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -66,6 +74,46 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
 
   return (
     <div className="space-y-5">
+      {/* Colour — the same design in another shade, each with its own pictures. */}
+      {color && color.variants.length > 0 && (
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-brand-dark">
+            Colour
+            <span className="ml-1 font-normal text-gray-500">
+              {color.selected}
+            </span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {color.variants.map((variant) => {
+              const selected = color.selected === variant.label;
+              const swatch = colorSwatch(variant.label);
+              return (
+                <button
+                  key={variant.label}
+                  type="button"
+                  onClick={() => color.select(variant.label)}
+                  aria-pressed={selected}
+                  className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                    selected
+                      ? "border-brand-purple bg-brand-purple text-white"
+                      : "border-gray-200 text-brand-dark hover:border-brand-purple"
+                  }`}
+                >
+                  {swatch && (
+                    <span
+                      aria-hidden
+                      className="h-4 w-4 shrink-0 rounded-full border border-black/20"
+                      style={{ backgroundColor: swatch }}
+                    />
+                  )}
+                  {variant.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Size — options come from the admin; nothing is shown when none were set. */}
       {sizes.length > 0 && (
         <div>
@@ -96,7 +144,9 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
                         selected ? "text-white/90" : "text-brand-purple"
                       }`}
                     >
-                      {formatPrice(priceForSize(product.price, sizes, option.label))}
+                      {formatPrice(
+                        priceForSize(product.price, sizes, option.label),
+                      )}
                     </span>
                   )}
                 </button>
@@ -165,7 +215,11 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
           disabled={outOfStock}
           className="flex-1 rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {outOfStock ? "Out of stock" : added ? "✓ Added to cart" : "Add to cart"}
+          {outOfStock
+            ? "Out of stock"
+            : added
+              ? "✓ Added to cart"
+              : "Add to cart"}
         </button>
         <Link
           href="/cart"

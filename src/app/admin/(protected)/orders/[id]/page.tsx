@@ -46,14 +46,22 @@ export default async function AdminOrderDetailPage({
             <table className="w-full text-sm">
               <tbody>
                 {order.items.map((item) => (
-                  <tr key={item.id} className="border-b border-black/5 last:border-0">
+                  <tr
+                    key={item.id}
+                    className="border-b border-black/5 last:border-0"
+                  >
                     <td className="px-5 py-3">
                       <div className="font-semibold text-brand-dark">
                         {item.productName}
                       </div>
-                      {item.size && (
+                      {(item.color || item.size) && (
                         <div className="text-xs text-gray-500">
-                          Size: {item.size}
+                          {[
+                            item.color ? `Colour: ${item.color}` : null,
+                            item.size ? `Size: ${item.size}` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </div>
                       )}
                     </td>
@@ -74,7 +82,9 @@ export default async function AdminOrderDetailPage({
               </div>
               <div className="flex justify-between">
                 <dt className="text-gray-500">Shipping</dt>
-                <dd>{order.shipping === 0 ? "FREE" : formatPrice(order.shipping)}</dd>
+                <dd>
+                  {order.shipping === 0 ? "FREE" : formatPrice(order.shipping)}
+                </dd>
               </div>
               <div className="flex justify-between border-t border-black/5 pt-2 text-base font-bold text-brand-dark">
                 <dt>Total</dt>

@@ -100,6 +100,7 @@ model OrderItem {
   price       Float // snapshot of price at order time
   quantity    Int
   size        String? // size chosen at order time, e.g. "Medium"
+  color       String? // colour variant chosen at order time, e.g. "Navy Blue"
 
   @@index([orderId])
 }

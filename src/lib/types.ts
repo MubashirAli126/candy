@@ -8,7 +8,20 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
+  /** Colour variant chosen, when the design comes in more than one. */
+  color?: string;
   stock: number;
+}
+
+/**
+ * What makes a cart line its own line. The same suit in two colours, or two
+ * sizes, are separate lines — so this is the identity used to add, remove and
+ * re-quantify.
+ */
+export interface CartLineKey {
+  productId: string;
+  size?: string;
+  color?: string;
 }
 
 export interface CheckoutForm {
@@ -120,7 +133,7 @@ export function productTypeOption(value: unknown): ProductTypeOption {
  */
 export function productTypeLabel(
   value: unknown,
-  customType?: string | null
+  customType?: string | null,
 ): string {
   const option = productTypeOption(value);
   if (option.value === "OTHER") {
@@ -153,7 +166,7 @@ export function productTypeIcon(value: unknown): string {
  */
 export function mirrorsProductType(
   categorySlug: string | null | undefined,
-  productType?: unknown
+  productType?: unknown,
 ): boolean {
   if (!categorySlug) return false;
   const slug = categorySlug.toLowerCase();
@@ -165,11 +178,11 @@ export function mirrorsProductType(
 
 /** Best-guess type for a category slug — used to backfill/derive defaults. */
 export function productTypeFromCategorySlug(
-  slug: string | null | undefined
+  slug: string | null | undefined,
 ): ProductType {
   if (!slug) return DEFAULT_PRODUCT_TYPE;
   const match = PRODUCT_TYPE_OPTIONS.find(
-    (o) => o.value !== "OTHER" && slug.toLowerCase().includes(o.categorySlug)
+    (o) => o.value !== "OTHER" && slug.toLowerCase().includes(o.categorySlug),
   );
   return match?.value ?? DEFAULT_PRODUCT_TYPE;
 }

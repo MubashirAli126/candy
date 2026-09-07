@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
-import type { CartItem } from "@/lib/types";
+import type { CartItem, CartLineKey } from "@/lib/types";
 import { cartTotals } from "@/lib/pricing";
 
 const STORAGE_KEY = "candy_cart";
@@ -21,13 +21,18 @@ type CartState = { items: CartItem[] };
 
 type Action =
   | { type: "ADD"; item: CartItem }
-  | { type: "REMOVE"; productId: string; size?: string }
-  | { type: "SET_QTY"; productId: string; size?: string; quantity: number }
+  | { type: "REMOVE"; line: CartLineKey }
+  | { type: "SET_QTY"; line: CartLineKey; quantity: number }
   | { type: "CLEAR" }
   | { type: "HYDRATE"; items: CartItem[] };
 
-function sameLine(a: CartItem, productId: string, size?: string) {
-  return a.productId === productId && (a.size ?? "") === (size ?? "");
+/** Same product, same size and same colour — otherwise it is another line. */
+function sameLine(a: CartItem, line: CartLineKey) {
+  return (
+    a.productId === line.productId &&
+    (a.size ?? "") === (line.size ?? "") &&
+    (a.color ?? "") === (line.color ?? "")
+  );
 }
 
 function reducer(state: CartState, action: Action): CartState {
@@ -35,21 +40,19 @@ function reducer(state: CartState, action: Action): CartState {
     case "HYDRATE":
       return { items: action.items };
     case "ADD": {
-      const existing = state.items.find((i) =>
-        sameLine(i, action.item.productId, action.item.size)
-      );
+      const existing = state.items.find((i) => sameLine(i, action.item));
       if (existing) {
         return {
           items: state.items.map((i) =>
-            sameLine(i, action.item.productId, action.item.size)
+            sameLine(i, action.item)
               ? {
                   ...i,
                   quantity: Math.min(
                     i.quantity + action.item.quantity,
-                    i.stock || 99
+                    i.stock || 99,
                   ),
                 }
-              : i
+              : i,
           ),
         };
       }
@@ -57,17 +60,15 @@ function reducer(state: CartState, action: Action): CartState {
     }
     case "REMOVE":
       return {
-        items: state.items.filter(
-          (i) => !sameLine(i, action.productId, action.size)
-        ),
+        items: state.items.filter((i) => !sameLine(i, action.line)),
       };
     case "SET_QTY":
       return {
         items: state.items
           .map((i) =>
-            sameLine(i, action.productId, action.size)
+            sameLine(i, action.line)
               ? { ...i, quantity: Math.max(1, action.quantity) }
-              : i
+              : i,
           )
           .filter((i) => i.quantity > 0),
       };
@@ -81,8 +82,8 @@ function reducer(state: CartState, action: Action): CartState {
 interface CartContextValue {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (productId: string, size?: string) => void;
-  setQuantity: (productId: string, quantity: number, size?: string) => void;
+  removeItem: (line: CartLineKey) => void;
+  setQuantity: (line: CartLineKey, quantity: number) => void;
   clear: () => void;
   totalItems: number;
   /** Line prices summed before any bulk discount. */
@@ -102,7 +103,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Lightweight "added to cart" toast — gives visible feedback anywhere,
   // even when the header cart badge is scrolled out of view (mobile).
   const [toast, setToast] = useState<{ key: number; name: string } | null>(
-    null
+    null,
   );
 
   // Auto-dismiss the toast
@@ -147,10 +148,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         dispatch({ type: "ADD", item });
         setToast({ key: Date.now(), name: item.name });
       },
-      removeItem: (productId, size) =>
-        dispatch({ type: "REMOVE", productId, size }),
-      setQuantity: (productId, quantity, size) =>
-        dispatch({ type: "SET_QTY", productId, quantity, size }),
+      removeItem: (line) => dispatch({ type: "REMOVE", line }),
+      setQuantity: (line, quantity) =>
+        dispatch({ type: "SET_QTY", line, quantity }),
       clear: () => dispatch({ type: "CLEAR" }),
       totalItems,
       ...totals,
