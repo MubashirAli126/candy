@@ -94,8 +94,11 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Media upload failed:", error);
+    // The route is admin-only, so surfacing the underlying reason here is safe
+    // and saves a trip to the platform logs when storage is misconfigured.
+    const detail = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Upload failed. Please try again." },
+      { error: "Upload failed. Please try again.", detail },
       { status: 500 }
     );
   }

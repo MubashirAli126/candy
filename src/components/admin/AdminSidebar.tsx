@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
   { href: "/admin/orders", label: "Orders", icon: "📦" },
   { href: "/admin/products", label: "Products", icon: "🏷️" },
+  { href: "/admin/slides", label: "Homepage slider", icon: "🖼️" },
 ];
 
 export default function AdminSidebar({ email }: { email: string }) {

@@ -13,6 +13,8 @@ export interface ProductCardData {
   price: number;
   salePrice: number | null;
   image: string;
+  /** Second gallery picture, revealed on hover — undefined when there is none. */
+  hoverImage?: string;
   stock: number;
   /** Raw sizes column — carries the per-size prices (see @/lib/sizes). */
   size?: string | null;
@@ -39,31 +41,47 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
     !mirrorsProductType(product.categorySlug, product.productType);
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-brand">
+    <div className="group relative flex flex-col bg-white">
       <Link
         href={`/products/${product.slug}`}
-        className="relative block aspect-square overflow-hidden bg-gray-100"
+        className="relative block aspect-[3/4] overflow-hidden bg-brand-mist"
       >
         <Image
           src={product.image}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className={
+            product.hoverImage
+              ? "object-cover transition-opacity duration-500 group-hover:opacity-0"
+              : "object-cover transition-transform duration-500 group-hover:scale-105"
+          }
         />
+        {/* Front/back shot swap — the reference cards flip to the second
+            picture on hover, which only works when one exists. */}
+        {product.hoverImage && (
+          <Image
+            src={product.hoverImage}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          />
+        )}
         {discount > 0 && (
-          <span className="absolute left-2 top-2 rounded-full bg-brand-pink px-2.5 py-1 text-xs font-bold text-brand-dark shadow sm:left-3 sm:top-3">
-            -{discount}%
+          <span className="absolute left-0 top-3 bg-brand-logoRed px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
+            Save {discount}%
           </span>
         )}
         {outOfStock && (
-          <span className="absolute inset-0 grid place-items-center bg-black/50 text-sm font-bold uppercase tracking-wide text-white">
-            Out of stock
+          <span className="absolute inset-0 grid place-items-center bg-black/45 text-sm font-bold uppercase tracking-wide text-white">
+            Sold out
           </span>
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-3 sm:p-4">
+      <div className="flex flex-1 flex-col pt-3">
         <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
           {showCategory && (
             <span className="text-xs font-semibold uppercase tracking-wide text-brand-purple">
@@ -78,16 +96,16 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           )}
         </div>
         <Link href={`/products/${product.slug}`} className="flex-1">
-          <h3 className="line-clamp-2 font-semibold text-brand-dark hover:text-brand-pink">
+          <h3 className="line-clamp-2 text-sm font-medium text-brand-dark hover:text-brand-pink">
             {product.name}
           </h3>
         </Link>
 
-        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 sm:mt-3">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           {sizePriced && (
             <span className="text-xs font-semibold text-gray-500">From</span>
           )}
-          <span className="text-lg font-extrabold text-brand-dark">
+          <span className="text-base font-extrabold text-brand-dark">
             {formatPrice(sizePriced ? minPrice : effectivePrice)}
           </span>
           {!sizePriced && product.salePrice && (
@@ -101,9 +119,9 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           {sizePriced && !outOfStock ? (
             <Link
               href={`/products/${product.slug}`}
-              className="block w-full rounded-full bg-brand-dark px-3 py-2.5 text-center text-sm font-bold text-white transition-all hover:bg-brand-purple sm:px-4"
+              className="block w-full border border-brand-dark px-3 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-brand-dark transition-colors hover:bg-brand-dark hover:text-white sm:px-4"
             >
-              Choose size
+              Choose options
             </Link>
           ) : (
             <QuickAddButton
