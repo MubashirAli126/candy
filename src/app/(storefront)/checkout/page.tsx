@@ -81,7 +81,7 @@ export default function CheckoutPage() {
         "",
         ...items.map(
           (i) =>
-            `• ${i.name}${i.color ? ` ${i.color}` : ""}${
+            `• ${i.name}${i.colorLabel ? ` ${i.colorLabel}` : ""}${
               i.size ? ` (${i.size})` : ""
             } x${i.quantity} — ${formatPrice(lineTotal(i.price, i.quantity))}${
               bulkDiscountPercent(i.quantity) > 0
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                 >
                   <span className="min-w-0 break-words text-gray-600">
                     {i.name}
-                    {i.color ? ` ${i.color}` : ""}
+                    {i.colorLabel ? ` ${i.colorLabel}` : ""}
                     {i.size ? ` (${i.size})` : ""} × {i.quantity}
                   </span>
                   <span className="font-semibold">

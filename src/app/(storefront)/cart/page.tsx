@@ -97,10 +97,10 @@ export default function CartPage() {
                     ✕
                   </button>
                 </div>
-                {(item.size || item.color) && (
+                {(item.size || item.colorLabel) && (
                   <span className="text-sm text-gray-500">
                     {[
-                      item.color ? `Colour: ${item.color}` : null,
+                      item.colorLabel ?? null,
                       item.size ? `Size: ${item.size}` : null,
                     ]
                       .filter(Boolean)

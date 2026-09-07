@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateOrderNumber } from "@/lib/utils";
 import { effectiveUnitPrice, lineTotal, shippingFor } from "@/lib/pricing";
 import { findSizeOption, hasSizePrices, parseSizeOptions } from "@/lib/sizes";
-import { findColorVariant, parseColorVariants } from "@/lib/colors";
+import { parseColorImages } from "@/lib/colors";
 
 const orderSchema = z.object({
   customer: z.object({
@@ -23,7 +23,7 @@ const orderSchema = z.object({
         // above the old 99 — stock is what really bounds a line.
         quantity: z.number().int().min(1).max(9999),
         size: z.string().optional(),
-        color: z.string().optional(),
+        color: z.string().max(500).optional(),
       }),
     )
     .min(1, "Cart is empty"),
@@ -94,13 +94,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Same rule for colours: a product with colour variants must be ordered in
-    // one of them, and the stored label is the admin's, not the client's.
-    const colorVariants = parseColorVariants(product.colors);
-    const chosenColor = findColorVariant(colorVariants, item.color);
-    if (colorVariants.length > 0 && !chosenColor) {
+    // A colour, when one is picked, must be a picture this product actually
+    // offers — never free text from the client. Picking none is legitimate: it
+    // means the design as shown in the main pictures.
+    const colorImages = parseColorImages(product.colors);
+    const chosenColor = item.color?.trim();
+    if (chosenColor && !colorImages.includes(chosenColor)) {
       return NextResponse.json(
-        { error: `Please choose a colour for "${product.name}".` },
+        { error: `That colour is no longer available for "${product.name}".` },
         { status: 400 },
       );
     }
@@ -116,7 +117,9 @@ export async function POST(request: Request) {
       quantity: item.quantity,
       // Snapshot the label as the admin wrote it, not the client's casing.
       size: chosenSize?.label ?? item.size,
-      color: chosenColor?.label ?? item.color,
+      // Snapshot the picture itself: colours have no names, so the photo is
+      // what tells the shop which one to pack.
+      color: chosenColor || undefined,
     });
   }
 

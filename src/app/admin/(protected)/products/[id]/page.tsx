@@ -5,7 +5,7 @@ import ProductForm from "@/components/admin/ProductForm";
 import { toProductType } from "@/lib/types";
 import { productGallery } from "@/lib/utils";
 import { parseSizeOptions } from "@/lib/sizes";
-import { parseColorVariants } from "@/lib/colors";
+import { parseColorImages } from "@/lib/colors";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +46,7 @@ export default async function EditProductPage({
           images: productGallery(product.image, product.images),
           video: product.video,
           sizes: parseSizeOptions(product.size),
-          colors: parseColorVariants(product.colors),
+          colors: parseColorImages(product.colors),
           stock: product.stock,
           categoryId: product.categoryId,
           featured: product.featured,

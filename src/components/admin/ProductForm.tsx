@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
 import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
-import ColorVariantEditor from "./ColorVariantEditor";
+import ColorPicturesField from "./ColorPicturesField";
 import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
-import { serializeColorVariants, type ColorVariant } from "@/lib/colors";
+import { serializeColorImages } from "@/lib/colors";
 
 interface Category {
   id: string;
@@ -28,10 +28,10 @@ interface ProductFormValues {
   /** Sizes offered for this product, each with its own optional price. */
   sizes: SizeOption[];
   /**
-   * Colours this design comes in, each with its own pictures; empty means the
-   * design is sold in one colour.
+   * One picture per other colour this design comes in; empty means the design
+   * is sold in one colour.
    */
-  colors: ColorVariant[];
+  colors: string[];
   stock: number;
   categoryId: string;
   featured: boolean;
@@ -116,7 +116,7 @@ export default function ProductForm({
         images: values.images,
         video: values.video,
         size: serializeSizeOptions(values.sizes),
-        colors: serializeColorVariants(values.colors),
+        colors: serializeColorImages(values.colors),
         stock: Number(values.stock),
         categoryId: values.categoryId,
         featured: values.featured,
@@ -208,8 +208,8 @@ export default function ProductForm({
         </div>
 
         <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-          <ColorVariantEditor
-            value={values.colors}
+          <ColorPicturesField
+            images={values.colors}
             onChange={(v) => set("colors", v)}
             onUploadingChange={setColorUploading}
             onError={setError}

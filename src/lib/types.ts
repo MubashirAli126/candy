@@ -8,8 +8,13 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
-  /** Colour variant chosen, when the design comes in more than one. */
+  /**
+   * The picked colour's picture — the colour's identity, since colours are not
+   * named. Absent when the design comes in one colour.
+   */
   color?: string;
+  /** "Colour 2" — how that picture is referred to in words. */
+  colorLabel?: string;
   stock: number;
 }
 

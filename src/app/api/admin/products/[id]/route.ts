@@ -8,8 +8,8 @@ import { serializeGallery } from "@/lib/utils";
 import { MAX_IMAGES } from "@/lib/media";
 import {
   MAX_COLORS_LENGTH,
-  parseColorVariants,
-  serializeColorVariants,
+  parseColorImages,
+  serializeColorImages,
 } from "@/lib/colors";
 
 const updateSchema = z.object({
@@ -24,7 +24,7 @@ const updateSchema = z.object({
   // Sizes and their per-size prices, packed into one string by
   // serializeSizeOptions(), e.g. "10x10 cm=250 | 12x20 cm=400".
   size: z.string().max(1000).nullable().optional(),
-  // Colour variants packed into one JSON string by serializeColorVariants().
+  // One picture per colour, packed into a JSON string by serializeColorImages().
   // Re-parsed below rather than trusted as-is.
   colors: z.string().max(MAX_COLORS_LENGTH).nullable().optional(),
   stock: z.number().int().min(0).optional(),
@@ -66,7 +66,7 @@ export async function PATCH(
   // Re-serialize the colours from what we could parse, so the stored JSON is
   // always canonical and within the colour/picture caps.
   if (rest.colors !== undefined) {
-    data.colors = serializeColorVariants(parseColorVariants(rest.colors));
+    data.colors = serializeColorImages(parseColorImages(rest.colors));
   }
 
   // A gallery replaces both picture fields at once so main image and extras

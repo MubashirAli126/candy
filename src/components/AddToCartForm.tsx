@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import QuantityStepper from "@/components/QuantityStepper";
@@ -15,7 +16,6 @@ import {
   unitsToBulkDiscount,
 } from "@/lib/pricing";
 import { hasSizePrices, priceForSize, type SizeOption } from "@/lib/sizes";
-import { colorSwatch } from "@/lib/colors";
 import { useProductColor } from "@/context/ProductColorContext";
 
 interface Props {
@@ -30,6 +30,42 @@ interface Props {
   };
   /** Sizes the admin entered for this product; empty hides the size picker. */
   sizes?: SizeOption[];
+}
+
+/** One colour to choose, shown as the picture of the suit in that colour. */
+function ColorChoice({
+  image,
+  label,
+  selected,
+  onSelect,
+}: {
+  image: string;
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      aria-label={label}
+      title={label}
+      className={`relative h-16 w-16 overflow-hidden rounded-xl border-2 transition-colors ${
+        selected
+          ? "border-brand-purple"
+          : "border-gray-200 hover:border-brand-purple"
+      }`}
+    >
+      <Image
+        src={image}
+        alt={label}
+        fill
+        sizes="64px"
+        className="object-cover"
+      />
+    </button>
+  );
 }
 
 export default function AddToCartForm({ product, sizes = [] }: Props) {
@@ -61,12 +97,13 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
     if (outOfStock) return;
     addItem({
       ...product,
-      // The chosen colour's own picture, so the cart shows what was picked.
-      image: color?.images[0] ?? product.image,
+      // The picked colour's own picture, so the cart shows what was chosen.
+      image: color?.selected || product.image,
       price: unitPrice,
       quantity: qty,
       size: size || undefined,
       color: color?.selected || undefined,
+      colorLabel: color?.selectedLabel || undefined,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -74,42 +111,32 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
 
   return (
     <div className="space-y-5">
-      {/* Colour — the same design in another shade, each with its own pictures. */}
-      {color && color.variants.length > 0 && (
+      {/* Colour — the same design, photographed in each colour it comes in. */}
+      {color && color.colors.length > 0 && (
         <div>
           <label className="mb-2 block text-sm font-semibold text-brand-dark">
             Colour
             <span className="ml-1 font-normal text-gray-500">
-              {color.selected}
+              {color.selected ? color.selectedLabel : "as shown"}
             </span>
           </label>
           <div className="flex flex-wrap gap-2">
-            {color.variants.map((variant) => {
-              const selected = color.selected === variant.label;
-              const swatch = colorSwatch(variant.label);
-              return (
-                <button
-                  key={variant.label}
-                  type="button"
-                  onClick={() => color.select(variant.label)}
-                  aria-pressed={selected}
-                  className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-semibold transition-colors ${
-                    selected
-                      ? "border-brand-purple bg-brand-purple text-white"
-                      : "border-gray-200 text-brand-dark hover:border-brand-purple"
-                  }`}
-                >
-                  {swatch && (
-                    <span
-                      aria-hidden
-                      className="h-4 w-4 shrink-0 rounded-full border border-black/20"
-                      style={{ backgroundColor: swatch }}
-                    />
-                  )}
-                  {variant.label}
-                </button>
-              );
-            })}
+            {/* The design's own pictures are a colour too — this resets to them. */}
+            <ColorChoice
+              image={product.image}
+              label="Colour as shown in the main pictures"
+              selected={!color.selected}
+              onSelect={() => color.select("")}
+            />
+            {color.colors.map((image, index) => (
+              <ColorChoice
+                key={image}
+                image={image}
+                label={`Colour ${index + 2}`}
+                selected={color.selected === image}
+                onSelect={() => color.select(image)}
+              />
+            ))}
           </div>
         </div>
       )}

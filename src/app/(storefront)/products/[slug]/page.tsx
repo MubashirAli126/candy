@@ -14,7 +14,7 @@ import {
   productGallery,
 } from "@/lib/utils";
 import { hasSizePrices, parseSizeOptions, sizePriceRange } from "@/lib/sizes";
-import { parseColorVariants } from "@/lib/colors";
+import { parseColorImages } from "@/lib/colors";
 import { ProductColorProvider } from "@/context/ProductColorContext";
 import { BULK_DISCOUNT_PERCENT, BULK_MIN_QUANTITY } from "@/lib/pricing";
 import { breadcrumbSchema, productSchema } from "@/lib/seo";
@@ -69,7 +69,7 @@ export default async function ProductPage({
   const sizePriced = hasSizePrices(sizes);
   // Colours this design comes in, each with its own pictures. Empty means the
   // design is sold in one colour and nothing colour-related is rendered.
-  const colorVariants = parseColorVariants(product.colors);
+  const colorImages = parseColorImages(product.colors);
   const gallery = productGallery(product.image, product.images);
   const { min: minPrice, max: maxPrice } = sizePriceRange(
     effectivePrice,
@@ -120,7 +120,7 @@ export default async function ProductPage({
         / <span className="text-brand-dark">{product.name}</span>
       </nav>
 
-      <ProductColorProvider variants={colorVariants} productImages={gallery}>
+      <ProductColorProvider colors={colorImages} productImages={gallery}>
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
           {/* Media — follows the colour picked in the form below. */}
           <ProductColorGallery

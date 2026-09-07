@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -54,14 +55,27 @@ export default async function AdminOrderDetailPage({
                       <div className="font-semibold text-brand-dark">
                         {item.productName}
                       </div>
-                      {(item.color || item.size) && (
+                      {item.size && (
                         <div className="text-xs text-gray-500">
-                          {[
-                            item.color ? `Colour: ${item.color}` : null,
-                            item.size ? `Size: ${item.size}` : null,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
+                          Size: {item.size}
+                        </div>
+                      )}
+                      {/* Colours are pictures, not names — show the one that
+                          was ordered so it can be packed without guesswork. */}
+                      {item.color && (
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="relative h-10 w-10 overflow-hidden rounded-lg border border-black/10 bg-gray-100">
+                            <Image
+                              src={item.color}
+                              alt="Colour ordered"
+                              fill
+                              sizes="40px"
+                              className="object-cover"
+                            />
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            Colour ordered
+                          </span>
                         </div>
                       )}
                     </td>

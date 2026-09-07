@@ -6,8 +6,8 @@ import { formatPrice, serializeGallery, slugify } from "@/lib/utils";
 import { parseSizeOptions } from "@/lib/sizes";
 import {
   MAX_COLORS_LENGTH,
-  parseColorVariants,
-  serializeColorVariants,
+  parseColorImages,
+  serializeColorImages,
 } from "@/lib/colors";
 import { MAX_IMAGES } from "@/lib/media";
 import {
@@ -37,7 +37,7 @@ const productSchema = z
     // Sizes and their per-size prices, packed into one string by
     // serializeSizeOptions(), e.g. "Small=2500 | Medium=2700".
     size: z.string().max(1000).nullable().optional(),
-    // Colour variants packed into one JSON string by serializeColorVariants().
+    // One picture per colour, packed into a JSON string by serializeColorImages().
     // Re-parsed below rather than trusted as-is.
     colors: z.string().max(MAX_COLORS_LENGTH).nullable().optional(),
     stock: z.number().int().min(0).optional(),
@@ -192,7 +192,7 @@ export async function POST(request: Request) {
       size: data.size ?? null,
       // Re-serialized from what we could parse, so the stored JSON is always
       // canonical and within the colour/picture caps.
-      colors: serializeColorVariants(parseColorVariants(data.colors)),
+      colors: serializeColorImages(parseColorImages(data.colors)),
       stock: data.stock ?? DEFAULT_STOCK,
       categoryId,
       featured: data.featured ?? false,
