@@ -18,7 +18,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "All Items",
+  title: "Pret — Ready to Wear",
   description: `Browse every ladies 3 piece, 2 piece suit and kurti at ${SITE_NAME}. Premium fabric, fresh designs, cash on delivery across Pakistan.`,
   alternates: { canonical: "/products" },
 };
@@ -26,11 +26,12 @@ export const metadata: Metadata = {
 const chipClass =
   "whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors";
 
-/** Keep the other active filter when building a filter link. */
-function filterHref(category?: string, type?: string): string {
+/** Keep the other active filters when building a filter link. */
+function filterHref(category?: string, type?: string, q?: string): string {
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (type) params.set("type", type);
+  if (q) params.set("q", q);
   const query = params.toString();
   return query ? `/products?${query}` : "/products";
 }
@@ -38,16 +39,17 @@ function filterHref(category?: string, type?: string): string {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: { category?: string; type?: string };
+  searchParams: { category?: string; type?: string; q?: string };
 }) {
   const activeCat = searchParams.category;
   // Ignore an unknown ?type= rather than 404ing — the filter is a convenience.
   const activeType = isProductType(searchParams.type)
     ? searchParams.type
     : undefined;
+  const query = searchParams.q?.trim() || undefined;
 
   const [products, allCategories, typeCounts] = await Promise.all([
-    getAllProducts(activeCat, activeType),
+    getAllProducts(activeCat, activeType, query),
     getCategories(),
     getProductTypeCounts(),
   ]);
@@ -62,20 +64,28 @@ export default async function ProductsPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <JsonLd data={itemListSchema(products)} />
-      <header className="mb-6 sm:mb-8">
-        <h1 className="font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
-          All Items
+      <header className="mb-6 text-center sm:mb-8">
+        <h1 className="font-display text-2xl font-extrabold uppercase tracking-[0.14em] text-brand-dark sm:text-3xl">
+          {query ? `Search: ${query}` : "Pret — Ready to Wear"}
         </h1>
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-sm text-gray-500">
           {products.length} product{products.length !== 1 && "s"} available
         </p>
+        {query && (
+          <Link
+            href={filterHref(activeCat, activeType)}
+            className="mt-2 inline-block text-sm font-semibold text-brand-pink hover:underline"
+          >
+            Clear search
+          </Link>
+        )}
       </header>
 
       {/* Single combined filter row — product types and categories together */}
       <div className="mb-6 sm:mb-8">
-        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:justify-center sm:px-0">
           <Link
-            href={filterHref()}
+            href={filterHref(undefined, undefined, query)}
             className={cn(chipClass, !activeCat && !activeType
               ? "bg-brand-dark text-white"
               : "bg-gray-100 text-brand-dark hover:bg-gray-200")}
@@ -87,7 +97,7 @@ export default async function ProductsPage({
             return (
               <Link
                 key={`type-${option.value}`}
-                href={filterHref(activeCat, option.value)}
+                href={filterHref(activeCat, option.value, query)}
                 className={cn(chipClass, activeType === option.value
                   ? "bg-brand-purple text-white"
                   : "bg-gray-100 text-brand-dark hover:bg-gray-200")}
@@ -102,7 +112,7 @@ export default async function ProductsPage({
           {categories.map((c) => (
             <Link
               key={`cat-${c.id}`}
-              href={filterHref(c.slug, activeType)}
+              href={filterHref(c.slug, activeType, query)}
               className={cn(chipClass, activeCat === c.slug
                 ? "bg-brand-dark text-white"
                 : "bg-gray-100 text-brand-dark hover:bg-gray-200")}
@@ -115,10 +125,12 @@ export default async function ProductsPage({
 
       {products.length === 0 ? (
         <p className="rounded-2xl bg-gray-50 p-10 text-center text-gray-500">
-          No products match these filters.
+          {query
+            ? `Nothing matched “${query}”. Try a different search.`
+            : "No products match these filters."}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

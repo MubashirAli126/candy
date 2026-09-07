@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MAX_IMAGES, acceptAttr } from "@/lib/media";
+import { cn } from "@/lib/utils";
 
 interface UploadResponse {
   url?: string;
@@ -27,6 +28,12 @@ interface MediaUploaderProps {
   onError?: (message: string | null) => void;
   /** Show a field for adding an image that is already hosted elsewhere. */
   allowUrl?: boolean;
+  /** How many pictures this form accepts. Defaults to a full product gallery. */
+  max?: number;
+  /** Field label — banners aren't a "gallery", so callers can rename it. */
+  label?: string;
+  /** Footnote under the grid. Defaults to the reordering hint. */
+  hint?: string;
 }
 
 /**
@@ -39,12 +46,15 @@ export default function MediaUploader({
   onUploadingChange,
   onError,
   allowUrl = false,
+  max = MAX_IMAGES,
+  label = "Pictures",
+  hint,
 }: MediaUploaderProps) {
   const [imagesBusy, setImagesBusy] = useState(false);
   const [urlDraft, setUrlDraft] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
 
-  const remaining = Math.max(0, MAX_IMAGES - images.length);
+  const remaining = Math.max(0, max - images.length);
 
   // Report the upload state so the parent can disable submit while an upload
   // is still in flight.
@@ -66,7 +76,9 @@ export default function MediaUploader({
     onError?.(null);
     if (picked.length > remaining) {
       onError?.(
-        `You can add ${MAX_IMAGES} images at most — only the first ${remaining} were uploaded.`
+        `You can add ${max} image${max === 1 ? "" : "s"} at most — only the first ${remaining} ${
+          remaining === 1 ? "was" : "were"
+        } uploaded.`
       );
     }
 
@@ -96,7 +108,7 @@ export default function MediaUploader({
     const url = urlDraft.trim();
     if (!url) return;
     if (remaining === 0) {
-      onError?.(`You can add ${MAX_IMAGES} images at most.`);
+      onError?.(`You can add ${max} image${max === 1 ? "" : "s"} at most.`);
       return;
     }
     if (images.includes(url)) {
@@ -119,13 +131,13 @@ export default function MediaUploader({
   return (
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        Pictures {images.length > 0 && `(${images.length}/${MAX_IMAGES})`}
+        {label} {images.length > 0 && max > 1 && `(${images.length}/${max})`}
       </label>
       <input
         ref={imageInput}
         type="file"
         accept={acceptAttr("image")}
-        multiple
+        multiple={max > 1}
         onChange={handleImages}
         className="hidden"
       />
@@ -138,27 +150,44 @@ export default function MediaUploader({
         {imagesBusy
           ? "Uploading..."
           : remaining === 0
-          ? `Maximum ${MAX_IMAGES} pictures added`
+          ? `Maximum ${max} picture${max === 1 ? "" : "s"} added`
           : images.length > 0
           ? "➕ Add more pictures"
+          : max === 1
+          ? "📷 Choose a picture"
           : "📷 Choose pictures (you can select several)"}
       </button>
 
       {images.length > 0 && (
         <>
-          <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+          {/* A single picture is a banner, so preview it the way the storefront
+              shows it: wide, contained, on the dark carousel background. */}
+          <ul
+            className={cn(
+              "mt-3 grid gap-3",
+              max === 1 ? "grid-cols-1" : "grid-cols-3 sm:grid-cols-4"
+            )}
+          >
             {images.map((url, index) => (
               <li
                 key={`${url}-${index}`}
-                className="group relative aspect-square overflow-hidden rounded-xl border border-black/5 bg-gray-100"
+                className={cn(
+                  "group relative overflow-hidden rounded-xl border border-black/5",
+                  max === 1
+                    ? "aspect-[16/7] bg-brand-night"
+                    : "aspect-square bg-gray-100"
+                )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={url}
                   alt={index === 0 ? "Main picture" : `Picture ${index + 1}`}
-                  className="h-full w-full object-cover"
+                  className={cn(
+                    "h-full w-full",
+                    max === 1 ? "object-contain" : "object-cover"
+                  )}
                 />
-                {index === 0 && (
+                {index === 0 && max > 1 && (
                   <span className="absolute left-1.5 top-1.5 rounded-full bg-brand-gradient px-2 py-0.5 text-xs font-bold text-brand-dark shadow">
                     MAIN
                   </span>
@@ -171,7 +200,9 @@ export default function MediaUploader({
                 >
                   ✕
                 </button>
-                <div className="absolute inset-x-0 bottom-0 flex justify-between bg-black/50 transition-opacity focus-within:opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
+                <div
+                  hidden={max === 1}
+                  className="absolute inset-x-0 bottom-0 flex justify-between bg-black/50 transition-opacity focus-within:opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                   <button
                     type="button"
                     onClick={() => move(index, -1)}
@@ -195,7 +226,7 @@ export default function MediaUploader({
             ))}
           </ul>
           <p className="mt-2 text-xs text-gray-400">
-            The first picture is used as the main image — use ← → to reorder.
+            {hint ?? "The first picture is used as the main image — use ← → to reorder."}
           </p>
         </>
       )}

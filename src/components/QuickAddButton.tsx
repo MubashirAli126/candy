@@ -31,9 +31,9 @@ export default function QuickAddButton({ product, disabled }: Props) {
       type="button"
       onClick={handleAdd}
       disabled={disabled}
-      className="w-full rounded-full bg-brand-dark px-3 py-2.5 text-sm font-bold text-white transition-all hover:bg-brand-purple disabled:cursor-not-allowed disabled:bg-gray-300 sm:px-4"
+      className="w-full border border-brand-dark bg-brand-dark px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:border-brand-pink hover:bg-brand-pink hover:text-brand-dark disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-300 disabled:text-white sm:px-4"
     >
-      {disabled ? "Out of stock" : added ? "✓ Added!" : "Add to cart"}
+      {disabled ? "Sold out" : added ? "✓ Added!" : "Add to cart"}
     </button>
   );
 }

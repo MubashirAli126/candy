@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { POLICY_SLUGS } from "@/lib/policies";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -12,6 +13,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/products`, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/about`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/contact`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/size-chart`, changeFrequency: "yearly", priority: 0.4 },
+    { url: `${SITE_URL}/faq`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}/track-order`, changeFrequency: "yearly", priority: 0.4 },
+    // Policy pages — one entry each, straight from the shared content map.
+    ...POLICY_SLUGS.map((slug) => ({
+      url: `${SITE_URL}/${slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    })),
   ];
 
   let products: { slug: string; updatedAt: Date }[] = [];
