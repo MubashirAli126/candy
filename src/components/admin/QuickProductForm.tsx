@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
 import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
+import ColorEditor from "./ColorEditor";
 import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
+import { serializeColors } from "@/lib/colors";
 
 /**
  * Minimal "Add product" form — only the things an admin must decide:
@@ -20,6 +22,7 @@ export default function QuickProductForm() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [sizes, setSizes] = useState<SizeOption[]>([]);
+  const [colors, setColors] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [productType, setProductType] = useState<ProductType>("THREE_PIECE");
   const [customType, setCustomType] = useState("");
@@ -50,6 +53,7 @@ export default function QuickProductForm() {
           name: name.trim(),
           price: Number(price),
           size: serializedSizes,
+          colors: serializeColors(colors),
           images,
           productType,
           customType: productType === "OTHER" ? customType.trim() : null,
@@ -114,6 +118,9 @@ export default function QuickProductForm() {
         onChange={setSizes}
         basePrice={Number(price) || undefined}
       />
+
+      {/* Colours this design comes in — optional. */}
+      <ColorEditor value={colors} onChange={setColors} />
 
       {/* Pictures */}
       <MediaUploader

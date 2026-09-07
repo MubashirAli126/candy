@@ -19,6 +19,8 @@ const updateSchema = z.object({
   // Sizes and their per-size prices, packed into one string by
   // serializeSizeOptions(), e.g. "10x10 cm=250 | 12x20 cm=400".
   size: z.string().max(1000).nullable().optional(),
+  // Colours packed into one string by serializeColors(), e.g. "Red | Navy Blue".
+  colors: z.string().max(1000).nullable().optional(),
   stock: z.number().int().min(0).optional(),
   categoryId: z.string().min(1).optional(),
   featured: z.boolean().optional(),

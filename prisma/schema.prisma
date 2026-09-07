@@ -36,6 +36,10 @@ model Product {
   // into one free-text field so a new size never needs a migration. Format:
   // "Small=2500 | Medium=2700 | Large=2900" — parsed by src/lib/sizes.ts.
   size        String?
+  // Colours this design comes in, packed into one free-text field for the same
+  // reason as `size` — a new colour never needs a migration. Format:
+  // "Red | Navy Blue | Off White" — parsed by src/lib/colors.ts.
+  colors      String?
   stock       Int      @default(0)
   featured    Boolean  @default(false)
   active      Boolean  @default(true)
@@ -98,4 +102,23 @@ model OrderItem {
   size        String? // size chosen at order time, e.g. "Medium"
 
   @@index([orderId])
+}
+
+// Homepage banner slides, managed from the admin panel (/admin/slides).
+// Only `image` is required — the copy fields fall back to sensible defaults in
+// the UI, so an admin can publish a plain banner with one upload.
+model HeroSlide {
+  id        String   @id @default(cuid())
+  image     String // banner image URL / path
+  eyebrow   String? // small pill above the heading, e.g. "New Season"
+  title     String? // headline
+  subtitle  String? // one-line supporting copy
+  href      String? // where the CTA points, e.g. /products?type=KURTI
+  cta       String? // CTA label, defaults to "Shop now" in the UI
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, sortOrder])
 }

@@ -6,6 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import ProductGallery from "@/components/ProductGallery";
 import JsonLd from "@/components/JsonLd";
 import ProductTypeBadge from "@/components/ProductTypeBadge";
+import ProductColors from "@/components/ProductColors";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data";
 import {
   formatPrice,
@@ -14,6 +15,7 @@ import {
   productGallery,
 } from "@/lib/utils";
 import { hasSizePrices, parseSizeOptions, sizePriceRange } from "@/lib/sizes";
+import { parseColors } from "@/lib/colors";
 import { BULK_DISCOUNT_PERCENT, BULK_MIN_QUANTITY } from "@/lib/pricing";
 import { breadcrumbSchema, productSchema } from "@/lib/seo";
 import { mirrorsProductType } from "@/lib/types";
@@ -60,6 +62,8 @@ export default async function ProductPage({
   // and each one can carry its own price.
   const sizes = parseSizeOptions(product.size);
   const sizePriced = hasSizePrices(sizes);
+  // Colours the admin entered for this product; empty hides the colour list.
+  const colors = parseColors(product.colors);
   const { min: minPrice, max: maxPrice } = sizePriceRange(effectivePrice, sizes);
 
   const jsonLd = [
@@ -165,6 +169,8 @@ export default async function ProductPage({
           <p className="mt-5 leading-relaxed text-gray-600">
             {product.description}
           </p>
+
+          <ProductColors colors={colors} />
 
           <div className="mt-8 border-t border-black/5 pt-8">
             <AddToCartForm

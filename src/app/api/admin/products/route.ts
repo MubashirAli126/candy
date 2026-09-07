@@ -32,6 +32,8 @@ const productSchema = z
     // Sizes and their per-size prices, packed into one string by
     // serializeSizeOptions(), e.g. "Small=2500 | Medium=2700".
     size: z.string().max(1000).nullable().optional(),
+    // Colours packed into one string by serializeColors(), e.g. "Red | Navy Blue".
+    colors: z.string().max(1000).nullable().optional(),
     stock: z.number().int().min(0).optional(),
     categoryId: z.string().min(1).optional(),
     featured: z.boolean().optional(),
@@ -180,6 +182,7 @@ export async function POST(request: Request) {
       images: gallery.images,
       video: data.video ?? null,
       size: data.size ?? null,
+      colors: data.colors ?? null,
       stock: data.stock ?? DEFAULT_STOCK,
       categoryId,
       featured: data.featured ?? false,

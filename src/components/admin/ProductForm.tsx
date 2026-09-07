@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import MediaUploader from "./MediaUploader";
 import ProductTypePicker from "./ProductTypePicker";
 import SizePriceEditor from "./SizePriceEditor";
+import ColorEditor from "./ColorEditor";
 import type { ProductType } from "@/lib/types";
 import { serializeSizeOptions, type SizeOption } from "@/lib/sizes";
+import { serializeColors } from "@/lib/colors";
 
 interface Category {
   id: string;
@@ -25,6 +27,8 @@ interface ProductFormValues {
   video: string | null;
   /** Sizes offered for this product, each with its own optional price. */
   sizes: SizeOption[];
+  /** Colours this product comes in; empty means it has no colour options. */
+  colors: string[];
   stock: number;
   categoryId: string;
   featured: boolean;
@@ -54,6 +58,7 @@ export default function ProductForm({
       images: [],
       video: null,
       sizes: [],
+      colors: [],
       stock: 0,
       categoryId: categories[0]?.id ?? "",
       featured: false,
@@ -105,6 +110,7 @@ export default function ProductForm({
         images: values.images,
         video: values.video,
         size: serializeSizeOptions(values.sizes),
+        colors: serializeColors(values.colors),
         stock: Number(values.stock),
         categoryId: values.categoryId,
         featured: values.featured,
@@ -192,6 +198,12 @@ export default function ProductForm({
               value={values.sizes}
               onChange={(v) => set("sizes", v)}
               basePrice={values.price}
+            />
+          </div>
+          <div className="mt-4 border-t border-black/5 pt-4">
+            <ColorEditor
+              value={values.colors}
+              onChange={(v) => set("colors", v)}
             />
           </div>
         </div>
