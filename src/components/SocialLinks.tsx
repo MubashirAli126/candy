@@ -46,10 +46,10 @@ export default function SocialLinks({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`${n.label} — ${SOCIAL_HANDLE}`}
-          className={`grid h-9 w-9 place-items-center rounded-full transition-transform hover:scale-110 ${
+          className={`grid h-10 w-10 place-items-center rounded-sm border transition-colors ${
             tone === "dark"
-              ? "bg-white/10 text-white hover:bg-white/20"
-              : "bg-brand-mist text-brand-logoRed hover:bg-brand-blush"
+              ? "border-white/15 text-white/70 hover:border-brand-goldSoft/60 hover:text-white"
+              : "border-brand-ink/12 text-brand-inkSoft hover:border-brand-gold hover:text-brand-plum"
           }`}
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
@@ -59,8 +59,8 @@ export default function SocialLinks({
       ))}
       {showHandle && (
         <span
-          className={`ml-1 text-sm font-medium ${
-            tone === "dark" ? "text-white/70" : "text-brand-purple"
+          className={`ml-1 text-sm ${
+            tone === "dark" ? "text-white/70" : "text-brand-inkSoft"
           }`}
         >
           {SOCIAL_HANDLE}

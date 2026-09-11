@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SectionHeading from "@/components/SectionHeading";
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACTS, SITE_NAME, STORE } from "@/lib/seo";
 
@@ -13,70 +14,72 @@ const WHATSAPP = STORE.whatsapp;
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <header className="text-center">
-        <h1 className="font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
-          Get in touch
-        </h1>
-        <p className="mt-3 text-gray-600">
-          Questions, custom orders or bulk inquiries? We'd love to hear from you.
-        </p>
-      </header>
+      <SectionHeading
+        as="h1"
+        eyebrow="We are listening"
+        title="Get in touch"
+        subtitle="Questions, custom orders or bulk inquiries — we reply on WhatsApp within working hours."
+      />
 
-      <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-6">
+      {/* Phone numbers */}
+      <div className="mt-9 grid gap-px border border-brand-ink/10 bg-brand-ink/10 sm:mt-12 sm:grid-cols-2">
         {CONTACTS.map((c) => (
           <a
             key={c.intl}
             href={`https://wa.me/${c.intl}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-card transition-transform hover:-translate-y-1"
+            className="group bg-brand-ivory p-7 text-center transition-colors hover:bg-brand-cream sm:p-8"
           >
-            <div className="text-4xl">📱</div>
-            <h3 className="mt-3 font-display font-bold text-brand-dark">
-              {c.name}
-            </h3>
-            <p className="mt-1 text-sm font-semibold text-brand-logoRed">
+            <p className="eyebrow">{c.name}</p>
+            <p className="mt-3 font-display text-2xl text-brand-ink transition-colors group-hover:text-brand-plum">
               {c.display}
             </p>
-            <p className="mt-1 text-xs text-gray-500">Call or WhatsApp</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-brand-inkMuted">
+              Call or WhatsApp
+            </p>
           </a>
         ))}
       </div>
 
-      <div className="mt-4 grid gap-4 sm:mt-6 sm:gap-6">
-        <div className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-card">
-          <div className="text-4xl">📍</div>
-          <h3 className="mt-3 font-display font-bold text-brand-dark">
-            Visit our shop
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">{STORE.address}</p>
+      {/* Shop + socials */}
+      <div className="mt-px grid gap-px border border-t-0 border-brand-ink/10 bg-brand-ink/10 sm:grid-cols-2">
+        <div className="bg-brand-ivory p-7 text-center sm:p-8">
+          <p className="eyebrow">Visit the shop</p>
+          <p className="mt-3 text-sm leading-relaxed text-brand-inkSoft">
+            {STORE.address}
+          </p>
+          <p className="mt-2 text-xs uppercase tracking-[0.14em] text-brand-inkMuted">
+            Mon–Sat · 10:00 AM – 08:00 PM
+          </p>
+        </div>
+        <div className="flex flex-col items-center bg-brand-ivory p-7 text-center sm:p-8">
+          <p className="eyebrow">Follow along</p>
+          <SocialLinks className="mt-4" showHandle />
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white p-6 text-center shadow-card sm:mt-6">
-        <h3 className="font-display font-bold text-brand-dark">Follow us</h3>
-        <SocialLinks showHandle />
-      </div>
-
-      <div className="mt-8 rounded-2xl bg-brand-gradient-soft p-6 text-center text-brand-dark shadow-brand sm:mt-10 sm:p-8">
-        <h2 className="font-display text-2xl font-extrabold">
-          Want something stitched to your size?
-        </h2>
-        <p className="mx-auto mt-2 max-w-lg text-brand-dark/80">
-          Send us your measurements or a design you like on WhatsApp and
-          we'll stitch it for you. Bulk and boutique orders welcome!
-        </p>
-        <a
-          href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
-            "Hi! I'd like a custom stitched outfit."
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-block rounded-full bg-white px-8 py-3.5 font-bold text-brand-purple"
-        >
-          Message us now
-        </a>
-      </div>
+      {/* Custom stitching CTA */}
+      <section className="mt-12 bg-brand-night bg-brand-paper px-6 py-10 sm:mt-16 sm:px-12 sm:py-14">
+        <SectionHeading
+          tone="dark"
+          eyebrow="Made to measure"
+          title="Want something stitched to your size?"
+          subtitle="Send us your measurements or a design you like on WhatsApp and we'll stitch it for you. Bulk and boutique orders welcome."
+        />
+        <div className="mt-7 text-center">
+          <a
+            href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
+              "Hi! I'd like a custom stitched outfit."
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-gold"
+          >
+            Message us now
+          </a>
+        </div>
+      </section>
     </div>
   );
 }

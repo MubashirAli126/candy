@@ -25,9 +25,7 @@ export default function ProductTypePicker({
 }: ProductTypePickerProps) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        Product type
-      </label>
+      <label className="field-label">Product type</label>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {PRODUCT_TYPE_OPTIONS.map((option) => (
           <button
@@ -36,10 +34,10 @@ export default function ProductTypePicker({
             onClick={() => onChange(option.value)}
             aria-pressed={value === option.value}
             className={cn(
-              "rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors",
+              "rounded-sm border px-3 py-3 text-xs font-semibold uppercase tracking-[0.1em] transition-colors",
               value === option.value
-                ? "border-brand-purple bg-brand-purple/10 text-brand-purple"
-                : "border-gray-200 text-brand-dark hover:border-brand-purple/50"
+                ? "border-brand-ink bg-brand-ink text-brand-goldSoft"
+                : "border-brand-ink/15 text-brand-inkSoft hover:border-brand-gold hover:text-brand-ink"
             )}
           >
             <span aria-hidden="true">{option.icon}</span>{" "}
@@ -54,9 +52,9 @@ export default function ProductTypePicker({
             onChange={(e) => onCustomTypeChange(e.target.value)}
             maxLength={40}
             placeholder="What is it? e.g. Dupatta, Trouser, Shawl, Unstitched Fabric"
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+            className="field"
           />
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1.5 text-xs text-brand-inkMuted">
             Anything that isn&apos;t a 3 piece, 2 piece or kurti — dupattas,
             trousers, shawls or unstitched fabric. Shown to customers exactly
             as typed.

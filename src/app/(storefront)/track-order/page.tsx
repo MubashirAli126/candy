@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getOrderForTracking } from "@/lib/data";
 import { cn, formatPrice } from "@/lib/utils";
+import SectionHeading from "@/components/SectionHeading";
 import { SITE_NAME } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -37,23 +38,22 @@ export default async function TrackOrderPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <h1 className="text-center font-display text-2xl font-extrabold uppercase tracking-[0.14em] text-brand-dark sm:text-3xl">
-        Track Your Order
-      </h1>
-      <p className="mx-auto mt-3 max-w-md text-center text-sm text-gray-500 sm:text-base">
-        Enter the order number we sent you and the phone number the order was
-        placed with.
-      </p>
+      <SectionHeading
+        as="h1"
+        eyebrow="Order status"
+        title="Track Your Order"
+        subtitle="Enter the order number we sent you and the phone number the order was placed with."
+      />
 
       {/* A plain GET form keeps this page server-rendered and shareable. */}
       <form
         method="get"
-        className="mt-8 space-y-4 border border-black/5 bg-brand-mist p-5 sm:p-6"
+        className="mt-9 space-y-5 border border-brand-ink/10 bg-brand-cream p-6 sm:p-8"
       >
         <div>
           <label
             htmlFor="order"
-            className="mb-1 block text-xs font-bold uppercase tracking-wide text-brand-dark"
+            className="field-label"
           >
             Order number
           </label>
@@ -63,13 +63,13 @@ export default async function TrackOrderPage({
             required
             defaultValue={orderNumber ?? ""}
             placeholder="CP-2026-0042"
-            className="w-full border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-brand-pink"
+            className="field"
           />
         </div>
         <div>
           <label
             htmlFor="phone"
-            className="mb-1 block text-xs font-bold uppercase tracking-wide text-brand-dark"
+            className="field-label"
           >
             Phone number
           </label>
@@ -80,19 +80,19 @@ export default async function TrackOrderPage({
             inputMode="tel"
             defaultValue={phone ?? ""}
             placeholder="0300-1234567"
-            className="w-full border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-brand-pink"
+            className="field"
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-brand-dark px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white transition-colors hover:bg-brand-pink hover:text-brand-dark"
+          className="btn btn-primary w-full"
         >
           Track order
         </button>
       </form>
 
       {searched && !order && (
-        <p className="mt-6 border border-brand-logoRed/20 bg-brand-logoRed/5 p-4 text-center text-sm text-brand-dark">
+        <p className="mt-6 border border-brand-logoRed/25 bg-brand-logoRed/[0.04] p-5 text-center text-sm text-brand-ink">
           We could not find an order with those details. Check the order number
           and the phone number, or{" "}
           <Link href="/contact" className="font-semibold text-brand-pink hover:underline">
@@ -116,22 +116,20 @@ function OrderSummary({ order }: { order: TrackedOrder }) {
   const currentStep = TIMELINE.findIndex((s) => s.status === order.status);
 
   return (
-    <section className="mt-8 border border-black/5">
-      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-black/5 bg-brand-mist px-5 py-4">
+    <section className="mt-8 border border-brand-ink/10 bg-white">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-brand-ink/10 bg-brand-cream px-6 py-5">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
-            Order
-          </p>
-          <p className="font-display text-lg font-extrabold text-brand-dark">
+          <p className="eyebrow">Order</p>
+          <p className="mt-1 font-display text-xl text-brand-ink">
             {order.orderNumber}
           </p>
         </div>
         <span
           className={cn(
-            "px-3 py-1 text-xs font-bold uppercase tracking-wide",
+            "px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em]",
             cancelled
               ? "bg-brand-logoRed text-white"
-              : "bg-brand-pink text-brand-dark"
+              : "bg-brand-ink text-brand-goldSoft"
           )}
         >
           {order.status}
@@ -139,30 +137,30 @@ function OrderSummary({ order }: { order: TrackedOrder }) {
       </header>
 
       {cancelled ? (
-        <p className="px-5 py-5 text-sm text-gray-600">
+        <p className="px-6 py-6 text-sm text-brand-inkSoft">
           This order was cancelled. If that is unexpected, please contact us and
           we will sort it out.
         </p>
       ) : (
-        <ol className="flex flex-wrap gap-y-4 px-5 py-5">
+        <ol className="flex flex-wrap gap-y-5 px-6 py-5">
           {TIMELINE.map((step, i) => {
             const done = i <= currentStep;
             return (
               <li key={step.status} className="flex min-w-[6.5rem] flex-1 flex-col items-center text-center">
                 <span
                   className={cn(
-                    "grid h-8 w-8 place-items-center rounded-full text-xs font-bold",
+                    "grid h-9 w-9 place-items-center rounded-full border text-xs font-semibold",
                     done
-                      ? "bg-brand-pink text-brand-dark"
-                      : "bg-gray-100 text-gray-400"
+                      ? "border-brand-ink bg-brand-ink text-brand-goldSoft"
+                      : "border-brand-ink/15 text-brand-inkMuted"
                   )}
                 >
                   {done ? "✓" : i + 1}
                 </span>
                 <span
                   className={cn(
-                    "mt-1.5 text-xs font-semibold",
-                    done ? "text-brand-dark" : "text-gray-400"
+                    "mt-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em]",
+                    done ? "text-brand-ink" : "text-brand-inkMuted"
                   )}
                 >
                   {step.label}
@@ -173,40 +171,42 @@ function OrderSummary({ order }: { order: TrackedOrder }) {
         </ol>
       )}
 
-      <div className="border-t border-black/5 px-5 py-5">
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">
-          Items
-        </h2>
-        <ul className="space-y-2 text-sm">
+      <div className="border-t border-brand-ink/10 px-6 py-6">
+        <h2 className="eyebrow">Items</h2>
+        <ul className="mt-4 space-y-2.5 text-sm">
           {order.items.map((item) => (
             <li key={item.id} className="flex justify-between gap-4">
-              <span className="text-brand-dark">
+              <span className="text-brand-ink">
                 {item.productName}
                 {item.size && (
-                  <span className="text-gray-500"> · {item.size}</span>
+                  <span className="text-brand-inkMuted"> · {item.size}</span>
                 )}
-                <span className="text-gray-500"> × {item.quantity}</span>
+                <span className="text-brand-inkMuted"> × {item.quantity}</span>
               </span>
-              <span className="shrink-0 font-semibold text-brand-dark">
+              <span className="shrink-0 font-medium text-brand-ink">
                 {formatPrice(item.price * item.quantity)}
               </span>
             </li>
           ))}
         </ul>
 
-        <dl className="mt-4 space-y-1 border-t border-black/5 pt-4 text-sm">
+        <dl className="mt-5 space-y-1.5 border-t border-brand-ink/10 pt-5 text-sm">
           <Row label="Subtotal" value={formatPrice(order.subtotal)} />
           <Row
             label="Delivery"
             value={order.shipping > 0 ? formatPrice(order.shipping) : "Free"}
           />
-          <div className="flex justify-between pt-1 text-base font-extrabold text-brand-dark">
-            <dt>Total</dt>
-            <dd>{formatPrice(order.total)}</dd>
+          <div className="flex items-baseline justify-between pt-2">
+            <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-ink">
+              Total
+            </dt>
+            <dd className="font-display text-lg text-brand-ink">
+              {formatPrice(order.total)}
+            </dd>
           </div>
         </dl>
 
-        <p className="mt-4 text-xs text-gray-500">
+        <p className="mt-5 text-xs text-brand-inkMuted">
           Delivering to {order.city}. Placed on{" "}
           {order.createdAt.toLocaleDateString("en-PK", {
             day: "numeric",
@@ -222,7 +222,7 @@ function OrderSummary({ order }: { order: TrackedOrder }) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between text-gray-600">
+    <div className="flex justify-between text-brand-inkSoft">
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

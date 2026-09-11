@@ -32,9 +32,9 @@ export default function DeleteProductButton({
     <button
       onClick={handleDelete}
       disabled={deleting}
-      className="rounded-lg px-3 py-1.5 text-sm font-semibold text-red-500 hover:bg-red-50 disabled:opacity-50"
+      className="link-underline text-xs font-semibold uppercase tracking-[0.14em] text-brand-logoRed transition-opacity hover:opacity-80 disabled:opacity-50"
     >
-      {deleting ? "..." : "Delete"}
+      {deleting ? "…" : "Delete"}
     </button>
   );
 }

@@ -31,9 +31,13 @@ export default function QuickAddButton({ product, disabled }: Props) {
       type="button"
       onClick={handleAdd}
       disabled={disabled}
-      className="w-full border border-brand-dark bg-brand-dark px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:border-brand-pink hover:bg-brand-pink hover:text-brand-dark disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-300 disabled:text-white sm:px-4"
+      className={
+        added
+          ? "btn btn-sm btn-candy w-full"
+          : "btn btn-sm btn-outline w-full disabled:border-brand-ink/15 disabled:text-brand-inkMuted"
+      }
     >
-      {disabled ? "Sold out" : added ? "✓ Added!" : "Add to cart"}
+      {disabled ? "Sold out" : added ? "✓ Added" : "Add to cart"}
     </button>
   );
 }

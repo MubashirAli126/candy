@@ -123,27 +123,22 @@ export default function CheckoutPage() {
 
   if (success) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-20">
-        <div className="text-6xl">🎉</div>
-        <h1 className="mt-4 font-display text-3xl font-extrabold text-brand-dark">
-          Order placed!
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-24">
+        <p className="eyebrow">Thank you</p>
+        <h1 className="mt-4 font-display text-3xl font-normal tracking-tight text-brand-ink sm:text-4xl">
+          Order placed
         </h1>
-        <p className="mt-2 text-gray-600">
+        <div className="rule-gold mx-auto mt-5 w-20" aria-hidden="true" />
+        <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-brand-inkSoft sm:text-base">
           Your order <strong>{success.orderNumber}</strong> has been received.
           We've opened WhatsApp so you can confirm it with us. We'll contact you
           shortly!
         </p>
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link
-            href="/products"
-            className="rounded-full bg-brand-gradient px-7 py-3.5 font-bold text-brand-dark shadow-brand"
-          >
+        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link href="/products" className="btn btn-primary">
             Continue shopping
           </Link>
-          <button
-            onClick={() => router.push("/")}
-            className="rounded-full border border-brand-dark/15 px-7 py-3.5 font-bold text-brand-dark"
-          >
+          <button onClick={() => router.push("/")} className="btn btn-outline">
             Back to home
           </button>
         </div>
@@ -153,15 +148,13 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-20">
-        <h1 className="font-display text-2xl font-extrabold text-brand-dark">
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-24">
+        <h1 className="font-display text-3xl font-normal tracking-tight text-brand-ink sm:text-4xl">
           Your cart is empty
         </h1>
-        <Link
-          href="/products"
-          className="mt-6 inline-block rounded-full bg-brand-gradient px-7 py-3.5 font-bold text-brand-dark shadow-brand"
-        >
-          Shop dresses
+        <div className="rule-gold mx-auto mt-5 w-20" aria-hidden="true" />
+        <Link href="/products" className="btn btn-primary mt-6">
+          Shop the collection
         </Link>
       </div>
     );
@@ -169,18 +162,21 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <h1 className="mb-6 font-display text-2xl font-extrabold text-brand-dark sm:mb-8 sm:text-4xl">
-        Checkout
-      </h1>
+      <header className="mb-6 border-b border-brand-ink/10 pb-6 sm:mb-9">
+        <p className="eyebrow">Almost there</p>
+        <h1 className="mt-3 font-display text-3xl font-normal tracking-tight text-brand-ink sm:text-4xl">
+          Checkout
+        </h1>
+      </header>
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-6 lg:grid-cols-3 lg:gap-8"
+        className="grid gap-6 lg:grid-cols-3 lg:gap-6"
       >
         {/* Customer details */}
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-            <h2 className="mb-4 font-display text-xl font-bold text-brand-dark">
+          <div className="border border-brand-ink/10 bg-white p-5 sm:p-7">
+            <h2 className="mb-5 font-display text-xl text-brand-ink">
               Delivery details
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -219,7 +215,7 @@ export default function CheckoutPage() {
                 placeholder="Karachi"
               />
               <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
+                <label className="field-label">
                   Order notes (optional)
                 </label>
                 <textarea
@@ -227,11 +223,11 @@ export default function CheckoutPage() {
                   onChange={(e) => update("notes", e.target.value)}
                   rows={3}
                   placeholder="Any special instructions, custom text, etc."
-                  className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+                  className="field"
                 />
               </div>
             </div>
-            <p className="mt-4 rounded-xl bg-brand-yellow/10 p-3 text-sm text-brand-dark">
+            <p className="mt-5 border border-brand-gold/40 bg-brand-cream p-4 text-sm text-brand-inkSoft">
               💵 <strong>Cash on Delivery.</strong> After placing your order,
               WhatsApp will open so you can confirm with us directly.
             </p>
@@ -240,8 +236,8 @@ export default function CheckoutPage() {
 
         {/* Order summary */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6 lg:sticky lg:top-24">
-            <h2 className="font-display text-xl font-bold text-brand-dark">
+          <div className="border border-brand-ink/10 bg-brand-cream p-5 sm:p-6 lg:sticky lg:top-28">
+            <h2 className="font-display text-xl text-brand-ink">
               Your order
             </h2>
             <ul className="mt-4 space-y-3 text-sm">
@@ -250,48 +246,54 @@ export default function CheckoutPage() {
                   key={`${i.productId}-${i.size ?? ""}-${i.color ?? ""}`}
                   className="flex justify-between gap-2"
                 >
-                  <span className="min-w-0 break-words text-gray-600">
+                  <span className="min-w-0 break-words text-brand-inkSoft">
                     {i.name}
                     {i.colorLabel ? ` ${i.colorLabel}` : ""}
                     {i.size ? ` (${i.size})` : ""} × {i.quantity}
                   </span>
-                  <span className="font-semibold">
+                  <span className="font-medium text-brand-ink">
                     {formatPrice(lineTotal(i.price, i.quantity))}
                   </span>
                 </li>
               ))}
             </ul>
-            <dl className="mt-4 space-y-2 border-t border-black/5 pt-4 text-sm">
+            <dl className="mt-5 space-y-2.5 border-t border-brand-ink/10 pt-5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-500">Items</dt>
-                <dd className="font-semibold">{formatPrice(itemsTotal)}</dd>
+                <dt className="text-brand-inkSoft">Items</dt>
+                <dd className="font-medium text-brand-ink">
+                  {formatPrice(itemsTotal)}
+                </dd>
               </div>
               {discount > 0 && (
-                <div className="flex justify-between text-green-600">
+                <div className="flex justify-between text-brand-plum">
                   <dt>Bulk discount ({BULK_DISCOUNT_PERCENT}%)</dt>
                   <dd className="font-semibold">− {formatPrice(discount)}</dd>
                 </div>
               )}
               <div className="flex justify-between">
-                <dt className="text-gray-500">Subtotal</dt>
-                <dd className="font-semibold">{formatPrice(subtotal)}</dd>
+                <dt className="text-brand-inkSoft">Subtotal</dt>
+                <dd className="font-medium text-brand-ink">
+                  {formatPrice(subtotal)}
+                </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-gray-500">Shipping</dt>
-                <dd className="font-semibold">
+                <dt className="text-brand-inkSoft">Shipping</dt>
+                <dd className="font-medium text-brand-ink">
                   {shipping === 0 ? "FREE" : formatPrice(shipping)}
                 </dd>
               </div>
-              <div className="flex justify-between border-t border-black/5 pt-2 text-base">
-                <dt className="font-bold text-brand-dark">Total</dt>
-                <dd className="font-extrabold text-brand-dark">
+              <div className="flex items-baseline justify-between border-t border-brand-ink/10 pt-4">
+                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-ink">
+                  Total
+                </dt>
+                <dd className="font-display text-xl text-brand-ink">
                   {formatPrice(total)}
                 </dd>
               </div>
             </dl>
 
             {error && (
-              <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600">
+              <p className="mt-4 border border-brand-logoRed/25 bg-brand-logoRed/[0.05] p-3 text-sm text-brand-logoRed">
                 {error}
               </p>
             )}
@@ -299,7 +301,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-6 w-full rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand transition-transform hover:scale-[1.02] disabled:opacity-60"
+              className="btn btn-candy mt-6 w-full"
             >
               {submitting ? "Placing order..." : "Place order"}
             </button>
@@ -327,15 +329,13 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        {label}
-      </label>
+      <label className="field-label">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+        className="field"
       />
     </div>
   );

@@ -130,7 +130,7 @@ export default function MediaUploader({
 
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
+      <label className="field-label">
         {label} {images.length > 0 && max > 1 && `(${images.length}/${max})`}
       </label>
       <input
@@ -145,7 +145,7 @@ export default function MediaUploader({
         type="button"
         onClick={() => imageInput.current?.click()}
         disabled={imagesBusy || remaining === 0}
-        className="w-full rounded-xl border border-dashed border-gray-300 px-4 py-3 text-sm font-semibold text-brand-dark transition-colors hover:border-brand-purple disabled:opacity-60"
+        className="w-full rounded-sm border border-dashed border-brand-ink/25 bg-brand-cream/60 px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-brand-inkSoft transition-colors hover:border-brand-gold hover:text-brand-ink disabled:opacity-60"
       >
         {imagesBusy
           ? "Uploading..."
@@ -172,10 +172,10 @@ export default function MediaUploader({
               <li
                 key={`${url}-${index}`}
                 className={cn(
-                  "group relative overflow-hidden rounded-xl border border-black/5",
+                  "group relative overflow-hidden rounded-sm border border-brand-ink/10",
                   max === 1
                     ? "aspect-[16/7] bg-brand-night"
-                    : "aspect-square bg-gray-100"
+                    : "aspect-square bg-brand-cream"
                 )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -188,21 +188,21 @@ export default function MediaUploader({
                   )}
                 />
                 {index === 0 && max > 1 && (
-                  <span className="absolute left-1.5 top-1.5 rounded-full bg-brand-gradient px-2 py-0.5 text-xs font-bold text-brand-dark shadow">
-                    MAIN
+                  <span className="absolute left-1.5 top-1.5 bg-brand-ink px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-brand-goldSoft">
+                    Main
                   </span>
                 )}
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
                   aria-label={`Remove picture ${index + 1}`}
-                  className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-xs font-bold text-white transition-opacity hover:bg-black/80 sm:h-6 sm:w-6"
+                  className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-brand-ink/70 text-xs font-bold text-white transition-colors hover:bg-brand-ink sm:h-6 sm:w-6"
                 >
                   ✕
                 </button>
                 <div
                   hidden={max === 1}
-                  className="absolute inset-x-0 bottom-0 flex justify-between bg-black/50 transition-opacity focus-within:opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
+                  className="absolute inset-x-0 bottom-0 flex justify-between bg-brand-ink/60 transition-opacity focus-within:opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                   <button
                     type="button"
                     onClick={() => move(index, -1)}
@@ -225,7 +225,7 @@ export default function MediaUploader({
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-brand-inkMuted">
             {hint ?? "The first picture is used as the main image — use ← → to reorder."}
           </p>
         </>
@@ -244,13 +244,13 @@ export default function MediaUploader({
               }
             }}
             placeholder="…or paste an image URL"
-            className="w-full rounded-xl border border-gray-200 px-4 py-2 text-base outline-none focus:border-brand-purple sm:text-sm"
+            className="field"
           />
           <button
             type="button"
             onClick={addUrl}
             disabled={!urlDraft.trim() || remaining === 0}
-            className="shrink-0 rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-brand-dark transition-colors hover:border-brand-purple disabled:opacity-50"
+            className="btn btn-outline btn-sm shrink-0"
           >
             Add
           </button>

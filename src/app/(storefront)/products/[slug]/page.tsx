@@ -19,6 +19,7 @@ import { ProductColorProvider } from "@/context/ProductColorContext";
 import { BULK_DISCOUNT_PERCENT, BULK_MIN_QUANTITY } from "@/lib/pricing";
 import { breadcrumbSchema, productSchema } from "@/lib/seo";
 import { mirrorsProductType } from "@/lib/types";
+import SectionHeading from "@/components/SectionHeading";
 
 export const dynamic = "force-dynamic";
 
@@ -102,22 +103,23 @@ export default async function ProductPage({
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-9 lg:px-8">
       <JsonLd data={jsonLd} />
 
       {/* Breadcrumb */}
-      <nav className="mb-5 text-sm text-gray-500 sm:mb-6">
-        <Link href="/" className="hover:text-brand-purple">
+      <nav className="mb-5 truncate text-xs uppercase tracking-[0.14em] text-brand-inkMuted sm:mb-8">
+        <Link href="/" className="transition-colors hover:text-brand-ink">
           Home
-        </Link>{" "}
-        /{" "}
+        </Link>
+        <span className="px-2 text-brand-gold">/</span>
         <Link
           href={`/category/${product.category.slug}`}
-          className="hover:text-brand-purple"
+          className="transition-colors hover:text-brand-ink"
         >
           {product.category.name}
-        </Link>{" "}
-        / <span className="text-brand-dark">{product.name}</span>
+        </Link>
+        <span className="px-2 text-brand-gold">/</span>
+        <span className="text-brand-ink">{product.name}</span>
       </nav>
 
       <ProductColorProvider colors={colorImages} productImages={gallery}>
@@ -141,55 +143,56 @@ export default async function ProductPage({
             ) && (
               <Link
                 href={`/category/${product.category.slug}`}
-                className="text-sm font-semibold uppercase tracking-wide text-brand-purple"
+                className="eyebrow"
               >
                 {product.category.name}
               </Link>
             )}
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-brand-dark sm:text-4xl">
+            <h1 className="mt-3 font-display text-3xl font-normal leading-tight tracking-tight text-brand-ink sm:text-[2.75rem]">
               {product.name}
             </h1>
+            <div className="rule-gold mt-5 w-20" aria-hidden="true" />
 
-            <div className="mt-3">
+            <div className="mt-5">
               <Link href={`/products?type=${product.productType}`}>
                 <ProductTypeBadge
                   productType={product.productType}
                   customType={product.customType}
                   size="md"
-                  className="transition-colors hover:bg-brand-purple/20"
+                  className="transition-colors hover:border-brand-gold hover:text-brand-ink"
                 />
               </Link>
             </div>
 
             {/* With per-size prices there is no single price — show the range and
               let the size picker below settle on the exact one. */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="font-display text-3xl font-extrabold text-brand-dark">
+            <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-display text-3xl text-brand-ink sm:text-4xl">
                 {sizePriced && minPrice !== maxPrice
                   ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
                   : formatPrice(sizePriced ? minPrice : effectivePrice)}
               </span>
               {!sizePriced && product.salePrice && (
-                <span className="text-xl text-gray-400 line-through">
+                <span className="text-lg text-brand-inkMuted line-through">
                   {formatPrice(product.price)}
                 </span>
               )}
-              <span className="text-sm text-gray-500">
+              <span className="text-xs uppercase tracking-[0.12em] text-brand-inkMuted">
                 / piece
                 {sizePriced ? " — price depends on the size you pick" : ""}
               </span>
             </div>
 
-            <p className="mt-2 text-sm font-semibold text-brand-purple">
-              🎉 Buy {BULK_MIN_QUANTITY} or more and get {BULK_DISCOUNT_PERCENT}
-              % off
+            <p className="mt-4 inline-flex items-center gap-2 border border-brand-gold/40 bg-brand-cream px-3 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-brand-inkSoft">
+              <span aria-hidden="true">✦</span>
+              Buy {BULK_MIN_QUANTITY}+ and save {BULK_DISCOUNT_PERCENT}%
             </p>
 
-            <p className="mt-5 leading-relaxed text-gray-600">
+            <p className="mt-6 leading-relaxed text-brand-inkSoft">
               {product.description}
             </p>
 
-            <div className="mt-8 border-t border-black/5 pt-8">
+            <div className="mt-6 border-t border-brand-ink/10 pt-6">
               <AddToCartForm
                 product={{
                   productId: product.id,
@@ -203,11 +206,20 @@ export default async function ProductPage({
               />
             </div>
 
-            <ul className="mt-8 grid grid-cols-2 gap-3 text-sm text-gray-600">
-              <li className="flex items-center gap-2">🧵 Premium fabric</li>
-              <li className="flex items-center gap-2">📏 Custom stitching</li>
-              <li className="flex items-center gap-2">🚚 24h dispatch</li>
-              <li className="flex items-center gap-2">💵 Cash on delivery</li>
+            <ul className="mt-7 grid grid-cols-2 gap-px border border-brand-ink/10 bg-brand-ink/10">
+              {[
+                "Premium fabric",
+                "Custom stitching",
+                "Dispatched in 24h",
+                "Cash on delivery",
+              ].map((promise) => (
+                <li
+                  key={promise}
+                  className="bg-brand-ivory px-4 py-3.5 text-xs uppercase tracking-[0.12em] text-brand-inkSoft"
+                >
+                  {promise}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -215,11 +227,9 @@ export default async function ProductPage({
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="mt-12 sm:mt-16">
-          <h2 className="mb-6 font-display text-2xl font-extrabold text-brand-dark">
-            You may also like
-          </h2>
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <section className="mt-12 border-t border-brand-ink/10 pt-10 sm:mt-16 sm:pt-14">
+          <SectionHeading eyebrow="Styled with" title="You may also like" />
+          <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:mt-10 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

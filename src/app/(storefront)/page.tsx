@@ -1,6 +1,8 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import HeroCarousel from "@/components/HeroCarousel";
+import SectionHeading from "@/components/SectionHeading";
+import AssuranceStrip from "@/components/AssuranceStrip";
 import { getFeaturedProducts, getLatestProducts } from "@/lib/data";
 import { getHeroSlides } from "@/lib/slides";
 
@@ -22,32 +24,54 @@ export default async function HomePage() {
     <>
       <HeroCarousel slides={slides} />
 
+      <AssuranceStrip />
+
       {/* Product grid */}
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <h2 className="mb-6 text-center font-display text-2xl font-extrabold uppercase tracking-[0.14em] text-brand-dark sm:mb-10 sm:text-3xl">
-          Best Sellers
-        </h2>
+        <SectionHeading
+          eyebrow="Hand-picked"
+          title="This season's favourites"
+          subtitle="The designs our customers keep coming back for."
+        />
+
         {grid.length === 0 ? (
-          <p className="rounded-2xl bg-gray-50 p-10 text-center text-gray-500">
+          <p className="mt-8 border border-brand-ink/10 bg-brand-cream p-10 text-center text-sm text-brand-inkSoft">
             No products yet. Run <code>npm run setup</code> to seed sample data.
           </p>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:mt-10 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-4">
               {grid.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
-            <div className="mt-10 text-center">
-              <Link
-                href="/products"
-                className="inline-block border border-brand-dark px-10 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-brand-dark transition-colors hover:bg-brand-dark hover:text-white"
-              >
+            <div className="mt-9 text-center sm:mt-12">
+              <Link href="/products" className="btn btn-outline btn-lg">
                 View all products
               </Link>
             </div>
           </>
         )}
+      </section>
+
+      {/* Atelier note — the classic closing band, ink on ink with a gold rule */}
+      <section className="bg-brand-night bg-brand-paper">
+        <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8">
+          <SectionHeading
+            tone="dark"
+            eyebrow="From our studio"
+            title="Made to be worn, not just photographed"
+            subtitle="We choose the fabric, pick the print and stitch every suit ourselves in Karachi. Nothing is drop-shipped — the colour, the fit and the finish are ours to answer for."
+          />
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Link href="/about" className="btn btn-ghost">
+              Our story
+            </Link>
+            <Link href="/contact" className="btn btn-gold">
+              Custom stitching
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   );

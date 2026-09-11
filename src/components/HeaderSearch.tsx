@@ -30,7 +30,7 @@ export default function HeaderSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+        className="grid h-10 w-10 place-items-center rounded-sm transition-colors hover:bg-brand-sand"
         aria-label="Search products"
       >
         <SearchIcon />
@@ -48,11 +48,11 @@ export default function HeaderSearch() {
         onBlur={() => !term && setOpen(false)}
         placeholder="Search suits, kurtis…"
         aria-label="Search products"
-        className="h-10 w-36 rounded-full border border-brand-blush bg-brand-mist px-4 text-sm text-brand-dark outline-none placeholder:text-brand-dark/40 focus:border-brand-pink sm:w-56"
+        className="h-10 w-40 rounded-sm border border-brand-ink/15 bg-white px-4 text-sm text-brand-ink outline-none transition-colors placeholder:text-brand-inkMuted focus:border-brand-pink sm:w-60"
       />
       <button
         type="submit"
-        className="-ml-10 grid h-10 w-10 place-items-center rounded-full text-brand-purple"
+        className="-ml-10 grid h-10 w-10 place-items-center text-brand-pink"
         aria-label="Search"
       >
         <SearchIcon />
@@ -64,11 +64,11 @@ export default function HeaderSearch() {
 function SearchIcon() {
   return (
     <svg
-      className="h-5 w-5 text-brand-dark"
+      className="h-5 w-5"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={1.8}
+      strokeWidth={1.5}
       aria-hidden="true"
     >
       <path

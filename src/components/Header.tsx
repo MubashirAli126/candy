@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import HeaderSearch from "./HeaderSearch";
@@ -27,13 +27,21 @@ export default function Header() {
   const { totalItems } = useCart();
   const pathname = usePathname();
 
+  // Route changes leave the drawer open otherwise — the link click closes it,
+  // but a back/forward navigation does not.
+  useEffect(() => setOpen(false), [pathname]);
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-brand-ink/10 bg-brand-ivory/90 backdrop-blur-md">
       {/* Utility row — desktop only, mirrors the slim strip above the logo. */}
-      <div className="hidden border-b border-black/5 lg:block">
-        <div className="mx-auto flex h-9 max-w-7xl items-center justify-end gap-6 px-4 text-xs font-semibold text-brand-dark/60 sm:px-6 lg:px-8">
+      <div className="hidden border-b border-brand-ink/[0.07] lg:block">
+        <div className="mx-auto flex h-9 max-w-7xl items-center justify-end gap-8 px-4 sm:px-6 lg:px-8">
           {UTILITY_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-brand-pink">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="link-underline text-xs font-medium uppercase tracking-[0.16em] text-brand-inkSoft transition-colors hover:text-brand-ink"
+            >
               {item.label}
             </Link>
           ))}
@@ -41,20 +49,20 @@ export default function Header() {
       </div>
 
       {/* Logo row */}
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 border-b border-black/5 px-4 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:h-20 sm:gap-4 sm:px-6 lg:px-8">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="-ml-2 grid h-10 w-10 place-items-center rounded-full hover:bg-black/5 lg:hidden"
+          className="-ml-2 grid h-10 w-10 place-items-center rounded-sm transition-colors hover:bg-brand-sand lg:hidden"
           aria-label="Toggle menu"
           aria-expanded={open}
         >
           <svg
-            className="h-6 w-6 text-brand-dark"
+            className="h-5 w-5 text-brand-ink"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={1.6}
           >
             <path
               strokeLinecap="round"
@@ -68,16 +76,17 @@ export default function Header() {
 
         <div className="flex items-center gap-1 sm:gap-2">
           {/* Primary nav — sits beside the logo on desktop. */}
-          <div className="mr-2 hidden items-center gap-8 lg:flex">
+          <div className="mr-4 hidden items-center gap-9 lg:flex">
             {MAIN_NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
+                data-active={isActive(pathname, item.href)}
                 className={cn(
-                  "border-b-2 py-1 text-xs font-bold uppercase tracking-[0.12em] transition-colors",
+                  "link-underline text-xs font-semibold uppercase tracking-[0.18em] transition-colors",
                   isActive(pathname, item.href)
-                    ? "border-brand-pink text-brand-pink"
-                    : "border-transparent text-brand-dark/75 hover:text-brand-pink"
+                    ? "text-brand-ink"
+                    : "text-brand-inkSoft hover:text-brand-ink"
                 )}
               >
                 {item.label}
@@ -92,15 +101,15 @@ export default function Header() {
 
           <Link
             href="/cart"
-            className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-black/5"
+            className="relative grid h-10 w-10 place-items-center rounded-sm transition-colors hover:bg-brand-sand"
             aria-label={`Cart, ${totalItems} items`}
           >
             <svg
-              className="h-6 w-6 text-brand-dark"
+              className="h-5 w-5 text-brand-ink"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={1.8}
+              strokeWidth={1.5}
             >
               <path
                 strokeLinecap="round"
@@ -109,7 +118,7 @@ export default function Header() {
               />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-pink px-1 text-xs font-bold text-brand-dark">
+              <span className="absolute right-0 top-0.5 grid h-[1.1rem] min-w-[1.1rem] place-items-center rounded-full bg-brand-pink px-1 text-[0.7rem] font-bold leading-none text-white">
                 {totalItems}
               </span>
             )}
@@ -119,16 +128,24 @@ export default function Header() {
 
       {/* Mobile drawer */}
       {open && (
-        <nav className="border-t border-black/5 bg-white lg:hidden">
+        <nav className="border-t border-brand-ink/10 bg-brand-ivory lg:hidden">
           <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6">
             {MOBILE_NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block border-b border-black/5 px-1 py-3 text-sm font-bold uppercase tracking-wide text-brand-dark/80 last:border-0 hover:text-brand-pink"
+                className={cn(
+                  "flex items-center justify-between border-b border-brand-ink/[0.07] px-1 py-3.5 text-xs font-semibold uppercase tracking-[0.16em] transition-colors last:border-0",
+                  isActive(pathname, item.href)
+                    ? "text-brand-pink"
+                    : "text-brand-ink hover:text-brand-pink"
+                )}
               >
                 {item.label}
+                <span aria-hidden="true" className="text-brand-gold">
+                  &rsaquo;
+                </span>
               </Link>
             ))}
           </div>

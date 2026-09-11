@@ -62,7 +62,7 @@ export default function WhatsAppFloat() {
         <div
           role="menu"
           aria-label="Contact us on WhatsApp"
-          className="w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
+          className="w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-sm bg-white shadow-lift ring-1 ring-brand-ink/10"
         >
           <div className="flex items-center gap-2 bg-[#25D366] px-4 py-3 text-white">
             <WhatsAppIcon className="h-6 w-6 fill-white" />
@@ -70,7 +70,7 @@ export default function WhatsAppFloat() {
               Chat with us on WhatsApp
             </div>
           </div>
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-brand-ink/10">
             {options.map((o) => (
               <li key={o.key}>
                 <a
@@ -79,16 +79,16 @@ export default function WhatsAppFloat() {
                   rel="noopener noreferrer"
                   role="menuitem"
                   onClick={() => setOpen(false)}
-                  className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
+                  className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-brand-cream"
                 >
-                  <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#25D366]/10">
+                  <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-sm bg-[#25D366]/10">
                     <WhatsAppIcon className="h-4 w-4 fill-[#25D366]" />
                   </span>
                   <span>
-                    <span className="block text-sm font-medium text-gray-900">
+                    <span className="block text-sm font-medium text-brand-ink">
                       {o.label}
                     </span>
-                    <span className="block text-xs text-gray-500">
+                    <span className="block text-xs text-brand-inkSoft">
                       {o.subtitle}
                     </span>
                   </span>
@@ -104,7 +104,7 @@ export default function WhatsAppFloat() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? "Close WhatsApp menu" : "Chat with us on WhatsApp"}
-        className="relative grid h-14 w-14 place-items-center rounded-full bg-[#25D366] shadow-lg transition-transform hover:scale-110"
+        className="relative grid h-14 w-14 place-items-center rounded-full bg-[#25D366] shadow-lift transition-transform hover:scale-105"
       >
         {open ? (
           <svg

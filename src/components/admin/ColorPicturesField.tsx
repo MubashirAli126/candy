@@ -28,7 +28,7 @@ export default function ColorPicturesField({
 }) {
   return (
     <div>
-      <p className="mb-3 text-xs leading-relaxed text-gray-500">
+      <p className="mb-3 text-xs leading-relaxed text-brand-inkSoft">
         Same suit in another colour? Add one picture per colour here instead of
         uploading the design again — buyers pick a colour by its picture, so
         nothing needs naming. Up to {MAX_COLORS} colours. Leave it empty if the

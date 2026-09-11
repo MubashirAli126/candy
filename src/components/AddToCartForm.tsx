@@ -51,10 +51,10 @@ function ColorChoice({
       aria-pressed={selected}
       aria-label={label}
       title={label}
-      className={`relative h-16 w-16 overflow-hidden rounded-xl border-2 transition-colors ${
+      className={`relative h-16 w-16 overflow-hidden rounded-sm outline-offset-2 transition-all ${
         selected
-          ? "border-brand-purple"
-          : "border-gray-200 hover:border-brand-purple"
+          ? "outline outline-1 outline-brand-ink"
+          : "opacity-80 hover:opacity-100 hover:outline hover:outline-1 hover:outline-brand-gold"
       }`}
     >
       <Image
@@ -110,16 +110,16 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Colour — the same design, photographed in each colour it comes in. */}
       {color && color.colors.length > 0 && (
         <div>
-          <label className="mb-2 block text-sm font-semibold text-brand-dark">
+          <p className="field-label">
             Colour
-            <span className="ml-1 font-normal text-gray-500">
+            <span className="ml-2 normal-case tracking-normal text-brand-inkMuted">
               {color.selected ? color.selectedLabel : "as shown"}
             </span>
-          </label>
+          </p>
           <div className="flex flex-wrap gap-2">
             {/* The design's own pictures are a colour too — this resets to them. */}
             <ColorChoice
@@ -144,9 +144,7 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
       {/* Size — options come from the admin; nothing is shown when none were set. */}
       {sizes.length > 0 && (
         <div>
-          <label className="mb-2 block text-sm font-semibold text-brand-dark">
-            Size
-          </label>
+          <p className="field-label">Size</p>
           <div className="flex flex-wrap gap-2">
             {sizes.map((option) => {
               const selected = size === option.label;
@@ -156,19 +154,21 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
                   type="button"
                   onClick={() => setSize(option.label)}
                   aria-pressed={selected}
-                  className={`rounded-2xl border px-4 py-2 text-left text-sm font-semibold transition-colors ${
+                  className={`min-w-[4.5rem] rounded-sm border px-4 py-2.5 text-center text-sm transition-colors ${
                     selected
-                      ? "border-brand-purple bg-brand-purple text-white"
-                      : "border-gray-200 text-brand-dark hover:border-brand-purple"
+                      ? "border-brand-ink bg-brand-ink text-brand-ivory"
+                      : "border-brand-ink/15 text-brand-ink hover:border-brand-ink"
                   }`}
                 >
-                  <span className="block">{option.label}</span>
+                  <span className="block font-medium uppercase tracking-[0.1em]">
+                    {option.label}
+                  </span>
                   {/* Each size carries its own price — show it on the chip so the
                       choice is never a surprise at checkout. */}
                   {sizePriced && (
                     <span
-                      className={`block text-xs font-bold ${
-                        selected ? "text-white/90" : "text-brand-purple"
+                      className={`mt-0.5 block text-xs ${
+                        selected ? "text-brand-goldSoft" : "text-brand-inkMuted"
                       }`}
                     >
                       {formatPrice(
@@ -185,7 +185,7 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
 
       {/* Quantity */}
       <div>
-        <label className="mb-2 block text-sm font-semibold text-brand-dark">
+        <label className="field-label">
           Quantity
         </label>
         <div className="flex flex-wrap items-center gap-3">
@@ -196,13 +196,13 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
             label={product.name}
           />
           {!outOfStock && (
-            <span className="text-sm text-gray-400">
+            <span className="text-xs uppercase tracking-[0.12em] text-brand-inkMuted">
               {product.stock} in stock
             </span>
           )}
         </div>
         {canReachBulk && unitsAway > 0 && (
-          <p className="mt-2 text-sm font-semibold text-brand-purple">
+          <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-brand-plum">
             Add {unitsAway} more ({BULK_MIN_QUANTITY}+) and get{" "}
             {BULK_DISCOUNT_PERCENT}% off.
           </p>
@@ -210,25 +210,27 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
       </div>
 
       {/* Live price for the chosen quantity */}
-      <dl className="space-y-2 rounded-2xl bg-black/[0.03] p-4 text-sm">
+      <dl className="space-y-2 border border-brand-ink/10 bg-brand-cream p-5 text-sm">
         <div className="flex justify-between">
-          <dt className="text-gray-500">
+          <dt className="text-brand-inkSoft">
             {formatPrice(unitPrice)} × {qty}
             {size && sizePriced ? ` (${size})` : ""}
           </dt>
-          <dd className="font-semibold text-brand-dark">
+          <dd className="font-medium text-brand-ink">
             {formatPrice(gross)}
           </dd>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-green-600">
+          <div className="flex justify-between text-brand-plum">
             <dt>Bulk discount ({discountPct}%)</dt>
             <dd className="font-semibold">− {formatPrice(discount)}</dd>
           </div>
         )}
-        <div className="flex justify-between border-t border-black/5 pt-2">
-          <dt className="font-bold text-brand-dark">Total</dt>
-          <dd className="font-display text-lg font-extrabold text-brand-dark">
+        <div className="flex items-baseline justify-between border-t border-brand-ink/10 pt-3">
+          <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-ink">
+            Total
+          </dt>
+          <dd className="font-display text-xl text-brand-ink">
             {formatPrice(total)}
           </dd>
         </div>
@@ -240,7 +242,7 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
           type="button"
           onClick={handleAdd}
           disabled={outOfStock}
-          className="flex-1 rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn btn-candy flex-1"
         >
           {outOfStock
             ? "Out of stock"
@@ -250,7 +252,7 @@ export default function AddToCartForm({ product, sizes = [] }: Props) {
         </button>
         <Link
           href="/cart"
-          className="rounded-full border border-brand-dark/15 px-6 py-3.5 text-center font-bold text-brand-dark transition-colors hover:bg-black/5"
+          className="btn btn-outline"
         >
           Go to cart
         </Link>

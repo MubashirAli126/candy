@@ -29,18 +29,16 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-20">
-        <div className="text-6xl">🛒</div>
-        <h1 className="mt-4 font-display text-3xl font-extrabold text-brand-dark">
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-24">
+        <div className="text-5xl" aria-hidden="true">🛍️</div>
+        <h1 className="mt-6 font-display text-3xl font-normal tracking-tight text-brand-ink sm:text-4xl">
           Your cart is empty
         </h1>
-        <p className="mt-2 text-gray-500">
-          Looks like you haven't added anything yet.
+        <div className="rule-gold mx-auto mt-5 w-20" aria-hidden="true" />
+        <p className="mt-5 text-sm text-brand-inkSoft sm:text-base">
+          Nothing picked out yet — the new season is waiting.
         </p>
-        <Link
-          href="/products"
-          className="mt-6 inline-block rounded-full bg-brand-gradient px-7 py-3.5 font-bold text-brand-dark shadow-brand"
-        >
+        <Link href="/products" className="btn btn-primary mt-6">
           Start shopping
         </Link>
       </div>
@@ -49,21 +47,25 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <h1 className="mb-6 font-display text-2xl font-extrabold text-brand-dark sm:mb-8 sm:text-4xl">
-        Your Cart ({totalItems})
-      </h1>
+      <header className="mb-6 border-b border-brand-ink/10 pb-6 sm:mb-9">
+        <p className="eyebrow">Shopping bag</p>
+        <h1 className="mt-3 font-display text-3xl font-normal tracking-tight text-brand-ink sm:text-4xl">
+          Your Cart{" "}
+          <span className="text-brand-inkMuted">({totalItems})</span>
+        </h1>
+      </header>
 
-      <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+      <div className="grid gap-6 lg:grid-cols-3 lg:gap-6">
         {/* Items */}
         <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
             <div
               key={`${item.productId}-${item.size ?? ""}-${item.color ?? ""}`}
-              className="flex gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-card sm:gap-4 sm:p-4"
+              className="flex gap-4 border border-brand-ink/10 bg-white p-3 sm:p-4"
             >
               <Link
                 href={`/products/${item.slug}`}
-                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-24 sm:w-24"
+                className="relative h-24 w-[4.5rem] shrink-0 overflow-hidden bg-brand-cream sm:h-32 sm:w-24"
               >
                 <Image
                   src={item.image}
@@ -78,7 +80,7 @@ export default function CartPage() {
                 <div className="flex items-start justify-between gap-2">
                   <Link
                     href={`/products/${item.slug}`}
-                    className="font-semibold text-brand-dark hover:text-brand-pink"
+                    className="font-display text-base leading-snug text-brand-ink transition-colors hover:text-brand-plum sm:text-lg"
                   >
                     {item.name}
                   </Link>
@@ -91,14 +93,14 @@ export default function CartPage() {
                         color: item.color,
                       })
                     }
-                    className="text-gray-400 hover:text-brand-pink"
+                    className="shrink-0 text-brand-inkMuted transition-colors hover:text-brand-pink"
                     aria-label="Remove item"
                   >
                     ✕
                   </button>
                 </div>
                 {(item.size || item.colorLabel) && (
-                  <span className="text-sm text-gray-500">
+                  <span className="mt-1 text-xs uppercase tracking-[0.12em] text-brand-inkSoft">
                     {[
                       item.colorLabel ?? null,
                       item.size ? `Size: ${item.size}` : null,
@@ -107,7 +109,7 @@ export default function CartPage() {
                       .join(" · ")}
                   </span>
                 )}
-                <span className="text-sm text-gray-400">
+                <span className="mt-0.5 text-xs text-brand-inkMuted">
                   {formatPrice(item.price)} / piece
                 </span>
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
@@ -129,17 +131,17 @@ export default function CartPage() {
                   />
                   <span className="text-right">
                     {bulkDiscountPercent(item.quantity) > 0 && (
-                      <span className="block text-xs text-gray-400 line-through">
+                      <span className="block text-xs text-brand-inkMuted line-through">
                         {formatPrice(lineGross(item.price, item.quantity))}
                       </span>
                     )}
-                    <span className="font-bold text-brand-dark">
+                    <span className="font-medium text-brand-ink">
                       {formatPrice(lineTotal(item.price, item.quantity))}
                     </span>
                   </span>
                 </div>
                 {bulkDiscountPercent(item.quantity) > 0 && (
-                  <span className="mt-1 self-start rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700">
+                  <span className="mt-2 self-start border border-brand-gold/40 bg-brand-cream px-2 py-0.5 text-[0.7rem] font-medium uppercase tracking-[0.1em] text-brand-plum">
                     {BULK_MIN_QUANTITY}+ bulk discount −
                     {bulkDiscountPercent(item.quantity)}%
                   </span>
@@ -151,57 +153,58 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6 lg:sticky lg:top-24">
-            <h2 className="font-display text-xl font-bold text-brand-dark">
-              Order Summary
-            </h2>
+          <div className="border border-brand-ink/10 bg-brand-cream p-5 sm:p-6 lg:sticky lg:top-28">
+            <h2 className="font-display text-xl text-brand-ink">Order Summary</h2>
+            <div className="rule-gold mt-3 w-14" aria-hidden="true" />
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-500">Items ({totalItems})</dt>
+                <dt className="text-brand-inkSoft">Items ({totalItems})</dt>
                 <dd className="font-semibold">{formatPrice(itemsTotal)}</dd>
               </div>
               {discount > 0 && (
-                <div className="flex justify-between text-green-600">
+                <div className="flex justify-between text-brand-plum">
                   <dt>Bulk discount ({BULK_DISCOUNT_PERCENT}%)</dt>
                   <dd className="font-semibold">− {formatPrice(discount)}</dd>
                 </div>
               )}
               <div className="flex justify-between">
-                <dt className="text-gray-500">Subtotal</dt>
+                <dt className="text-brand-inkSoft">Subtotal</dt>
                 <dd className="font-semibold">{formatPrice(subtotal)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-gray-500">Shipping</dt>
+                <dt className="text-brand-inkSoft">Shipping</dt>
                 <dd className="font-semibold">
                   {shipping === 0 ? (
-                    <span className="text-green-600">FREE</span>
+                    <span className="uppercase tracking-[0.12em] text-brand-plum">Free</span>
                   ) : (
                     formatPrice(shipping)
                   )}
                 </dd>
               </div>
               {shipping > 0 && (
-                <p className="text-xs text-brand-purple">
+                <p className="text-xs text-brand-inkSoft">
                   Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for
                   free shipping!
                 </p>
               )}
-              <div className="flex justify-between border-t border-black/5 pt-3 text-base">
-                <dt className="font-bold text-brand-dark">Total</dt>
-                <dd className="font-extrabold text-brand-dark">
+              <div className="flex items-baseline justify-between border-t border-brand-ink/10 pt-4">
+                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-ink">
+                  Total
+                </dt>
+                <dd className="font-display text-xl text-brand-ink">
                   {formatPrice(total)}
                 </dd>
               </div>
             </dl>
             <Link
               href="/checkout"
-              className="mt-6 block rounded-full bg-brand-gradient px-6 py-3.5 text-center font-bold text-brand-dark shadow-brand transition-transform hover:scale-[1.02]"
+              className="btn btn-candy mt-6 w-full"
             >
               Proceed to checkout
             </Link>
             <Link
               href="/products"
-              className="mt-3 block text-center text-sm font-semibold text-brand-purple hover:underline"
+              className="mt-4 block text-center text-xs font-semibold uppercase tracking-[0.14em] text-brand-inkSoft transition-colors hover:text-brand-ink"
             >
               ← Continue shopping
             </Link>

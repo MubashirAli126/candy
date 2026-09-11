@@ -146,21 +146,19 @@ export default function SlideManager({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {error && (
-        <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <p className="border border-brand-logoRed/25 bg-brand-logoRed/[0.04] px-5 py-4 text-sm text-brand-ink">
           {error}
         </p>
       )}
 
       {/* Add a banner */}
-      <form
-        onSubmit={addSlide}
-        className="space-y-5 rounded-2xl border border-black/5 bg-white p-6 shadow-card sm:p-8"
-      >
-        <h2 className="font-display text-lg font-extrabold text-brand-dark">
-          Add a banner
-        </h2>
+      <form onSubmit={addSlide} className="card space-y-6 p-6 sm:p-8">
+        <div>
+          <h2 className="eyebrow">Add a banner</h2>
+          <div className="rule-hairline mt-3" aria-hidden="true" />
+        </div>
 
         <MediaUploader
           images={images}
@@ -173,7 +171,7 @@ export default function SlideManager({
           hint="Landscape pictures fill the slider best. A portrait shot is shown whole, over a soft blurred background."
         />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Field
             label="Small label (optional)"
             value={draft.eyebrow}
@@ -195,7 +193,7 @@ export default function SlideManager({
           placeholder="e.g. Embroidered lawn suits, stitched and ready."
         />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <Field
               label="Button link (optional)"
@@ -203,13 +201,13 @@ export default function SlideManager({
               onChange={(v) => set("href", v)}
               placeholder="/products?type=KURTI"
             />
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-2.5 flex flex-wrap gap-2">
               {LINK_PRESETS.map((preset) => (
                 <button
                   key={preset.href}
                   type="button"
                   onClick={() => set("href", preset.href)}
-                  className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-brand-dark/70 hover:border-brand-purple hover:text-brand-purple"
+                  className="border border-brand-ink/15 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-brand-inkSoft transition-colors hover:border-brand-gold hover:text-brand-ink"
                 >
                   {preset.label}
                 </button>
@@ -227,7 +225,7 @@ export default function SlideManager({
         <button
           type="submit"
           disabled={busy || uploading || images.length === 0}
-          className="w-full rounded-xl bg-brand-gradient px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-dark shadow-brand disabled:opacity-60 sm:w-auto"
+          className="btn btn-candy w-full sm:w-auto"
         >
           {busy ? "Saving..." : "Add banner"}
         </button>
@@ -235,12 +233,15 @@ export default function SlideManager({
 
       {/* Current banners */}
       <div>
-        <h2 className="mb-3 font-display text-lg font-extrabold text-brand-dark">
-          Slider banners {slides.length > 0 && `(${slides.length})`}
-        </h2>
+        <div className="mb-4">
+          <h2 className="eyebrow">
+            Slider banners {slides.length > 0 && `(${slides.length})`}
+          </h2>
+          <div className="rule-hairline mt-3" aria-hidden="true" />
+        </div>
 
         {slides.length === 0 ? (
-          <p className="rounded-2xl bg-gray-50 p-6 text-sm text-gray-500">
+          <p className="border border-brand-ink/10 bg-brand-cream p-6 text-sm text-brand-inkSoft">
             No banners yet — the homepage is showing the built-in default
             slides. Add one above to take over the slider.
           </p>
@@ -250,11 +251,11 @@ export default function SlideManager({
               <li
                 key={slide.id}
                 className={cn(
-                  "flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:flex-row sm:items-center",
+                  "card flex flex-col gap-4 p-4 sm:flex-row sm:items-center",
                   !slide.active && "opacity-60"
                 )}
               >
-                <div className="relative aspect-[16/7] w-full shrink-0 overflow-hidden rounded-xl bg-brand-night sm:aspect-auto sm:h-20 sm:w-36">
+                <div className="relative aspect-[16/7] w-full shrink-0 overflow-hidden rounded-sm bg-brand-night sm:aspect-auto sm:h-20 sm:w-36">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={slide.image}
@@ -264,15 +265,15 @@ export default function SlideManager({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-brand-dark">
+                  <p className="truncate font-display text-lg text-brand-ink">
                     {slide.title || "(no heading)"}
                   </p>
-                  <p className="truncate text-xs text-gray-500">
+                  <p className="truncate text-xs text-brand-inkMuted">
                     {slide.eyebrow ? `${slide.eyebrow} — ` : ""}
                     {slide.href || "no link"}
                   </p>
                   {!slide.active && (
-                    <span className="mt-1 inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-500">
+                    <span className="mt-1.5 inline-block bg-brand-sand px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-brand-inkMuted">
                       Hidden
                     </span>
                   )}
@@ -297,7 +298,7 @@ export default function SlideManager({
                     type="button"
                     disabled={busy}
                     onClick={() => patch(slide.id, { active: !slide.active })}
-                    className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-brand-dark hover:border-brand-purple disabled:opacity-50"
+                    className="btn btn-outline btn-sm"
                   >
                     {slide.active ? "Hide" : "Show"}
                   </button>
@@ -305,7 +306,7 @@ export default function SlideManager({
                     type="button"
                     disabled={busy}
                     onClick={() => remove(slide.id)}
-                    className="rounded-xl border border-red-100 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    className="btn btn-sm border border-brand-logoRed/40 text-brand-logoRed hover:bg-brand-logoRed hover:text-white"
                   >
                     Delete
                   </button>
@@ -332,14 +333,12 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        {label}
-      </label>
+      <label className="field-label">{label}</label>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-base outline-none focus:border-brand-purple sm:text-sm"
+        className="field"
       />
     </div>
   );
@@ -362,7 +361,7 @@ function IconButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid h-9 w-9 place-items-center rounded-xl border border-gray-200 text-sm font-bold text-brand-dark hover:border-brand-purple disabled:opacity-30"
+      className="grid h-10 w-10 place-items-center rounded-sm border border-brand-ink/15 text-sm text-brand-ink transition-colors hover:border-brand-gold hover:bg-brand-cream disabled:opacity-30"
     >
       {children}
     </button>

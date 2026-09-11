@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/ProductForm";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import AdminBackLink from "@/components/admin/AdminBackLink";
 import { toProductType } from "@/lib/types";
 import { productGallery } from "@/lib/utils";
 import { parseSizeOptions } from "@/lib/sizes";
@@ -26,15 +27,14 @@ export default async function EditProductPage({
 
   return (
     <div>
-      <Link
-        href="/admin/products"
-        className="text-sm font-semibold text-brand-purple hover:underline"
-      >
-        ← Back to products
-      </Link>
-      <h1 className="mb-6 mt-3 font-display text-2xl font-extrabold text-brand-dark sm:text-3xl">
-        Edit product
-      </h1>
+      <AdminPageHeader
+        back={
+          <AdminBackLink href="/admin/products">Back to products</AdminBackLink>
+        }
+        eyebrow="Catalogue"
+        title="Edit product"
+        subtitle={product.name}
+      />
       <ProductForm
         categories={categories}
         initial={{

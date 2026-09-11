@@ -2,15 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────────────────
+   Candy — "modern classic" design tokens.
+   Warm ivory paper, plum ink, champagne-gold hairlines, and the
+   candy pink kept as the single loud accent for commerce actions.
+   ────────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #2b1020;
-  /* Candy brand tokens */
+  --background: #fdfbf8;
+  --foreground: #25131f;
+  --ivory: #fdfbf8;
+  --cream: #f7f1ea;
+  --sand: #efe5da;
+  --ink: #25131f;
+  --ink-soft: #5a4551;
+  --ink-muted: #8c7a85;
+  --gold: #c0a062;
+  --gold-soft: #e4d6b8;
   --brand-plum: #7a2350;
   --brand-purple: #a03a73;
   --brand-pink: #ee4c89;
   --brand-rose: #ff7fa8;
   --brand-blush: #ffd8e6;
+  /* One hairline definition, used by every rule and card border on the
+     site — change it here and the whole grid re-tunes together. */
+  --hairline: rgba(37, 19, 31, 0.1);
+  --hairline-gold: rgba(192, 160, 98, 0.35);
 }
 
 * {
@@ -33,48 +49,141 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ──────────────────────────────────────────────────────────────
-   Buttons — colours live here only, so restyling the whole site
-   is a one-place change. Variants map to the logo:
-     .btn-primary → candy pink accent          (commerce actions)
-     .btn-navy    → deep plum                  (brand / navigation)
-     .btn-outline → plum outline               (secondary on light)
-     .btn-ghost   → translucent white          (on dark surfaces)
-   ────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--brand-blush);
+  color: var(--ink);
+}
+
+/* Serif headings want tighter tracking and old-style balance. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @layer components {
+  /* ────────────────────────────────────────────────────────────
+     Buttons — colours live here only, so restyling the whole site
+     is a one-place change.
+       .btn-primary → solid ink, gold-free   (commerce actions)
+       .btn-candy   → candy pink             (add to cart, checkout)
+       .btn-outline → hairline outline       (secondary on light)
+       .btn-ghost   → translucent white      (on dark surfaces)
+     Square-ish corners read more couture than pills; the radius is
+     deliberately small rather than zero so nothing looks unfinished.
+     ──────────────────────────────────────────────────────────── */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
-      text-center font-bold transition-all
-      disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-8 py-3.5
+      text-center text-xs font-semibold uppercase tracking-[0.16em]
+      transition-all duration-200
+      disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
   }
 
   .btn-sm {
-    @apply px-5 py-2.5 text-sm;
+    @apply px-5 py-2.5 tracking-[0.12em];
   }
 
   .btn-lg {
-    @apply px-8 py-4;
+    @apply px-10 py-4 text-sm;
   }
 
   .btn-primary {
-    @apply bg-brand-gradient text-brand-dark shadow-brand
-      hover:scale-[1.02] hover:brightness-[1.04] active:scale-100;
+    @apply bg-brand-ink text-brand-ivory
+      hover:-translate-y-px hover:bg-brand-plum active:translate-y-0;
   }
 
-  .btn-navy {
-    @apply bg-brand-navy-gradient text-white shadow-navy
-      hover:scale-[1.02] hover:brightness-125 active:scale-100;
+  .btn-candy {
+    @apply bg-brand-pink text-white shadow-brand
+      hover:-translate-y-px hover:bg-brand-copper active:translate-y-0;
   }
 
   .btn-outline {
-    @apply border border-brand-blue/30 text-brand-blue
-      hover:border-brand-blue/60 hover:bg-brand-blue/5;
+    @apply border border-brand-ink/25 bg-transparent text-brand-ink
+      hover:border-brand-ink hover:bg-brand-ink hover:text-brand-ivory;
+  }
+
+  .btn-gold {
+    @apply border border-brand-gold/60 bg-transparent text-brand-gold
+      hover:bg-brand-gold hover:text-brand-ink;
   }
 
   .btn-ghost {
-    @apply border border-white/20 bg-white/5 text-white backdrop-blur
-      hover:border-white/40 hover:bg-white/10;
+    @apply border border-white/25 bg-white/5 text-white backdrop-blur
+      hover:border-white/60 hover:bg-white/10;
   }
+
+  /* Small-caps label above a heading — the classic editorial cue. */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-eyebrow text-brand-gold;
+  }
+
+  /* Paper card — hairline border, no heavy drop shadow. */
+  .card {
+    @apply rounded-sm border border-brand-ink/10 bg-white shadow-card;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:border-brand-gold/50 hover:shadow-lift;
+  }
+
+  /* Form fields — one definition for every input on the storefront. */
+  .field {
+    @apply w-full rounded-sm border border-brand-ink/15 bg-white px-4 py-3 text-sm
+      text-brand-ink outline-none transition-colors
+      placeholder:text-brand-inkMuted
+      focus:border-brand-pink focus:ring-0;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-[0.14em] text-brand-inkSoft;
+  }
+
+  /* ────────────────────────────────────────────────────────────
+     Data tables — the admin panel's bread and butter. They live
+     here beside the buttons and fields so a listing in the back
+     office carries the same hairline and rhythm as the storefront,
+     and both retune from this one file.
+     ──────────────────────────────────────────────────────────── */
+  .table-shell {
+    @apply overflow-x-auto border border-brand-ink/10 bg-white shadow-card;
+  }
+
+  .table-head {
+    @apply border-b border-brand-ink/10 bg-brand-cream text-left text-[0.68rem]
+      font-semibold uppercase tracking-[0.16em] text-brand-inkMuted;
+  }
+
+  .table-row {
+    @apply border-b border-brand-ink/[0.07] transition-colors last:border-0
+      hover:bg-brand-ivory;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Ornaments — the "classic" half of the look. A hairline rule with
+   a small diamond, used to flank section headings.
+   ────────────────────────────────────────────────────────────── */
+.rule-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.rule-hairline {
+  height: 1px;
+  background: var(--hairline);
 }
 
 /* Utility: shiny animated gradient text — candy pink → blush sweep */
@@ -92,6 +201,14 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmer 3s linear infinite;
+}
+
+/* Utility: champagne text — the quiet, classic counterpart to .text-shine. */
+.text-gold {
+  background: linear-gradient(100deg, #b08d4b 0%, #e4d6b8 45%, #b08d4b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 @keyframes shimmer {
@@ -113,6 +230,28 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Underline that draws itself in on hover — used for nav and inline links. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.link-underline:hover::after,
+.link-underline[data-active="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 /* Add-to-cart toast entrance */
@@ -165,7 +304,8 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
+select:focus-visible,
+summary:focus-visible {
   outline: 2px solid #ee4c89;
   outline-offset: 2px;
 }
