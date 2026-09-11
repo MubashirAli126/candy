@@ -10,8 +10,9 @@ interface ProductTypeBadgeProps {
 }
 
 /**
- * Small pill showing what kind of outfit a product is (3 piece / 2 piece /
- * kurti, or the admin's own label when the type is "Other").
+ * Small tag showing what kind of outfit a product is (3 piece / 2 piece /
+ * kurti, or the admin's own label when the type is "Other"). A gold hairline
+ * on cream rather than a filled pill, so a grid of cards stays quiet.
  */
 export default function ProductTypeBadge({
   productType,
@@ -22,8 +23,8 @@ export default function ProductTypeBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full bg-brand-purple/10 font-semibold text-brand-purple",
-        size === "sm" ? "px-2 py-0.5 text-xs" : "px-3 py-1 text-sm",
+        "inline-flex items-center gap-1.5 rounded-sm border border-brand-gold/40 bg-brand-cream font-medium uppercase tracking-[0.12em] text-brand-inkSoft",
+        size === "sm" ? "px-2 py-0.5 text-[0.7rem]" : "px-3 py-1.5 text-xs",
         className
       )}
     >

@@ -35,13 +35,15 @@ export default function OrderStatusControl({
   }
 
   return (
-    <label className="flex items-center gap-2">
-      <span className="text-sm font-semibold text-gray-500">Status:</span>
+    <label className="flex items-center gap-3">
+      <span className="shrink-0 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-inkMuted">
+        Status
+      </span>
       <select
         value={status}
         onChange={(e) => onChange(e.target.value)}
         disabled={saving}
-        className="w-full rounded-full border border-gray-200 bg-white px-4 py-2 text-base font-bold text-brand-dark outline-none focus:border-brand-purple disabled:opacity-60 sm:w-auto sm:text-sm"
+        className="field w-full text-xs font-semibold uppercase tracking-[0.14em] disabled:opacity-60 sm:w-auto"
       >
         {ORDER_STATUSES.map((s) => (
           <option key={s} value={s}>

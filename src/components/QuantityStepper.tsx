@@ -50,14 +50,14 @@ export default function QuantityStepper({
     size === "sm" ? "h-9 w-12 text-base sm:h-8 sm:text-sm" : "h-10 w-16 text-base";
 
   return (
-    <div className="inline-flex items-center rounded-full border border-gray-200">
+    <div className="inline-flex items-center rounded-sm border border-brand-ink/15">
       <button
         type="button"
         onClick={() => onChange(clamp(value - 1))}
         disabled={value <= min}
         aria-label={label ? `Decrease quantity of ${label}` : "Decrease quantity"}
         className={cn(
-          "grid place-items-center font-bold text-brand-dark disabled:opacity-30",
+          "grid place-items-center text-brand-ink transition-colors hover:text-brand-pink disabled:opacity-25 disabled:hover:text-brand-ink",
           button
         )}
       >
@@ -77,7 +77,7 @@ export default function QuantityStepper({
         }}
         aria-label={label ? `Quantity of ${label}` : "Quantity"}
         className={cn(
-          "border-x border-gray-200 bg-transparent text-center font-bold text-brand-dark outline-none focus:bg-brand-purple/5",
+          "border-x border-brand-ink/15 bg-transparent text-center font-medium text-brand-ink outline-none focus:bg-brand-cream",
           field
         )}
       />
@@ -87,7 +87,7 @@ export default function QuantityStepper({
         disabled={value >= max}
         aria-label={label ? `Increase quantity of ${label}` : "Increase quantity"}
         className={cn(
-          "grid place-items-center font-bold text-brand-dark disabled:opacity-30",
+          "grid place-items-center text-brand-ink transition-colors hover:text-brand-pink disabled:opacity-25 disabled:hover:text-brand-ink",
           button
         )}
       >

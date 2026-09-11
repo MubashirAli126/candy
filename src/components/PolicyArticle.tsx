@@ -1,3 +1,4 @@
+import SectionHeading from "./SectionHeading";
 import type { PolicyPageContent } from "@/lib/policies";
 
 /**
@@ -16,32 +17,45 @@ export default function PolicyArticle({
 }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <h1 className="text-center font-display text-2xl font-extrabold uppercase tracking-[0.14em] text-brand-dark sm:text-3xl">
-        {content.title}
-      </h1>
-      <p className="mx-auto mt-3 max-w-xl text-center text-sm text-gray-500 sm:text-base">
-        {content.intro}
-      </p>
+      <SectionHeading
+        as="h1"
+        eyebrow="Candy"
+        title={content.title}
+        subtitle={content.intro}
+      />
 
-      <div className="mt-8 space-y-8 sm:mt-12">
+      <div className="mt-9 space-y-8 sm:mt-12">
         {content.sections?.map((section) => (
           <section key={section.heading}>
-            <h2 className="font-display text-lg font-bold text-brand-plum sm:text-xl">
+            <h2 className="font-display text-xl leading-snug text-brand-ink sm:text-2xl">
               {section.heading}
             </h2>
-            <div className="mt-2 space-y-3">
+            <span
+              className="mt-3 block h-px w-10 bg-brand-gold/60"
+              aria-hidden="true"
+            />
+            <div className="mt-4 space-y-3">
               {section.body.map((block, i) =>
                 Array.isArray(block) ? (
                   <ul
                     key={i}
-                    className="list-disc space-y-1 pl-5 text-sm text-gray-600 sm:text-base"
+                    className="space-y-2 text-sm text-brand-inkSoft sm:text-base"
                   >
                     {block.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item} className="flex gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="mt-[0.65em] h-1 w-1 shrink-0 rotate-45 bg-brand-gold"
+                        />
+                        <span>{item}</span>
+                      </li>
                     ))}
                   </ul>
                 ) : (
-                  <p key={i} className="text-sm text-gray-600 sm:text-base">
+                  <p
+                    key={i}
+                    className="text-sm leading-relaxed text-brand-inkSoft sm:text-base"
+                  >
                     {block}
                   </p>
                 )

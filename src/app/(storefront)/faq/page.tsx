@@ -70,26 +70,31 @@ export default function FaqPage() {
         }}
       />
 
-      <div className="divide-y divide-black/5 border-y border-black/5">
+      <div className="divide-y divide-brand-ink/10 border-y border-brand-ink/10">
         {FAQS.map((f) => (
-          <details key={f.q} className="group py-4">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-brand-dark sm:text-base">
+          <details key={f.q} className="group py-5">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-display text-lg leading-snug text-brand-ink transition-colors hover:text-brand-plum">
               {f.q}
               <span
                 aria-hidden="true"
-                className="shrink-0 text-brand-pink transition-transform group-open:rotate-45"
+                className="shrink-0 text-xl font-light text-brand-gold transition-transform duration-300 group-open:rotate-45"
               >
                 +
               </span>
             </summary>
-            <p className="mt-2 text-sm text-gray-600 sm:text-base">{f.a}</p>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-inkSoft sm:text-base">
+              {f.a}
+            </p>
           </details>
         ))}
       </div>
 
-      <p className="text-sm text-gray-600 sm:text-base">
+      <p className="text-sm text-brand-inkSoft sm:text-base">
         Still stuck?{" "}
-        <Link href="/contact" className="font-semibold text-brand-pink hover:underline">
+        <Link
+          href="/contact"
+          className="link-underline font-medium text-brand-plum"
+        >
           Contact us
         </Link>{" "}
         — we reply on WhatsApp within working hours.

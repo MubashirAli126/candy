@@ -149,25 +149,24 @@ export default function ProductForm({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-3">
-      <div className="space-y-4 lg:col-span-2">
-        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
+      <div className="space-y-6 lg:col-span-2">
+        <section className="card p-5 sm:p-7">
+          <SectionLabel>Details</SectionLabel>
           <Text
             label="Product name *"
             value={values.name}
             onChange={(v) => set("name", v)}
           />
-          <div className="mt-4">
-            <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-              Description *
-            </label>
+          <div className="mt-5">
+            <label className="field-label">Description *</label>
             <textarea
               value={values.description}
               onChange={(e) => set("description", e.target.value)}
               rows={5}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+              className="field"
             />
           </div>
-          <div className="mt-4">
+          <div className="mt-5">
             <Text
               label="Tags (comma separated, for search/SEO)"
               value={values.tags}
@@ -175,13 +174,11 @@ export default function ProductForm({
               placeholder="lawn, embroidered, summer"
             />
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-          <h3 className="mb-4 font-display font-bold text-brand-dark">
-            Pricing & stock
-          </h3>
-          <div className="grid gap-4 sm:grid-cols-3">
+        <section className="card p-5 sm:p-7">
+          <SectionLabel>Pricing &amp; stock</SectionLabel>
+          <div className="grid gap-5 sm:grid-cols-3">
             <Num
               label="Price (PKR) *"
               value={values.price}
@@ -198,34 +195,34 @@ export default function ProductForm({
               onChange={(v) => set("stock", v)}
             />
           </div>
-          <div className="mt-4">
+          <div className="mt-6">
             <SizePriceEditor
               value={values.sizes}
               onChange={(v) => set("sizes", v)}
               basePrice={values.price}
             />
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
+        <section className="card p-5 sm:p-7">
+          <SectionLabel>Colours</SectionLabel>
           <ColorPicturesField
             images={values.colors}
             onChange={(v) => set("colors", v)}
             onUploadingChange={setColorUploading}
             onError={setError}
           />
-        </div>
+        </section>
       </div>
 
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-          <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-            Category *
-          </label>
+      <div className="space-y-6">
+        <section className="card p-5 sm:p-7">
+          <SectionLabel>Placement</SectionLabel>
+          <label className="field-label">Category *</label>
           <select
             value={values.categoryId}
             onChange={(e) => set("categoryId", e.target.value)}
-            className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+            className="field"
           >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -234,7 +231,7 @@ export default function ProductForm({
             ))}
           </select>
 
-          <div className="mt-4">
+          <div className="mt-5">
             <ProductTypePicker
               value={values.productType}
               onChange={(v) => set("productType", v)}
@@ -243,7 +240,7 @@ export default function ProductForm({
             />
           </div>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-6 space-y-3 border-t border-brand-ink/10 pt-5">
             <Toggle
               label="Featured (show on homepage)"
               checked={values.featured}
@@ -255,12 +252,10 @@ export default function ProductForm({
               onChange={(v) => set("active", v)}
             />
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-card sm:p-6">
-          <h3 className="mb-4 font-display font-bold text-brand-dark">
-            Pictures
-          </h3>
+        <section className="card p-5 sm:p-7">
+          <SectionLabel>Pictures</SectionLabel>
           <MediaUploader
             images={values.images}
             onImagesChange={(v) => set("images", v)}
@@ -268,10 +263,10 @@ export default function ProductForm({
             onError={setError}
             allowUrl
           />
-        </div>
+        </section>
 
         {error && (
-          <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+          <p className="border border-brand-logoRed/25 bg-brand-logoRed/[0.04] p-4 text-sm text-brand-ink">
             {error}
           </p>
         )}
@@ -279,7 +274,7 @@ export default function ProductForm({
         <button
           type="submit"
           disabled={saving || mediaBusy}
-          className="w-full rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand disabled:opacity-60"
+          className="btn btn-candy w-full"
         >
           {mediaBusy
             ? "Uploading media..."
@@ -291,6 +286,16 @@ export default function ProductForm({
         </button>
       </div>
     </form>
+  );
+}
+
+/** The small-caps rule that opens each panel of the form. */
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <h3 className="eyebrow">{children}</h3>
+      <div className="rule-hairline mb-5 mt-3" aria-hidden="true" />
+    </>
   );
 }
 
@@ -307,14 +312,12 @@ function Text({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        {label}
-      </label>
+      <label className="field-label">{label}</label>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+        className="field"
       />
     </div>
   );
@@ -331,15 +334,13 @@ function Num({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        {label}
-      </label>
+      <label className="field-label">{label}</label>
       <input
         type="number"
         min={0}
         value={value === 0 ? "" : value}
         onChange={(e) => onChange(Number(e.target.value) || 0)}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+        className="field"
       />
     </div>
   );
@@ -355,12 +356,12 @@ function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-dark">
+    <label className="flex cursor-pointer items-center gap-2.5 text-sm text-brand-ink">
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-4 w-4 rounded accent-brand-purple"
+        className="h-4 w-4 rounded-sm accent-brand-pink"
       />
       {label}
     </label>

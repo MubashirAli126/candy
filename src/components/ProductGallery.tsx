@@ -109,7 +109,7 @@ export default function ProductGallery({
           aria-roledescription="carousel"
           aria-label={`${name} media`}
           tabIndex={0}
-          className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-gray-100 shadow-card outline-none focus-visible:ring-2 focus-visible:ring-brand-purple"
+          className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain border border-brand-ink/10 bg-brand-cream outline-none focus-visible:ring-2 focus-visible:ring-brand-pink"
         >
           {slides.map((slide, index) => (
             <div
@@ -147,8 +147,8 @@ export default function ProductGallery({
         </div>
 
         {discount > 0 && (
-          <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-brand-pink px-3 py-1.5 text-sm font-bold text-brand-dark shadow">
-            -{discount}% OFF
+          <span className="pointer-events-none absolute left-0 top-5 bg-brand-ink px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-brand-goldSoft">
+            −{discount}% off
           </span>
         )}
 
@@ -164,21 +164,21 @@ export default function ProductGallery({
               onClick={() => goTo(active + 1)}
               disabled={active === lastIndex}
             />
-            <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white">
+            <span className="pointer-events-none absolute bottom-3 right-3 bg-brand-ink/70 px-2.5 py-1 text-xs font-medium tracking-wide text-white">
               {active + 1} / {slides.length}
             </span>
           </>
         )}
 
         {current.type === "image" && (
-          <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white">
-            🔍 Tap to view full size
+          <span className="pointer-events-none absolute bottom-3 left-3 bg-brand-ink/70 px-2.5 py-1 text-[0.7rem] uppercase tracking-[0.12em] text-white">
+            Tap to view full size
           </span>
         )}
       </div>
 
       {slides.length > 1 && (
-        <ul className="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
+        <ul className="mt-3 grid grid-cols-5 gap-2 sm:gap-2.5">
           {slides.map((slide, index) => (
             <li key={`thumb-${slide.url}-${index}`}>
               <button
@@ -191,10 +191,10 @@ export default function ProductGallery({
                 }
                 aria-current={index === active}
                 className={cn(
-                  "relative block aspect-square w-full overflow-hidden rounded-xl border-2 bg-gray-100 transition-colors",
+                  "relative block aspect-square w-full overflow-hidden border bg-brand-cream transition-colors",
                   index === active
-                    ? "border-brand-purple"
-                    : "border-transparent hover:border-brand-purple/40"
+                    ? "border-brand-ink"
+                    : "border-brand-ink/10 hover:border-brand-gold"
                 )}
               >
                 {slide.type === "video" ? (
@@ -294,7 +294,7 @@ function Arrow({
       disabled={disabled}
       aria-label={direction === "prev" ? "Previous media" : "Next media"}
       className={cn(
-        "absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/85 text-lg font-bold text-brand-dark shadow transition hover:bg-white disabled:pointer-events-none disabled:opacity-0",
+        "absolute top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-sm border border-brand-ink/10 bg-white/90 text-lg text-brand-ink shadow-card transition hover:bg-white disabled:pointer-events-none disabled:opacity-0",
         direction === "prev" ? "left-3" : "right-3"
       )}
     >

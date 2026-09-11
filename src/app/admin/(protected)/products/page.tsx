@@ -1,10 +1,35 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 import ProductTypeBadge from "@/components/ProductTypeBadge";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export const dynamic = "force-dynamic";
+
+/** Active / hidden pill — the same chip in both the card and the table. */
+function StatusPill({ active }: { active: boolean }) {
+  return (
+    <span
+      className={cn(
+        "inline-block shrink-0 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em]",
+        active
+          ? "bg-brand-ink text-brand-goldSoft"
+          : "bg-brand-sand text-brand-inkMuted"
+      )}
+    >
+      {active ? "Active" : "Hidden"}
+    </span>
+  );
+}
+
+function FeaturedFlag() {
+  return (
+    <span className="ml-2 inline-block border border-brand-gold/60 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-brand-gold">
+      ★ Featured
+    </span>
+  );
+}
 
 export default async function AdminProductsPage() {
   const products = await prisma.product.findMany({
@@ -14,62 +39,43 @@ export default async function AdminProductsPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-extrabold text-brand-dark sm:text-3xl">
-            Products
-          </h1>
-          <p className="mt-1 text-gray-500">{products.length} products</p>
-        </div>
-        <Link
-          href="/admin/products/new"
-          className="rounded-full bg-brand-gradient px-5 py-2.5 font-bold text-brand-dark shadow-brand"
-        >
-          + Add product
-        </Link>
-      </div>
+      <AdminPageHeader
+        eyebrow="Catalogue"
+        title="Products"
+        subtitle={`${products.length} ${products.length === 1 ? "product" : "products"} in the store.`}
+        actions={
+          <Link href="/admin/products/new" className="btn btn-candy btn-sm">
+            + Add product
+          </Link>
+        }
+      />
 
       {products.length === 0 ? (
-        <p className="mt-8 rounded-2xl bg-white p-10 text-center text-gray-500 shadow-card">
+        <p className="border border-brand-ink/10 bg-white p-10 text-center text-sm text-brand-inkSoft">
           No products yet. Click “Add product” to create your first one.
         </p>
       ) : (
         <>
-          <div className="mt-6 space-y-3 md:hidden">
+          <div className="space-y-3 md:hidden">
             {products.map((p) => (
-              <div
-                key={p.id}
-                className="rounded-2xl border border-black/5 bg-white p-4 shadow-card"
-              >
+              <div key={p.id} className="card p-4">
                 <div className="flex items-start gap-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                    className="h-16 w-16 shrink-0 rounded-sm border border-brand-ink/10 object-cover"
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="font-semibold text-brand-dark">
+                      <span className="font-semibold text-brand-ink">
                         {p.name}
-                        {p.featured && (
-                          <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-xs font-bold text-brand-dark">
-                            ★ Featured
-                          </span>
-                        )}
+                        {p.featured && <FeaturedFlag />}
                       </span>
-                      <span
-                        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
-                          p.active
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {p.active ? "Active" : "Hidden"}
-                      </span>
+                      <StatusPill active={p.active} />
                     </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <span className="text-xs text-gray-500">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                      <span className="text-xs text-brand-inkMuted">
                         {p.category.name}
                       </span>
                       <ProductTypeBadge
@@ -77,22 +83,26 @@ export default async function AdminProductsPage() {
                         customType={p.customType}
                       />
                     </div>
-                    <div className="mt-1 flex items-center gap-3 text-sm">
-                      <span className="font-semibold">
+                    <div className="mt-1.5 flex items-center gap-3 text-sm">
+                      <span className="font-semibold text-brand-ink">
                         {formatPrice(p.salePrice ?? p.price)}
                       </span>
                       <span
-                        className={p.stock === 0 ? "text-red-500" : "text-gray-500"}
+                        className={
+                          p.stock === 0
+                            ? "text-brand-logoRed"
+                            : "text-brand-inkSoft"
+                        }
                       >
                         Stock: {p.stock}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center justify-end gap-2 border-t border-black/5 pt-3">
+                <div className="mt-3 flex items-center justify-end gap-2 border-t border-brand-ink/10 pt-3">
                   <Link
                     href={`/admin/products/${p.id}`}
-                    className="rounded-lg px-3 py-1.5 text-sm font-semibold text-brand-purple hover:bg-brand-purple/5"
+                    className="link-underline px-2 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-brand-inkSoft hover:text-brand-ink"
                   >
                     Edit
                   </Link>
@@ -102,75 +112,67 @@ export default async function AdminProductsPage() {
             ))}
           </div>
 
-          <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-black/5 bg-white shadow-card md:block">
+          <div className="table-shell hidden md:block">
             <table className="w-full text-sm">
-              <thead className="border-b border-black/5 bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+              <thead className="table-head">
                 <tr>
-                  <th className="px-4 py-3">Product</th>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="hidden px-4 py-3 sm:table-cell">Category</th>
-                  <th className="px-4 py-3">Price</th>
-                  <th className="hidden px-4 py-3 sm:table-cell">Stock</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3.5">Product</th>
+                  <th className="px-4 py-3.5">Type</th>
+                  <th className="hidden px-4 py-3.5 sm:table-cell">Category</th>
+                  <th className="px-4 py-3.5">Price</th>
+                  <th className="hidden px-4 py-3.5 sm:table-cell">Stock</th>
+                  <th className="px-4 py-3.5">Status</th>
+                  <th className="px-4 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.map((p) => (
-                  <tr key={p.id} className="border-b border-black/5 last:border-0">
-                    <td className="px-4 py-3">
+                  <tr key={p.id} className="table-row">
+                    <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.image}
                           alt={p.name}
-                          className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                          className="h-11 w-11 shrink-0 rounded-sm border border-brand-ink/10 object-cover"
                         />
-                        <span className="font-semibold text-brand-dark">
+                        <span className="font-semibold text-brand-ink">
                           {p.name}
-                          {p.featured && (
-                            <span className="ml-2 rounded bg-brand-yellow/20 px-1.5 py-0.5 text-xs font-bold text-brand-dark">
-                              ★ Featured
-                            </span>
-                          )}
+                          {p.featured && <FeaturedFlag />}
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3.5">
                       <ProductTypeBadge
                         productType={p.productType}
                         customType={p.customType}
                       />
                     </td>
-                    <td className="hidden px-4 py-3 text-gray-500 sm:table-cell">
+                    <td className="hidden px-4 py-3.5 text-brand-inkSoft sm:table-cell">
                       {p.category.name}
                     </td>
-                    <td className="px-4 py-3 font-semibold">
+                    <td className="px-4 py-3.5 font-semibold text-brand-ink">
                       {formatPrice(p.salePrice ?? p.price)}
                     </td>
-                    <td className="hidden px-4 py-3 sm:table-cell">
+                    <td className="hidden px-4 py-3.5 sm:table-cell">
                       <span
-                        className={p.stock === 0 ? "text-red-500" : "text-gray-500"}
+                        className={
+                          p.stock === 0
+                            ? "text-brand-logoRed"
+                            : "text-brand-inkSoft"
+                        }
                       >
                         {p.stock}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                          p.active
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {p.active ? "Active" : "Hidden"}
-                      </span>
+                    <td className="px-4 py-3.5">
+                      <StatusPill active={p.active} />
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center justify-end gap-3">
                         <Link
                           href={`/admin/products/${p.id}`}
-                          className="rounded-lg px-3 py-1.5 text-sm font-semibold text-brand-purple hover:bg-brand-purple/5"
+                          className="link-underline text-xs font-semibold uppercase tracking-[0.14em] text-brand-inkSoft hover:text-brand-ink"
                         >
                           Edit
                         </Link>

@@ -44,10 +44,10 @@ export default function SizeChartPage() {
       />
 
       <section>
-        <h2 className="font-display text-lg font-bold text-brand-plum sm:text-xl">
+        <h2 className="font-display text-xl text-brand-ink sm:text-2xl">
           How to measure
         </h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600 sm:text-base">
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-brand-inkSoft sm:text-base">
           <li>
             <strong>Chest:</strong> around the fullest part, keeping the tape
             level under the arms.
@@ -66,10 +66,10 @@ export default function SizeChartPage() {
       </section>
 
       <section>
-        <h2 className="font-display text-lg font-bold text-brand-plum sm:text-xl">
+        <h2 className="font-display text-xl text-brand-ink sm:text-2xl">
           Between two sizes?
         </h2>
-        <p className="mt-2 text-sm text-gray-600 sm:text-base">
+        <p className="mt-3 text-sm text-brand-inkSoft sm:text-base">
           Go one size up — a stitched suit is easier to take in than to let out.
           We also stitch to your own measurements: WhatsApp them to us on{" "}
           {CONTACTS[0].display} before placing the order. Note that
@@ -78,7 +78,7 @@ export default function SizeChartPage() {
         </p>
         <Link
           href="/exchange-policy"
-          className="mt-3 inline-block text-sm font-semibold text-brand-pink hover:underline"
+          className="link-underline mt-4 inline-block text-xs font-semibold uppercase tracking-[0.14em] text-brand-plum"
         >
           Read the exchange policy →
         </Link>
@@ -99,18 +99,18 @@ function SizeTable({
 }) {
   return (
     <section>
-      <h2 className="font-display text-lg font-bold text-brand-plum sm:text-xl">
+      <h2 className="font-display text-xl text-brand-ink sm:text-2xl">
         {caption}{" "}
-        <span className="text-sm font-medium text-gray-400">(inches)</span>
+        <span className="text-sm text-brand-inkMuted">(inches)</span>
       </h2>
-      <div className="mt-2 overflow-x-auto">
+      <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[420px] border-collapse text-sm">
           <thead>
-            <tr className="bg-brand-mist text-left">
+            <tr className="bg-brand-cream text-left">
               {columns.map((c) => (
                 <th
                   key={c}
-                  className="border border-black/5 px-3 py-2 font-bold uppercase tracking-wide text-brand-dark"
+                  className="border border-brand-ink/10 px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink"
                 >
                   {c}
                 </th>
@@ -125,8 +125,8 @@ function SizeTable({
                     key={i}
                     className={
                       i === 0
-                        ? "border border-black/5 px-3 py-2 font-bold text-brand-dark"
-                        : "border border-black/5 px-3 py-2 text-gray-600"
+                        ? "border border-brand-ink/10 px-3 py-2.5 font-medium text-brand-ink"
+                        : "border border-brand-ink/10 px-3 py-2.5 text-brand-inkSoft"
                     }
                   >
                     {cell}

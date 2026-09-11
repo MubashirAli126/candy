@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import OrderStatusBadge from "@/components/admin/OrderStatusBadge";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -23,90 +24,99 @@ export default async function AdminDashboard() {
     ]);
 
   const stats = [
-    { label: "Total Orders", value: orderCount, icon: "📦", href: "/admin/orders" },
-    { label: "Pending Orders", value: pendingCount, icon: "⏳", href: "/admin/orders" },
-    { label: "Active Products", value: productCount, icon: "🏷️", href: "/admin/products" },
+    { label: "Total Orders", value: orderCount, href: "/admin/orders" },
+    { label: "Pending Orders", value: pendingCount, href: "/admin/orders" },
+    { label: "Active Products", value: productCount, href: "/admin/products" },
     {
       label: "Revenue",
       value: formatPrice(revenue._sum.total ?? 0),
-      icon: "💰",
       href: "/admin/orders",
     },
   ];
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-extrabold text-brand-dark sm:text-3xl">
-        Dashboard
-      </h1>
-      <p className="mt-1 text-gray-500">Welcome back! Here's your store at a glance.</p>
+      <AdminPageHeader
+        eyebrow="Overview"
+        title="Dashboard"
+        subtitle="Welcome back — here is your store at a glance."
+      />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
+      {/* Typeset rather than illustrated: a numeral, a serif figure and a
+          hairline, matching the storefront's assurance strip. */}
+      <div className="grid gap-px bg-brand-ink/10 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((s, i) => (
           <Link
             key={s.label}
             href={s.href}
-            className="rounded-2xl border border-black/5 bg-white p-5 shadow-card transition-transform hover:-translate-y-0.5"
+            className="group bg-white px-5 py-6 transition-colors hover:bg-brand-cream"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-2xl">{s.icon}</span>
-            </div>
-            <div className="mt-3 font-display text-2xl font-extrabold text-brand-dark">
+            <span className="font-display text-sm italic text-brand-gold">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="mt-2 font-display text-3xl leading-none text-brand-ink">
               {s.value}
             </div>
-            <div className="text-sm text-gray-500">{s.label}</div>
+            <div className="mt-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-inkMuted">
+              {s.label}
+            </div>
           </Link>
         ))}
       </div>
 
-      <div className="mt-10">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-brand-dark">
-            Recent Orders
-          </h2>
+      <div className="mt-12">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">Latest activity</p>
+            <h2 className="mt-2 font-display text-2xl text-brand-ink">
+              Recent Orders
+            </h2>
+          </div>
           <Link
             href="/admin/orders"
-            className="text-sm font-semibold text-brand-purple hover:underline"
+            className="link-underline text-xs font-semibold uppercase tracking-[0.16em] text-brand-inkSoft transition-colors hover:text-brand-ink"
           >
             View all →
           </Link>
         </div>
 
         {recentOrders.length === 0 ? (
-          <p className="rounded-2xl bg-white p-8 text-center text-gray-500 shadow-card">
+          <p className="border border-brand-ink/10 bg-white p-10 text-center text-sm text-brand-inkSoft">
             No orders yet.
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-black/5 bg-white shadow-card">
+          <div className="table-shell">
             <table className="w-full min-w-[420px] text-sm">
-              <thead className="border-b border-black/5 bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+              <thead className="table-head">
                 <tr>
-                  <th className="px-4 py-3">Order</th>
-                  <th className="px-4 py-3">Customer</th>
-                  <th className="hidden px-4 py-3 sm:table-cell">Items</th>
-                  <th className="px-4 py-3">Total</th>
-                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3.5">Order</th>
+                  <th className="px-4 py-3.5">Customer</th>
+                  <th className="hidden px-4 py-3.5 sm:table-cell">Items</th>
+                  <th className="px-4 py-3.5">Total</th>
+                  <th className="px-4 py-3.5">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {recentOrders.map((o) => (
-                  <tr key={o.id} className="border-b border-black/5 last:border-0">
-                    <td className="px-4 py-3">
+                  <tr key={o.id} className="table-row">
+                    <td className="px-4 py-3.5">
                       <Link
                         href={`/admin/orders/${o.id}`}
-                        className="font-semibold text-brand-purple hover:underline"
+                        className="link-underline font-semibold text-brand-ink"
                       >
                         {o.orderNumber}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-brand-dark">{o.customerName}</td>
-                    <td className="hidden px-4 py-3 text-gray-500 sm:table-cell">
+                    <td className="px-4 py-3.5 text-brand-ink">
+                      {o.customerName}
+                    </td>
+                    <td className="hidden px-4 py-3.5 text-brand-inkSoft sm:table-cell">
                       {o._count.items}
                     </td>
-                    <td className="px-4 py-3 font-semibold">
+                    <td className="px-4 py-3.5 font-semibold text-brand-ink">
                       {formatPrice(o.total)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3.5">
                       <OrderStatusBadge status={o.status} />
                     </td>
                   </tr>

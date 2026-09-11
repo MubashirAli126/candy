@@ -13,13 +13,14 @@ import { serializeColorImages } from "@/lib/colors";
 /**
  * Minimal "Add product" form — only the things an admin must decide:
  * name, product type, price, sizes (each with its own price) and a picture.
- * Everything else (description, category, stock, tags, flags) is auto-filled
- * server-side.
+ * A description can be typed here but is optional; left blank, it — along with
+ * category, stock, tags and flags — is auto-filled server-side.
  */
 export default function QuickProductForm() {
   const router = useRouter();
 
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [sizes, setSizes] = useState<SizeOption[]>([]);
   const [colors, setColors] = useState<string[]>([]);
@@ -42,6 +43,10 @@ export default function QuickProductForm() {
     if (productType === "OTHER" && !customType.trim()) {
       return setError("Please type what kind of item this is.");
     }
+    const trimmedDescription = description.trim();
+    if (trimmedDescription && trimmedDescription.length < 5) {
+      return setError("Description is too short — write at least 5 characters.");
+    }
     const serializedSizes = serializeSizeOptions(sizes);
     if (!serializedSizes) return setError("Please enter at least one size.");
     if (Number(price) <= 0) return setError("Price must be greater than 0.");
@@ -55,6 +60,9 @@ export default function QuickProductForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
+          // Blank means "let the server write one" — sending "" would fail
+          // the API's min-length check.
+          ...(trimmedDescription ? { description: trimmedDescription } : {}),
           price: Number(price),
           size: serializedSizes,
           colors: serializeColorImages(colors),
@@ -78,18 +86,16 @@ export default function QuickProductForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto max-w-xl space-y-5 rounded-2xl border border-black/5 bg-white p-6 shadow-card sm:p-8"
+      className="card mx-auto max-w-xl space-y-6 p-6 sm:p-8"
     >
       {/* Name */}
       <div>
-        <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-          Product name
-        </label>
+        <label className="field-label">Product name</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Racing Stripe Decal"
-          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+          placeholder="e.g. Embroidered Lawn 3 Piece"
+          className="field"
         />
       </div>
 
@@ -101,18 +107,33 @@ export default function QuickProductForm() {
         onCustomTypeChange={setCustomType}
       />
 
+      {/* Description — optional, auto-written server-side when left blank. */}
+      <div>
+        <label className="field-label">
+          Description{" "}
+          <span className="normal-case tracking-normal text-brand-inkMuted">
+            (optional)
+          </span>
+        </label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={4}
+          placeholder="Tell customers about the fabric, work and fit. Leave this blank and one is written for you."
+          className="field"
+        />
+      </div>
+
       {/* Price — charged for any size the admin didn't price separately. */}
       <div>
-        <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-          Price (PKR)
-        </label>
+        <label className="field-label">Price (PKR)</label>
         <input
           type="number"
           min={0}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           placeholder="e.g. 1200"
-          className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+          className="field"
         />
       </div>
 
@@ -131,7 +152,7 @@ export default function QuickProductForm() {
         onError={setError}
       />
 
-      <div className="border-t border-black/5 pt-5">
+      <div className="border-t border-brand-ink/10 pt-6">
         <ColorPicturesField
           images={colors}
           onChange={setColors}
@@ -141,18 +162,20 @@ export default function QuickProductForm() {
       </div>
 
       {error && (
-        <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>
+        <p className="border border-brand-logoRed/25 bg-brand-logoRed/[0.04] p-4 text-sm text-brand-ink">
+          {error}
+        </p>
       )}
 
-      <p className="text-xs text-gray-400">
-        Description, category and stock are set automatically — you can
-        fine-tune them later by editing the product.
+      <p className="text-xs leading-relaxed text-brand-inkMuted">
+        Category and stock — plus the description, if you left it blank — are
+        set automatically. You can fine-tune them later by editing the product.
       </p>
 
       <button
         type="submit"
         disabled={saving || mediaBusy}
-        className="w-full rounded-full bg-brand-gradient px-6 py-3.5 font-bold text-brand-dark shadow-brand disabled:opacity-60"
+        className="btn btn-candy w-full"
       >
         {mediaBusy
           ? "Uploading pictures..."

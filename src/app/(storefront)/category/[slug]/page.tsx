@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import JsonLd from "@/components/JsonLd";
 import { getAllProducts, getCategoryBySlug } from "@/lib/data";
+import SectionHeading from "@/components/SectionHeading";
 import { breadcrumbSchema, itemListSchema, SITE_NAME } from "@/lib/seo";
 
 // Rendered on demand — no generateStaticParams, so the build never needs the
@@ -50,29 +51,32 @@ export default async function CategoryPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <JsonLd data={jsonLd} />
-      <nav className="mb-4 text-sm text-gray-500">
-        <a href="/" className="hover:text-brand-purple">
+      <nav className="mb-6 text-xs uppercase tracking-[0.14em] text-brand-inkMuted">
+        <a href="/" className="transition-colors hover:text-brand-ink">
           Home
-        </a>{" "}
-        / <span className="text-brand-dark">{category.name}</span>
+        </a>
+        <span className="px-2 text-brand-gold">/</span>
+        <span className="text-brand-ink">{category.name}</span>
       </nav>
 
-      <header className="mb-6 rounded-3xl bg-brand-gradient-soft p-6 text-brand-dark shadow-brand sm:mb-8 sm:p-8">
-        <div className="text-4xl sm:text-5xl">{category.icon}</div>
-        <h1 className="mt-3 font-display text-2xl font-extrabold sm:text-4xl">
-          {category.name}
-        </h1>
-        {category.description && (
-          <p className="mt-2 max-w-2xl text-brand-dark/80">{category.description}</p>
-        )}
+      <header className="mb-8 border-y border-brand-ink/10 bg-brand-cream px-6 py-9 sm:mb-10 sm:py-12">
+        <div className="mb-4 text-center text-4xl sm:text-5xl" aria-hidden="true">
+          {category.icon}
+        </div>
+        <SectionHeading
+          as="h1"
+          eyebrow="Collection"
+          title={category.name}
+          subtitle={category.description ?? undefined}
+        />
       </header>
 
       {products.length === 0 ? (
-        <p className="rounded-2xl bg-gray-50 p-10 text-center text-gray-500">
+        <p className="border border-brand-ink/10 bg-brand-cream p-12 text-center text-sm text-brand-inkSoft">
           No products in this category yet.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

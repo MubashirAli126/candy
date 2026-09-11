@@ -43,7 +43,11 @@ export const STORE = {
   country: "PK",
   /** Full one-line address for footers and contact cards. */
   address: "B-69, Ground Floor, Karim Center, Saddar, Karachi",
-  logo: `${SITE_URL}/logo.png`,
+  /**
+   * The square brand badge in /public. Not /logo.png — that file is a
+   * leftover from another shop and shows the wrong company's mark.
+   */
+  logo: `${SITE_URL}/logo.svg`,
 } as const;
 
 /** Absolute URL from a site-relative path (or pass-through for already-absolute URLs). */

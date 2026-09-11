@@ -50,9 +50,7 @@ export default function SizePriceEditor({
 
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-brand-dark">
-        Sizes & price per size
-      </label>
+      <label className="field-label">Sizes &amp; price per size</label>
 
       <div className="space-y-2">
         {rows.map((row, index) => {
@@ -65,7 +63,7 @@ export default function SizePriceEditor({
                   value={row.label}
                   onChange={(e) => update(index, { label: e.target.value })}
                   aria-label={`Size ${index + 1}`}
-                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 outline-none focus:border-brand-purple"
+                  className="field"
                 >
                   <option value="">Choose size</option>
                   {SIZE_CHOICES.map((choice) => (
@@ -101,10 +99,10 @@ export default function SizePriceEditor({
                     }
                     placeholder="Price"
                     aria-label={`Price for ${row.label.trim()}`}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 outline-none focus:border-brand-purple"
+                    className="field"
                   />
                 ) : (
-                  <p className="px-1 py-2.5 text-xs text-gray-300">
+                  <p className="px-1 py-3 text-xs text-brand-inkMuted/60">
                     Price appears here
                   </p>
                 )}
@@ -115,7 +113,7 @@ export default function SizePriceEditor({
                 onClick={() => removeRow(index)}
                 disabled={rows.length === 1 && !hasLabel}
                 aria-label={`Remove size ${index + 1}`}
-                className="mt-1 px-2 py-1.5 text-gray-400 transition-colors hover:text-brand-pink disabled:opacity-30"
+                className="mt-2 px-2 py-1.5 text-brand-inkMuted transition-colors hover:text-brand-logoRed disabled:opacity-30"
               >
                 ✕
               </button>
@@ -128,12 +126,12 @@ export default function SizePriceEditor({
         type="button"
         onClick={addRow}
         disabled={allTaken || rows.length >= SIZE_CHOICES.length}
-        className="mt-2 rounded-full border border-brand-purple/30 px-4 py-1.5 text-sm font-semibold text-brand-purple transition-colors hover:bg-brand-purple/10 disabled:opacity-40"
+        className="btn btn-outline btn-sm mt-3"
       >
         + Add another size
       </button>
 
-      <p className="mt-2 text-xs text-gray-400">
+      <p className="mt-3 text-xs text-brand-inkMuted">
         Buyers pick one of these sizes and pay that size&apos;s price. Leave a
         price empty to charge the product price
         {basePrice && basePrice > 0 ? ` (${formatPrice(basePrice)})` : ""}. No

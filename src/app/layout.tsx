@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, Baloo_2 } from "next/font/google";
+import { Poppins, Fredoka, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
 import { organizationSchema, websiteSchema, SITE_NAME } from "@/lib/seo";
@@ -11,10 +11,28 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const baloo = Baloo_2({
+// The classic half of the type system — a high-contrast serif for every
+// heading. Its italic ships too, so accents are a real italic rather than a
+// synthesised slant.
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-baloo",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+// The logo wordmark. The printed artwork is a wide, very heavy rounded face,
+// and of the rounded faces on Google Fonts this one carries that weight
+// closest — Baloo 2, which this replaced, thins out at the 24px header size.
+// M PLUS Rounded 1c is a shade closer still, but next/font has no metric
+// overrides for it, so it gets no size-adjusted fallback: the wordmark would
+// reflow and the confetti dots, which are placed against this face's ink
+// lines, would land wrong for as long as the webfont took to arrive.
+const rounded = Fredoka({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-logo",
   display: "swap",
 });
 
@@ -79,8 +97,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${baloo.variable}`}>
-      <body className="overflow-x-hidden font-sans">
+    <html lang="en" className={`${poppins.variable} ${playfair.variable} ${rounded.variable}`}>
+      <body className="overflow-x-hidden bg-brand-ivory font-sans text-brand-ink">
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
       </body>

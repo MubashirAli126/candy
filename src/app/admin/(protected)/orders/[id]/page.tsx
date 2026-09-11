@@ -1,9 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import OrderStatusControl from "@/components/admin/OrderStatusControl";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import AdminBackLink from "@/components/admin/AdminBackLink";
 
 export const dynamic = "force-dynamic";
 
@@ -20,28 +21,21 @@ export default async function AdminOrderDetailPage({
 
   return (
     <div>
-      <Link
-        href="/admin/orders"
-        className="text-sm font-semibold text-brand-purple hover:underline"
-      >
-        ← Back to orders
-      </Link>
+      <AdminPageHeader
+        back={<AdminBackLink href="/admin/orders">Back to orders</AdminBackLink>}
+        eyebrow="Order"
+        title={order.orderNumber}
+        subtitle={`Placed on ${order.createdAt.toLocaleString("en-PK")}`}
+        actions={
+          <OrderStatusControl orderId={order.id} current={order.status} />
+        }
+      />
 
-      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <h1 className="font-display text-2xl font-extrabold text-brand-dark sm:text-3xl">
-          {order.orderNumber}
-        </h1>
-        <OrderStatusControl orderId={order.id} current={order.status} />
-      </div>
-      <p className="mt-1 text-gray-500">
-        Placed on {order.createdAt.toLocaleString("en-PK")}
-      </p>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Items */}
         <div className="lg:col-span-2">
-          <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-card">
-            <h2 className="border-b border-black/5 px-5 py-4 font-display font-bold text-brand-dark">
+          <div className="card overflow-hidden">
+            <h2 className="border-b border-brand-ink/10 bg-brand-cream px-5 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-inkMuted">
               Items
             </h2>
             <table className="w-full text-sm">
@@ -49,22 +43,22 @@ export default async function AdminOrderDetailPage({
                 {order.items.map((item) => (
                   <tr
                     key={item.id}
-                    className="border-b border-black/5 last:border-0"
+                    className="border-b border-brand-ink/[0.07] last:border-0"
                   >
-                    <td className="px-5 py-3">
-                      <div className="font-semibold text-brand-dark">
+                    <td className="px-5 py-4">
+                      <div className="font-semibold text-brand-ink">
                         {item.productName}
                       </div>
                       {item.size && (
-                        <div className="text-xs text-gray-500">
+                        <div className="mt-0.5 text-xs text-brand-inkSoft">
                           Size: {item.size}
                         </div>
                       )}
                       {/* Colours are pictures, not names — show the one that
                           was ordered so it can be packed without guesswork. */}
                       {item.color && (
-                        <div className="mt-1 flex items-center gap-2">
-                          <span className="relative h-10 w-10 overflow-hidden rounded-lg border border-black/10 bg-gray-100">
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="relative h-10 w-10 overflow-hidden rounded-sm border border-brand-ink/10 bg-brand-cream">
                             <Image
                               src={item.color}
                               alt="Colour ordered"
@@ -73,36 +67,40 @@ export default async function AdminOrderDetailPage({
                               className="object-cover"
                             />
                           </span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-brand-inkMuted">
                             Colour ordered
                           </span>
                         </div>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-center text-gray-500">
+                    <td className="px-5 py-4 text-center text-brand-inkSoft">
                       × {item.quantity}
                     </td>
-                    <td className="px-5 py-3 text-right font-semibold">
+                    <td className="px-5 py-4 text-right font-semibold text-brand-ink">
                       {formatPrice(item.price * item.quantity)}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <dl className="space-y-1 border-t border-black/5 px-5 py-4 text-sm">
+            <dl className="space-y-1.5 border-t border-brand-ink/10 bg-brand-cream px-5 py-4 text-sm">
               <div className="flex justify-between">
-                <dt className="text-gray-500">Subtotal</dt>
-                <dd>{formatPrice(order.subtotal)}</dd>
+                <dt className="text-brand-inkSoft">Subtotal</dt>
+                <dd className="text-brand-ink">{formatPrice(order.subtotal)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-gray-500">Shipping</dt>
-                <dd>
+                <dt className="text-brand-inkSoft">Shipping</dt>
+                <dd className="text-brand-ink">
                   {order.shipping === 0 ? "FREE" : formatPrice(order.shipping)}
                 </dd>
               </div>
-              <div className="flex justify-between border-t border-black/5 pt-2 text-base font-bold text-brand-dark">
-                <dt>Total</dt>
-                <dd>{formatPrice(order.total)}</dd>
+              <div className="flex items-baseline justify-between border-t border-brand-ink/10 pt-2.5">
+                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-inkMuted">
+                  Total
+                </dt>
+                <dd className="font-display text-xl text-brand-ink">
+                  {formatPrice(order.total)}
+                </dd>
               </div>
             </dl>
           </div>
@@ -110,11 +108,12 @@ export default async function AdminOrderDetailPage({
 
         {/* Customer */}
         <div>
-          <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-card">
-            <h2 className="mb-3 font-display font-bold text-brand-dark">
+          <div className="card p-5">
+            <h2 className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-inkMuted">
               Customer
             </h2>
-            <dl className="space-y-2 text-sm">
+            <div className="rule-hairline my-4" aria-hidden="true" />
+            <dl className="space-y-3 text-sm">
               <Info label="Name" value={order.customerName} />
               <Info label="Phone" value={order.phone} />
               {order.email && <Info label="Email" value={order.email} />}
@@ -126,9 +125,9 @@ export default async function AdminOrderDetailPage({
               href={`https://wa.me/${order.phone.replace(/[^0-9]/g, "").replace(/^0/, "92")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 block rounded-full bg-[#25D366] px-4 py-2.5 text-center text-sm font-bold text-white"
+              className="btn btn-sm mt-5 w-full bg-[#25D366] text-white transition-all hover:-translate-y-px hover:brightness-95"
             >
-              📱 WhatsApp customer
+              WhatsApp customer
             </a>
           </div>
         </div>
@@ -140,8 +139,10 @@ export default async function AdminOrderDetailPage({
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-gray-400">{label}</dt>
-      <dd className="text-brand-dark">{value}</dd>
+      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-brand-inkMuted">
+        {label}
+      </dt>
+      <dd className="mt-0.5 text-brand-ink">{value}</dd>
     </div>
   );
 }
